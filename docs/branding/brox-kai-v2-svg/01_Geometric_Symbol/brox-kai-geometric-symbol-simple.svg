@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 95" role="img" aria-labelledby="title desc">
+  <title id="title">Brox Kai simplified geometric symbol</title>
+  <desc id="desc">Simplified bold geometric symbol optimized for small app-icon sizes</desc>
+
+  <path fill="#0B2B5B" d="M30 18 L51 6 L80 23 L80 42 L67 50 L67 31 L51 22 L43 27 L43 63 L58 72 L73 63 L86 71 L63 85 Q57 89 51 85 L29 72 Q24 69 24 62 L24 31 Q24 23 30 18 Z"/>
+  <path fill="#00D1E8" d="M30 18 L51 6 Q56 3 61 7 L80 18 L67 29 L51 20 L43 26 L43 63 L29 72 Q24 68 24 62 L24 31 Q24 23 30 18 Z"/>
+  <path fill="#087BCB" d="M51 20 L67 29 L67 50 L80 42 L80 23 L61 7 Q56 3 51 6 L30 18 Z"/>
+  <path fill="#00D1E8" d="M57 38 L60 46 L68 49 L60 52 L57 60 L54 52 L46 49 L54 46 Z"/>
+
+</svg>

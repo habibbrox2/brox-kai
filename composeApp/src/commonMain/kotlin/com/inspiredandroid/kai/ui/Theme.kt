@@ -36,6 +36,14 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+// Brox Kai v2.0 brand tokens (Navy + Cyan)
+val broxNavy = Color(0xFF0B2B5B)
+val broxCyan = Color(0xFF00D1E8)
+val broxDeepNavy = Color(0xFF06152E)
+val broxCharcoal = Color(0xFF1A1F2B)
+val broxLightSurface = Color(0xFFF5F8FC)
+val broxMutedText = Color(0xFF718096)
+
 val darkPurple = Color(0xFF6200EE)
 val lightPurple = Color(0xff8063C5)
 val gradientBrush = androidx.compose.ui.graphics.Brush.horizontalGradient(listOf(darkPurple, lightPurple))

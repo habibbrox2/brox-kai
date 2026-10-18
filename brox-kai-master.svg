@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Light surface background -->
+  <rect width="100" height="100" rx="22" fill="#F5F8FC"/>
+  <!-- Shared vertical stem (B+K) -->
+  <rect x="24" y="20" width="12" height="60" rx="2" fill="#0B2B5B"/>
+  <!-- B top bowl -->
+  <path d="M36 20 H52 a10 10 0 0 1 0 20 H36 Z" fill="#0B2B5B"/>
+  <!-- B bottom bowl -->
+  <path d="M36 40 H56 a12 12 0 0 1 0 24 H36 Z" fill="#0B2B5B"/>
+  <!-- K arms (cyan) -->
+  <polygon points="60,20 72,20 50,50 72,80 60,80 38,50" fill="#00D1E8"/>
+  <!-- Cyan accent dot -->
+  <circle cx="80" cy="20" r="4" fill="#00D1E8"/>
+</svg>
