@@ -1039,20 +1039,21 @@
 <li><code>03_Wordmarks/</code>: editable text-based light/dark wordmarks.</li>
 <li><code>04_Monochrome/</code>: single-color symbol variants.</li>
 <li><code>05_Documentation/</code>: design notes and manifest.</li>
+<li><code>06_Brand_Board/</code>: presentation board showing the logo, wordmark, chat loading state, palette and desktop app use.</li>
 </ul>
 <h2 id="palette">Palette</h2>
 <ul>
 <li>Navy Blue: #0B2B5B</li>
 <li>Cyan: #00D1E8</li>
+<li>Electric Blue: #168BDB</li>
 <li>Deep Navy: #06152E</li>
 <li>Charcoal: #1A1F2B</li>
 </ul>
 <h2 id="important">Important</h2>
-<p>These files contain real SVG paths, shapes, and editable text; they are not PNGs wrapped inside SVG containers.
-They are a clean vector reconstruction inspired by the supplied branding boards, not an exact tracing of every original pixel. Geometry was simplified intentionally for legibility at small sizes.
+<p>These files contain real SVG paths, shapes, gradients and editable text; they are not PNGs wrapped inside SVG containers. The BK monogram uses the same core geometry as the Compose loading mark and desktop icon source.
 The wordmark uses live text with a system-font fallback. For exact typography consistency, open in a vector editor and convert text to outlines after selecting an approved font.
 App icon rounded-square backgrounds are intentional parts of those icon variants; the canvas outside the rounded square remains transparent.
-Before production use, inspect each SVG in a browser or vector editor and verify the appearance at target sizes. Platform-specific Android adaptive icons and Windows ICOs still need separate generation from the approved master asset.</p>
+The PNG extraction pack at <code>../brox-kai-v2-logo/</code> is kept as a visual reference; prefer these reconstructed vectors for new product use. Platform-specific raster icon generation is still required when refreshing Android, Windows or store builds.</p>
 
 
 

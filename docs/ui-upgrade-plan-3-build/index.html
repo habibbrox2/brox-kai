@@ -1,0 +1,1366 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for Kai - AI Assistant App">
+      
+      
+      
+        <link rel="canonical" href="https://kai9000.com/docs/ui-upgrade-plan-3-build/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Brox Kai v2.0 — UI Upgrade Plan 3: Build Workspace - Kai Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#brox-kai-v20-ui-upgrade-plan-3-build-workspace" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Kai Documentation" class="md-header__button md-logo" aria-label="Kai Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kai Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Brox Kai v2.0 — UI Upgrade Plan 3: Build Workspace
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Kai Documentation" class="md-nav__button md-logo" aria-label="Kai Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Kai Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Features
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Features
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/chat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chat & Conversations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/multi-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multi-Service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/tools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MCP Servers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/dynamic-ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dynamic UI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/memories/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Memories
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/heartbeat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Heartbeat
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/tasks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tasks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/daemon/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Daemon
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/encryption/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Encryption
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/on-device-inference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    On-Device Inference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/reasoning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reasoning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/system-prompts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Prompts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/skills/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Skills
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/sandbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Linux Sandbox
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/kai-build/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kai Build
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/sms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/appearance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Appearance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/settings-export-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Settings Export & Import
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/splinterlands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Splinterlands
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../desktop-release-smoketest/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Desktop Release Smoke Test
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objective" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objective
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#current-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current scope
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#target-experience" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Target experience
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#target-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Target structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#state-ownership" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State ownership
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#embedded-code-editor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Embedded code editor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Embedded code editor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#editor-enhancement-sequence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Editor enhancement sequence
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-phases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation phases
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation phases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-workspace-design-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 1 — Workspace design system
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-project-hub" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2 — Project hub
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-active-project-workspace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 3 — Active project workspace
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-4-setup-and-recovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 4 — Setup and recovery
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-5-editor-productivity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 5 — Editor productivity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-6-adaptive-and-accessibility-quality" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 6 — Adaptive and accessibility quality
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#acceptance-criteria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Acceptance criteria
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#risks-and-controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Risks and controls
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="brox-kai-v20-ui-upgrade-plan-3-build-workspace">Brox Kai v2.0 — UI Upgrade Plan 3: Build Workspace</h1>
+<h2 id="objective">Objective</h2>
+<p>Evolve Kai Build from a terminal-focused flow into a focused project workspace for creating, opening, editing, running, monitoring, and exporting projects.</p>
+<h2 id="current-scope">Current scope</h2>
+<p><code>KaiBuildScreenContent</code> already has three meaningful states: sandbox setup, project selection, and an open project with terminal sessions or files. Its Files surface already uses <code>SandboxFilesContent</code>, which can browse, import, rename, delete, open, edit, and save text files. <code>KaiBuildViewModel</code> and <code>KaiBuildActions</code> keep build behavior outside composables. The UI upgrade should preserve that boundary while making progress, project status, session state, file editing, and agent selection easier to understand.</p>
+<h2 id="target-experience">Target experience</h2>
+<ul>
+<li>Use a workspace header that shows the current project, build environment state, active agent, and close/back action.</li>
+<li>Show a project dashboard before entering a terminal session: recent projects, templates, environment readiness, and agent availability.</li>
+<li>On expanded windows, show project navigation, the active terminal/editor surface, and an optional details/log pane.</li>
+<li>On compact windows, use tabs or a sheet for Files, Sessions, Logs, and Project details.</li>
+<li>Let users edit project files in an embedded code editor, save deliberately, and return to the terminal or preview without leaving Build.</li>
+<li>Make setup and installation progress readable, cancellable, and recoverable.</li>
+<li>Keep terminal density for advanced users while exposing status and project actions in plain language.</li>
+</ul>
+<h2 id="target-structure">Target structure</h2>
+<div class="highlight"><pre><span></span><code>KaiBuildScreen
+├── BuildWorkspaceShell
+│   ├── BuildHeader
+│   ├── BuildEnvironmentStatus
+│   ├── ProjectHub
+│   │   ├── RecentProjects
+│   │   ├── ProjectTemplates
+│   │   └── AgentManager
+│   └── ProjectWorkspace
+│       ├── ProjectNavigation
+│       ├── FileTree
+│       ├── SessionTabs
+│       ├── TerminalOrCodeEditorPane
+│       └── BuildDetailsPane
+├── BuildSetupFlow
+└── ProjectDialogs
+</code></pre></div>
+<h2 id="state-ownership">State ownership</h2>
+<ul>
+<li>Keep project, agent installation, session, terminal, and environment state in <code>KaiBuildUiState</code> and <code>KaiBuildActions</code>.</li>
+<li>Keep file listing, loading, edit buffer, save, import, rename, and delete behaviour in the existing <code>SandboxFileBrowserViewModel</code>/file source contract.</li>
+<li>Keep only view concerns locally: visible desktop pane, selected compact tab, create-project dialog visibility, and temporary field values.</li>
+<li>Do not place terminal transport, file I/O, resizing, or build lifecycle logic inside UI components.</li>
+</ul>
+<h2 id="embedded-code-editor">Embedded code editor</h2>
+<ul>
+<li>Make <strong>Files</strong> a first-class workspace mode instead of a secondary full-screen detour. It opens at the active project path and retains the existing safe file-browser operations.</li>
+<li>Show a navigable project file tree beside the editor on expanded layouts. On compact screens, use a Files tab or sheet that returns to the current file after selection.</li>
+<li>Reuse the existing text editor's load, edit, save, binary-file, unreadable-file, and too-large-file states. Do not attempt to edit unsupported binary files.</li>
+<li>Add a clear editor header: file path, language label when detected, dirty indicator, Save action, and return-to-files action.</li>
+<li>Keep save explicit. Before switching files, closing the project, or exiting Build with unsaved text, show a Save / Discard / Cancel decision.</li>
+<li>Begin with plain-text editing and line numbers. Add syntax highlighting, search/replace, keyboard shortcuts, and formatting only after correctness, large-file handling, and input-method behavior are stable across targets.</li>
+<li>After a successful save, refresh the project file tree and let the user run or rebuild using the existing terminal/build flow.</li>
+</ul>
+<h3 id="editor-enhancement-sequence">Editor enhancement sequence</h3>
+<ol>
+<li><strong>Line numbers:</strong> Render a non-editable gutter aligned with visual lines, including wrapped-line spacing. Keep it horizontally fixed while editor content scrolls.</li>
+<li><strong>Syntax highlighting:</strong> Start with the project file types the Build workflow creates most often. If a language is unknown or highlighting fails, render plain text without blocking editing or saving.</li>
+<li><strong>Find and replace:</strong> Add a keyboard-accessible Find panel with next/previous match, case-sensitive, whole-word, and replace-one/replace-all actions. Limit replacement to the loaded file in the first release.</li>
+<li><strong>Keyboard shortcuts:</strong> Support standard desktop shortcuts: <code>Ctrl/Cmd+S</code> Save, <code>Ctrl/Cmd+F</code> Find, <code>Ctrl/Cmd+H</code> Replace, <code>Ctrl/Cmd+G</code> Next match, <code>Shift+Ctrl/Cmd+G</code> Previous match, and <code>Ctrl/Cmd+Z</code> / <code>Shift+Ctrl/Cmd+Z</code> Undo/Redo. Provide visible buttons for the same essential actions on touch devices.</li>
+<li><strong>Formatting:</strong> Add language-aware format actions only for file types with a trusted formatter available in the sandbox or shared layer. Show formatting failures inline and preserve the unsaved buffer.</li>
+</ol>
+<h2 id="implementation-phases">Implementation phases</h2>
+<h3 id="phase-1-workspace-design-system">Phase 1 — Workspace design system</h3>
+<ol>
+<li>Create Build-specific tokens for terminal surface, success, warning, running, and failed states that work with the Brox Kai palette.</li>
+<li>Build reusable project cards, agent badges, progress blocks, terminal status pills, and split-pane headers.</li>
+<li>Add preview/screenshot fixtures for setup, project hub, active build, terminal error, and no-project states.</li>
+</ol>
+<h3 id="phase-2-project-hub">Phase 2 — Project hub</h3>
+<ol>
+<li>Redesign <code>BuildProjectsContent</code> as a project dashboard with Recent, Templates, and Environment sections.</li>
+<li>Show a single clear primary action: Create project or Open project.</li>
+<li>Move install/uninstall agent controls into an explicit Agent Manager card or panel.</li>
+<li>Add empty state guidance for a ready environment with no projects.</li>
+</ol>
+<h3 id="phase-3-active-project-workspace">Phase 3 — Active project workspace</h3>
+<ol>
+<li>Replace the current session-only header with a project-aware header and session switcher.</li>
+<li>Add desktop supporting panes for the project file tree, terminal sessions, and build/log status.</li>
+<li>Make the existing Files surface an embedded Code Editor mode with file path, dirty state, explicit Save, and unsupported-file states.</li>
+<li>Add unsaved-change confirmation before leaving an edited file, changing project, or closing Build.</li>
+<li>Keep the terminal as the primary focused surface when a session is active, and let users switch back to the active editor without losing its buffer.</li>
+<li>Surface build completion, cancellation, and failure near the session title instead of only in terminal text.</li>
+</ol>
+<h3 id="phase-4-setup-and-recovery">Phase 4 — Setup and recovery</h3>
+<ol>
+<li>Turn <code>BuildSetupContent</code> into a step-based setup surface: environment status, selected option, installation progress, cancellation, and recovery.</li>
+<li>Preserve existing install/cancel actions and derive UI progress from <code>KaiBuildUiState</code>.</li>
+<li>Provide an actionable retry path for failed setup or agent installation.</li>
+</ol>
+<h3 id="phase-5-editor-productivity">Phase 5 — Editor productivity</h3>
+<ol>
+<li>Add the line-number gutter, then validate line wrapping, selection, scrolling, and large-font alignment.</li>
+<li>Add fault-tolerant syntax highlighting for supported project file types with a plain-text fallback.</li>
+<li>Add the file-scoped Find and Replace panel with clear match count and replacement confirmation for Replace all.</li>
+<li>Add desktop shortcuts, Undo/Redo integration, and touch-accessible equivalents.</li>
+<li>Add formatting only where a stable formatter is available; do not use a formatter to rewrite unsupported files.</li>
+</ol>
+<h3 id="phase-6-adaptive-and-accessibility-quality">Phase 6 — Adaptive and accessibility quality</h3>
+<ol>
+<li>Use a centralized width policy for compact, medium, and expanded workspace layouts.</li>
+<li>Ensure session tabs, file navigation, terminal controls, and dialogs work with keyboard and screen readers.</li>
+<li>Verify visible focus, touch targets, contrast, terminal and editor font scaling, editor keyboard shortcuts, IME behavior, and narrow-window overflow behavior.</li>
+<li>Add screenshot coverage for each major workspace and setup state, including loaded file, modified file, binary/too-large file, save error, and unsaved-change confirmation.</li>
+</ol>
+<h2 id="acceptance-criteria">Acceptance criteria</h2>
+<ul>
+<li>A new user can understand whether Build is ready, what project is active, and what action to take next.</li>
+<li>An experienced user can move between sessions, files, terminal, and build status without leaving the workspace.</li>
+<li>A user can select a project file, edit supported text content, save it, and run the updated project from the same Build workspace.</li>
+<li>Users can find, replace, and save text through visible controls or keyboard shortcuts; unsupported language features fall back to plain-text editing.</li>
+<li>Compact layouts retain every essential project and terminal action.</li>
+<li>The terminal, file lifecycle, project lifecycle, and agent management behavior retain their current state ownership and APIs.</li>
+</ul>
+<h2 id="risks-and-controls">Risks and controls</h2>
+<ul>
+<li>Terminal interaction is sensitive to resizing and focus. Preserve the current <code>sendKey</code>, <code>sendText</code>, <code>sendMouse</code>, and resize pathways while changing only surrounding presentation.</li>
+<li>File browsing and terminal panes may be platform-dependent; define shared contracts in common code and retain platform behavior behind existing view models.</li>
+<li>Text buffers can be large and may contain unsaved work. Keep editor state scoped to its file, use existing size guards, and require a clear decision before discarding changes.</li>
+<li>Syntax parsing, highlighting, and replace-all operations can affect editor responsiveness. Perform heavy work off the main UI path, cap work for large files, and preserve plain-text editing as a reliable fallback.</li>
+<li>Avoid overstating build status when logs have not confirmed a result; display state supplied by the build layer.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.expand", "search.highlight", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

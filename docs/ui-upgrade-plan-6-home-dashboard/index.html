@@ -1,0 +1,1465 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for Kai - AI Assistant App">
+      
+      
+      
+        <link rel="canonical" href="https://kai9000.com/docs/ui-upgrade-plan-6-home-dashboard/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Brox Kai v2.0 — UI Upgrade Plan 6: Home Dashboard - Kai Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#brox-kai-v20-ui-upgrade-plan-6-home-dashboard" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Kai Documentation" class="md-header__button md-logo" aria-label="Kai Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kai Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Brox Kai v2.0 — UI Upgrade Plan 6: Home Dashboard
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Kai Documentation" class="md-nav__button md-logo" aria-label="Kai Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Kai Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Features
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Features
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/chat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chat & Conversations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/multi-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multi-Service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/tools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MCP Servers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/dynamic-ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dynamic UI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/memories/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Memories
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/heartbeat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Heartbeat
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/tasks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tasks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/daemon/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Daemon
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/encryption/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Encryption
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/on-device-inference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    On-Device Inference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/reasoning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reasoning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/system-prompts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Prompts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/skills/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Skills
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/sandbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Linux Sandbox
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/kai-build/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kai Build
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/sms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/appearance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Appearance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/settings-export-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Settings Export & Import
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/splinterlands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Splinterlands
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../desktop-release-smoketest/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Desktop Release Smoke Test
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objective" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objective
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#current-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current scope
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#target-experience" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Target experience
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#information-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Information architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#target-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Target structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#navigation-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Navigation model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dashboard-content-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dashboard content rules
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dashboard content rules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#primary-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Primary actions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recent-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recent work
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#readiness-and-empty-states" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Readiness and empty states
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#responsive-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsive layout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#state-ownership" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State ownership
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-phases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation phases
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation phases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-foundation-and-routes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 1 — Foundation and routes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-dashboard-shell" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2 — Dashboard shell
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-recent-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 3 — Recent work
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-4-design-and-tools-pathways" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 4 — Design and tools pathways
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-5-accessibility-and-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 5 — Accessibility and validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#acceptance-criteria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Acceptance criteria
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#risks-and-controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Risks and controls
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="brox-kai-v20-ui-upgrade-plan-6-home-dashboard">Brox Kai v2.0 — UI Upgrade Plan 6: Home Dashboard</h1>
+<h2 id="objective">Objective</h2>
+<p>Create a calm starting screen for Brox Kai that gives users immediate access to Chat, Build, Design, and Tools, plus recent work and service readiness. The dashboard should shorten the path to a useful action without replacing the focused chat workspace.</p>
+<h2 id="current-scope">Current scope</h2>
+<ul>
+<li>The <code>Home</code> navigation route currently opens <code>ChatScreen</code> directly.</li>
+<li>Desktop navigation has only Chat and Settings. On mobile, settings is reached from the chat UI.</li>
+<li>Kai Build opens as a transient surface from Chat on supported Android devices.</li>
+<li>Recent conversations, provider selection, service status, build projects, and tools already have separate state holders or screens.</li>
+</ul>
+<p>The dashboard is therefore a new presentation and navigation layer. It should compose existing capabilities rather than recreate their business logic.</p>
+<h2 id="target-experience">Target experience</h2>
+<ul>
+<li>On launch, users see a clear next step: start a chat, create a build project, open Design, or manage tools.</li>
+<li>Recent conversations and projects are visible without overwhelming the page.</li>
+<li>A small readiness summary shows the selected AI service and any actionable setup issue.</li>
+<li>The first screen remains fast, sparse, and useful whether the user has no history or many saved projects.</li>
+<li>Selecting a card opens the existing destination with the appropriate context; it does not create a parallel feature flow.</li>
+</ul>
+<h2 id="information-architecture">Information architecture</h2>
+<div class="highlight"><pre><span></span><code>Home Dashboard
+├── Welcome and service readiness
+├── Primary actions
+│   ├── Chat
+│   ├── Build
+│   ├── Design
+│   └── Tools
+├── Recent work
+│   ├── Conversations
+│   └── Build projects
+├── Quick access
+│   ├── Services
+│   ├── Settings
+│   └── Sandbox when available
+└── Empty-state guidance
+</code></pre></div>
+<h2 id="target-structure">Target structure</h2>
+<div class="highlight"><pre><span></span><code>HomeDashboardScreen
+├── DashboardHeader
+│   ├── Brand greeting
+│   └── ServiceReadinessPill
+├── PrimaryActionGrid
+│   ├── ChatActionCard
+│   ├── BuildActionCard
+│   ├── DesignActionCard
+│   └── ToolsActionCard
+├── RecentWorkSection
+│   ├── RecentConversationList
+│   └── RecentProjectList
+├── QuickAccessRow
+└── DashboardEmptyState
+</code></pre></div>
+<h2 id="navigation-model">Navigation model</h2>
+<ol>
+<li>Keep Chat as its own focused workspace. Introduce a separate <code>Dashboard</code> route instead of making the existing <code>Home</code> route carry two incompatible responsibilities.</li>
+<li>Make Dashboard the launch destination after the feature is complete; retain Chat as a first-class primary destination.</li>
+<li>Add navigation destinations through a typed route and one central navigation coordinator. Dashboard cards dispatch navigation events rather than calling feature view models.</li>
+<li>Route Build only where it is currently supported. Unsupported platforms show a disabled, explanatory card or omit Build according to the product capability policy.</li>
+<li>Treat Design as a destination contract. Until a dedicated design workspace exists, its action may open the existing interactive creation flow with a Design-focused prompt or show an honest “coming soon” state; it must not claim a separate editor exists.</li>
+<li>Open Tools through Settings with the Tools tab selected, and Services through Settings with the Services tab selected. The selected-tab action remains owned by <code>SettingsViewModel</code>.</li>
+</ol>
+<h2 id="dashboard-content-rules">Dashboard content rules</h2>
+<h3 id="primary-actions">Primary actions</h3>
+<ul>
+<li>Show Chat first, then Build, Design, and Tools in a stable order.</li>
+<li>Each card has one title, a short purpose statement, a recognisable icon, and optional readiness state.</li>
+<li>Use Cyan or Electric Blue only for the primary action and current focus. Keep other cards Midnight Navy with clear outlines and text contrast.</li>
+<li>If setup is needed, keep the main card actionable and surface the requirement in a small supporting label.</li>
+</ul>
+<h3 id="recent-work">Recent work</h3>
+<ul>
+<li>Show up to four recent conversations and four recent build projects on wide layouts; show two of each on compact layouts.</li>
+<li>Each conversation row includes title, last activity, selected service/model when available, and a compact resume affordance.</li>
+<li>Each project row includes project name, last activity, and build or environment status when known.</li>
+<li>Place <code>View all</code> only when more saved items exist. It opens the existing history or project hub rather than loading an unbounded list into the dashboard.</li>
+<li>Do not show sensitive prompt previews by default. Use a generic title or the existing conversation title.</li>
+</ul>
+<h3 id="readiness-and-empty-states">Readiness and empty states</h3>
+<ul>
+<li>If a usable service is configured, show its name and selected model in a compact readiness pill.</li>
+<li>If no service is configured, replace the pill with a clear <code>Set up a service</code> action that opens Services.</li>
+<li>With no saved work, retain the primary action grid and show a short starter suggestion beneath it.</li>
+<li>If Build, Sandbox, or Tools are unavailable, use capability state supplied by the platform/view model; do not infer availability in a composable.</li>
+</ul>
+<h2 id="responsive-layout">Responsive layout</h2>
+<table>
+<thead>
+<tr>
+<th>Width</th>
+<th>Primary actions</th>
+<th>Recent work</th>
+<th>Navigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Compact</td>
+<td>Two-column cards, stacked sections</td>
+<td>Two rows per collection</td>
+<td>Bottom/top compact navigation</td>
+</tr>
+<tr>
+<td>Medium</td>
+<td>Two-column cards with balanced spacing</td>
+<td>Two-column recent sections</td>
+<td>Compact rail or top navigation</td>
+</tr>
+<tr>
+<td>Expanded</td>
+<td>Four action cards in one row</td>
+<td>Conversations and projects side by side</td>
+<td>Persistent sidebar or top navigation</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Keep the dashboard as one vertically scrolling surface with section spacing rather than nested scrolling lists.</li>
+<li>Let primary action cards grow with text scale; never truncate the primary action label.</li>
+<li>Maintain an obvious keyboard focus order: header, primary actions, recent work, then quick access.</li>
+</ul>
+<h2 id="state-ownership">State ownership</h2>
+<ul>
+<li>Create <code>DashboardUiState</code> as a read-only aggregation of existing feature summaries: selected service, service readiness, recent conversation summaries, recent project summaries, and capability flags.</li>
+<li>Keep full chat history in <code>ChatViewModel</code>, full project lifecycle in <code>KaiBuildViewModel</code>, and settings mutations in <code>SettingsViewModel</code>.</li>
+<li>A dashboard coordinator/repository maps small, display-safe summaries from those sources. It contains no prompt content, credentials, terminal output, or mutable service configuration.</li>
+<li>Keep UI-only state local: temporary loading shimmer visibility, a dismissed welcome hint, and small-screen section expansion if needed.</li>
+<li>Dashboard clicks emit navigation and resume events through interfaces; cards do not access data stores or view models directly.</li>
+</ul>
+<h2 id="implementation-phases">Implementation phases</h2>
+<h3 id="phase-1-foundation-and-routes">Phase 1 — Foundation and routes</h3>
+<ol>
+<li>Add a typed Dashboard route and central navigation events for Chat, Build, Settings tabs, history, and projects.</li>
+<li>Define <code>DashboardUiState</code> and display-safe recent-work summary models.</li>
+<li>Add capability flags for Build, Sandbox, and Design destinations.</li>
+</ol>
+<h3 id="phase-2-dashboard-shell">Phase 2 — Dashboard shell</h3>
+<ol>
+<li>Build the header, service-readiness pill, primary action cards, and empty state using Brox Kai v2.0 colors and typography.</li>
+<li>Add responsive spacing and grid policy for compact, medium, and expanded layouts.</li>
+<li>Connect Chat and Settings cards first, then gate platform-specific destinations from capability state.</li>
+</ol>
+<h3 id="phase-3-recent-work">Phase 3 — Recent work</h3>
+<ol>
+<li>Map conversation and project data to display-safe dashboard summaries.</li>
+<li>Add resume actions and <code>View all</code> routes to existing history and project-hub experiences.</li>
+<li>Ensure opening a recent item preserves the selected conversation or project instead of creating a duplicate session.</li>
+</ol>
+<h3 id="phase-4-design-and-tools-pathways">Phase 4 — Design and tools pathways</h3>
+<ol>
+<li>Define the Design destination contract and use the existing interactive flow only when it satisfies that contract.</li>
+<li>Add Tools, Services, and Sandbox quick-access actions with selected settings tabs.</li>
+<li>Make unavailable capabilities clear without presenting broken navigation.</li>
+</ol>
+<h3 id="phase-5-accessibility-and-validation">Phase 5 — Accessibility and validation</h3>
+<ol>
+<li>Give action cards, readiness status, recent-item actions, and unavailable states descriptive semantics.</li>
+<li>Verify 48 dp targets, keyboard navigation, focus restoration after returning from a destination, and large-font layouts.</li>
+<li>Add screenshot cases for first launch, configured service, no service, populated history, populated projects, loading summaries, and unavailable Build/Design states.</li>
+</ol>
+<h2 id="acceptance-criteria">Acceptance criteria</h2>
+<ul>
+<li>The first screen lets a new user reach Chat, service setup, and available creation tools in one interaction.</li>
+<li>Returning users can resume recent conversations and projects without navigating through unrelated settings.</li>
+<li>Dashboard summaries do not duplicate provider, chat, or build business logic.</li>
+<li>Unsupported capabilities are represented truthfully and never lead to a dead end.</li>
+<li>Compact and desktop layouts preserve clear hierarchy, accessibility, and low visual clutter.</li>
+</ul>
+<h2 id="risks-and-controls">Risks and controls</h2>
+<ul>
+<li>Aggregating feature state can create startup delay. Render the action grid immediately and independently load recent-work summaries.</li>
+<li>Recent conversations may expose private content. Display only existing safe titles and metadata, never prompt excerpts by default.</li>
+<li>Design does not yet have a dedicated workspace. Keep the Design entry behind an explicit destination contract until the workflow exists.</li>
+<li>Route changes can break back-stack behavior. Add navigation tests for launch, returning from Chat, Settings, Build, and recent-item resume actions.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.expand", "search.highlight", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

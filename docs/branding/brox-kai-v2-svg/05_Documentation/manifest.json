@@ -5,6 +5,7 @@
   "palette": {
     "navy_blue": "#0B2B5B",
     "cyan": "#00D1E8",
+    "electric_blue": "#168BDB",
     "deep_navy": "#06152E",
     "charcoal": "#1A1F2B"
   },
@@ -22,7 +23,8 @@
     "03_Wordmarks/brox-kai-wordmark-dark.svg",
     "03_Wordmarks/brox-kai-wordmark-no-version.svg",
     "03_Wordmarks/brox-kai-wordmark-light.svg",
-    "03_Wordmarks/brox-kai-wordmark-no-tagline.svg"
+    "03_Wordmarks/brox-kai-wordmark-no-tagline.svg",
+    "06_Brand_Board/brox-kai-v2-brand-board.svg"
   ],
-  "note": "Reconstructed vector concept based on supplied branding-board references; not a pixel-exact trace."
+  "note": "Editable vector identity. The BK monogram follows the common geometry used by the Compose loading mark and desktop icon source."
 }
