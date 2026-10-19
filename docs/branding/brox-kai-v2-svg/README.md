@@ -1,5 +1,7 @@
 # Brox Kai v2.0 — SVG Vector Reconstruction Pack
 
+Use **Brox Kai v2.0** as one complete brand name. The `v2.0` text is part of the name, not a separate version badge. See [brand name usage](../brand-name-usage.md).
+
 ## Contents
 - `01_Geometric_Symbol/`: primary and simplified geometric symbol.
 - `02_App_Icons/`: navy/cyan, light, cyan, and monochrome app icon SVGs.

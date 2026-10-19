@@ -1,5 +1,7 @@
 # Brox Kai v2.0 — Logo Asset Pack
 
+Use **Brox Kai v2.0** as one complete brand name. The `v2.0` text is part of the name, not a separate version badge. See [brand name usage](../brand-name-usage.md).
+
 Palette reference:
 - Navy Blue: #0B2B5B
 - Cyan: #00D1E8

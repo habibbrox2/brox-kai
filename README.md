@@ -8,7 +8,7 @@
 <br>
 <br>
 
-**Brox Kai v2.0** — A security-hardened AI assistant with persistent memory.
+**Brox Kai v2.0** — A security-hardened AI assistant with persistent memory. “Brox Kai v2.0” is the complete product name; `v2.0` is not a separate version label.
 
 Runs on **Android, iOS, Windows, Mac, Linux, and Web**.
 
@@ -30,7 +30,7 @@ Brox Kai v2.0 is a security-hardened fork of [Kai 9000](https://github.com/Simon
 ### Branding
 - Brox Kai brand colors (Navy + Cyan) applied throughout the UI
 - Brox Kai logo and visual identity
-- Editable logo assets and the v2.0 brand board are in [`docs/branding/brox-kai-v2-svg`](docs/branding/brox-kai-v2-svg/README.md)
+- Editable logo assets and the Brox Kai v2.0 brand board are in [`docs/branding/brox-kai-v2-svg`](docs/branding/brox-kai-v2-svg/README.md). See [brand name usage](docs/branding/brand-name-usage.md).
 
 ### UI Polish
 - Chat screen improvements (message bubbles, empty state, input area)
@@ -40,8 +40,8 @@ Brox Kai v2.0 is a security-hardened fork of [Kai 9000](https://github.com/Simon
 
 ## Installation
 
-### Brox Kai v2.0 Release
-Download the latest release from [GitHub Releases](https://github.com/habibbrox2/brox-kai/releases/tag/v2.0.0):
+### Downloads
+Download the latest release build from [GitHub Releases](https://github.com/habibbrox2/brox-kai/releases/tag/v2.0.0). The release tag is technical metadata; the product name remains Brox Kai v2.0:
 - **Android APK (Foss):** `Brox-Kai-2.0-Android.apk`
 - **Windows (x64):** `Brox-Kai-2.0-Windows-x64.msi` / `Brox-Kai-2.0-Windows-x64.zip`
 

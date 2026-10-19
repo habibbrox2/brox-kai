@@ -224,116 +224,77 @@ fun SettingsScreenContent(
     }
 
     Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).navigationBarsPadding().statusBarsPadding().imePadding()) {
-        Column(Modifier.fillMaxSize(), horizontalAlignment = CenterHorizontally) {
-            if (navigationTabBar != null) {
-                Row(
-                    modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 64.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = CenterVertically,
-                ) {
-                    navigationTabBar()
-                }
-            } else {
-                TopBar(onNavigateBack = onNavigateBack)
-            }
-
+        BoxWithConstraints(Modifier.fillMaxSize()) {
+            val expanded = maxWidth >= 840.dp
             val visibleTabs = remember(sandboxState.showSandbox) {
                 SettingsTab.entries.filter { it != SettingsTab.Sandbox || sandboxState.showSandbox }.toImmutableList()
             }
-
-            SettingsTabSelector(
-                tabs = visibleTabs,
-                currentTab = filteredUiState.currentTab,
-                onSelectTab = actions.onSelectTab,
-            )
-
-            val settingsScrollState = rememberScrollState()
-            Box(Modifier.weight(1f).fillMaxWidth()) {
-                Column(
-                    Modifier.fillMaxWidth().verticalScroll(settingsScrollState),
-                    horizontalAlignment = CenterHorizontally,
-                ) {
-                    Spacer(Modifier.height(16.dp))
-
-                    val maxContentWidth = when (filteredUiState.currentTab) {
-                        SettingsTab.Services -> 500.dp
-                        else -> 900.dp
-                    }
-                    Column(
-                        Modifier.widthIn(max = maxContentWidth).fillMaxWidth().padding(horizontal = 16.dp),
-                        horizontalAlignment = CenterHorizontally,
-                    ) {
-                        when (filteredUiState.currentTab) {
-                            SettingsTab.General -> {
-                                GeneralContent(uiState = filteredUiState, actions = actions)
+            if (expanded) {
+                Row(Modifier.fillMaxSize()) {
+                    SettingsNavRail(
+                        tabs = visibleTabs,
+                        currentTab = filteredUiState.currentTab,
+                        onSelectTab = actions.onSelectTab,
+                    )
+                    Column(Modifier.weight(1f).fillMaxHeight()) {
+                        if (navigationTabBar != null) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 64.dp),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = CenterVertically,
+                            ) {
+                                navigationTabBar()
                             }
-
-                            SettingsTab.Agent -> {
-                                AgentContent(uiState = filteredUiState, actions = actions)
-                            }
-
-                            SettingsTab.Services -> {
-                                ServicesContent(uiState = filteredUiState, actions = actions)
-                            }
-
-                            SettingsTab.Integrations -> {
-                                IntegrationsContent()
-                            }
-
-                            SettingsTab.Tools -> {
-                                ToolsContent(
-                                    tools = filteredUiState.tools,
-                                    onToggleTool = actions.onToggleTool,
-                                    mcpServers = filteredUiState.mcpServers,
-                                    onAddMcpServer = actions.onAddMcpServer,
-                                    onRemoveMcpServer = actions.onRemoveMcpServer,
-                                    onToggleMcpServer = actions.onToggleMcpServer,
-                                    onRefreshMcpServer = actions.onRefreshMcpServer,
-                                    showAddMcpServerDialog = filteredUiState.showAddMcpServerDialog,
-                                    onShowAddMcpServerDialog = actions.onShowAddMcpServerDialog,
-                                    onAddPopularMcpServer = actions.onAddPopularMcpServer,
-                                    skills = filteredUiState.skills,
-                                    onUninstallSkill = actions.onUninstallSkill,
-                                    showAddSkillDialog = filteredUiState.showAddSkillDialog,
-                                    onShowAddSkillDialog = actions.onShowAddSkillDialog,
-                                    onInstallGitHubSkill = actions.onInstallGitHubSkill,
-                                    onInstallBrowsedSkill = actions.onInstallBrowsedSkill,
-                                    isInstallingSkill = filteredUiState.isInstallingSkill,
-                                    skillInstallError = filteredUiState.skillInstallError,
-                                    browsableSkills = filteredUiState.browsableSkills,
-                                    isBrowsingSkills = filteredUiState.isBrowsingSkills,
-                                    browseSkillsFailed = filteredUiState.browseSkillsFailed,
-                                    showSkills = sandboxState.showSandbox,
-                                    isSandboxInstalled = sandboxState.sandboxInstalled,
-                                    onNavigateToSandbox = { actions.onSelectTab(SettingsTab.Sandbox) },
-                                )
-                            }
-
-                            SettingsTab.Sandbox -> {
-                                SandboxSettingsCard(
-                                    sandboxState = sandboxState,
-                                    onToggleSandbox = onToggleSandbox,
-                                    onSelectDistro = onSelectDistro,
-                                    onSetupSandbox = onSetupSandbox,
-                                    onCancelSandbox = onCancelSandbox,
-                                    onResetSandbox = onResetSandbox,
-                                    onInstallPackages = onInstallPackages,
-                                    onMigrateHome = onMigrateHome,
-                                )
-                            }
+                        } else {
+                            TopBar(onNavigateBack = onNavigateBack)
                         }
-
-                        Spacer(Modifier.height(16.dp))
+                        SettingsDetailPane(
+                            uiState = filteredUiState,
+                            actions = actions,
+                            sandboxState = sandboxState,
+                            onToggleSandbox = onToggleSandbox,
+                            onSelectDistro = onSelectDistro,
+                            onSetupSandbox = onSetupSandbox,
+                            onCancelSandbox = onCancelSandbox,
+                            onResetSandbox = onResetSandbox,
+                            onInstallPackages = onInstallPackages,
+                            onMigrateHome = onMigrateHome,
+                            modifier = Modifier.weight(1f),
+                        )
                     }
-
-                    Spacer(Modifier.weight(1f))
-
-                    BottomInfo()
                 }
-                VerticalScrollbarForScroll(
-                    scrollState = settingsScrollState,
-                    modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
-                )
+            } else {
+                Column(Modifier.fillMaxSize(), horizontalAlignment = CenterHorizontally) {
+                    if (navigationTabBar != null) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 64.dp),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = CenterVertically,
+                        ) {
+                            navigationTabBar()
+                        }
+                    } else {
+                        TopBar(onNavigateBack = onNavigateBack)
+                    }
+                    SettingsTabSelector(
+                        tabs = visibleTabs,
+                        currentTab = filteredUiState.currentTab,
+                        onSelectTab = actions.onSelectTab,
+                    )
+                    SettingsDetailPane(
+                        uiState = filteredUiState,
+                        actions = actions,
+                        sandboxState = sandboxState,
+                        onToggleSandbox = onToggleSandbox,
+                        onSelectDistro = onSelectDistro,
+                        onSetupSandbox = onSetupSandbox,
+                        onCancelSandbox = onCancelSandbox,
+                        onResetSandbox = onResetSandbox,
+                        onInstallPackages = onInstallPackages,
+                        onMigrateHome = onMigrateHome,
+                        modifier = Modifier.weight(1f),
+                    )
+                }
             }
         }
         SnackbarHost(
@@ -435,7 +396,7 @@ private fun SettingsTabSelector(
 }
 
 @Composable
-private fun BottomInfo() {
+internal fun BottomInfo() {
     Text(
         text = stringResource(Res.string.settings_ai_mistakes_warning),
         style = MaterialTheme.typography.bodySmall,
