@@ -52,7 +52,7 @@ class McpUrlValidatorTest {
     }
 
     @Test fun allowsHttpsForPublicHost() {
-        assertTrue(McpUrlValidator.validate("https://api.example.com/mcp").isValid)
+        assertTrue(McpUrlValidator.validate("https://93.184.216.34/mcp").isValid)
     }
 
     // Credential tests
