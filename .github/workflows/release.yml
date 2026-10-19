@@ -372,12 +372,30 @@ jobs:
             fi
           fi
 
+      - name: Generate SHA-256 checksums
+        run: |
+          set -euo pipefail
+          if ! ls Kai-* 1>/dev/null 2>&1; then
+            echo "::error::No release artifacts found matching Kai-*"
+            exit 1
+          fi
+          sha256sum Kai-* > SHA256SUMS
+          echo "=== Generated checksums ==="
+          cat SHA256SUMS
+
+      - name: Verify checksums
+        run: |
+          set -euo pipefail
+          sha256sum -c SHA256SUMS
+
       - name: Create Github Release
         uses: softprops/action-gh-release@v2
         with:
           name: Release ${{ github.ref_name }}
           body_path: changelog.txt
-          files: Kai-*
+          files: |
+            Kai-*
+            SHA256SUMS
 
       - name: Sync winget-pkgs fork
         env:

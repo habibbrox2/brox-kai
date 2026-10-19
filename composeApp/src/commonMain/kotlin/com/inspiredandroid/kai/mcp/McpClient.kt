@@ -8,6 +8,7 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -18,10 +19,23 @@ import kotlinx.serialization.json.decodeFromJsonElement
 class McpClient(
     private val url: String,
     private val headers: Map<String, String>,
+    private val allowPrivateIps: Boolean = false,
 ) {
+    init {
+        // Fail fast: validate URL at construction time
+        val urlResult = McpUrlValidator.validate(url, allowPrivateIps)
+        if (!urlResult.isValid) {
+            throw McpException("Invalid MCP server URL: ${urlResult.error}")
+        }
+        val headerResult = McpUrlValidator.validateHeaders(headers)
+        if (!headerResult.isValid) {
+            throw McpException("Invalid MCP server headers: ${headerResult.error}")
+        }
+    }
+
     private val json = Json {
         ignoreUnknownKeys = true
-        isLenient = true
+        isLenient = false
         encodeDefaults = true
         explicitNulls = false
     }
@@ -31,6 +45,8 @@ class McpClient(
             requestTimeoutMillis = 60_000
             connectTimeoutMillis = 10_000
         }
+        // Disable automatic redirect following — we validate each redirect target manually
+        followRedirects = false
     }
     private var sessionId: String? = null
     private var requestId = 0
@@ -38,6 +54,12 @@ class McpClient(
     private fun nextId(): Int = ++requestId
 
     private suspend fun sendRequest(method: String, params: kotlinx.serialization.json.JsonElement? = null): JsonRpcResponse {
+        // Connection-time validation (mitigates DNS rebinding; not a guarantee)
+        val urlResult = McpUrlValidator.validate(url, allowPrivateIps)
+        if (!urlResult.isValid) {
+            throw McpException("MCP server URL validation failed: ${urlResult.error}")
+        }
+
         val request = JsonRpcRequest(
             id = nextId(),
             method = method,
@@ -45,31 +67,59 @@ class McpClient(
         )
         val requestBody = json.encodeToString(JsonRpcRequest.serializer(), request)
 
-        val response = client.post(url) {
-            contentType(ContentType.Application.Json)
-            header("Accept", "application/json, text/event-stream")
-            sessionId?.let { header("Mcp-Session-Id", it) }
-            this@McpClient.headers.keys.forEach { key ->
-                header(key, this@McpClient.headers[key]!!)
+        // Manual redirect handling (max 3 hops)
+        var currentUrl = url
+        var redirectCount = 0
+        val maxRedirects = 3
+
+        while (true) {
+            val response = client.post(currentUrl) {
+                contentType(ContentType.Application.Json)
+                header("Accept", "application/json, text/event-stream")
+                sessionId?.let { header("Mcp-Session-Id", it) }
+                this@McpClient.headers.keys.forEach { key ->
+                    header(key, this@McpClient.headers[key]!!)
+                }
+                setBody(requestBody)
             }
-            setBody(requestBody)
+
+            // Track session ID from response
+            response.headers["Mcp-Session-Id"]?.let { sessionId = it }
+
+            // Handle redirects manually
+            if (response.status == HttpStatusCode.MovedPermanently ||
+                response.status == HttpStatusCode.Found ||
+                response.status == HttpStatusCode.SeeOther ||
+                response.status == HttpStatusCode.TemporaryRedirect ||
+                response.status == HttpStatusCode.PermanentRedirect
+            ) {
+                redirectCount++
+                if (redirectCount > maxRedirects) {
+                    throw McpException("Too many redirects (max $maxRedirects)")
+                }
+                val location = response.headers["Location"]
+                    ?: throw McpException("Redirect without Location header")
+                // Validate redirect target
+                val redirectResult = McpUrlValidator.validate(location, allowPrivateIps)
+                if (!redirectResult.isValid) {
+                    throw McpException("Redirect target rejected: ${redirectResult.error}")
+                }
+                currentUrl = location
+                continue
+            }
+
+            val responseText = response.bodyAsText()
+
+            // Handle SSE response
+            if (response.headers["Content-Type"]?.contains("text/event-stream") == true) {
+                return parseSseResponse(responseText)
+            }
+
+            return json.decodeFromString(JsonRpcResponse.serializer(), responseText)
         }
-
-        // Track session ID from response
-        response.headers["Mcp-Session-Id"]?.let { sessionId = it }
-
-        val responseText = response.bodyAsText()
-
-        // Handle SSE response
-        if (response.headers["Content-Type"]?.contains("text/event-stream") == true) {
-            return parseSseResponse(responseText)
-        }
-
-        return json.decodeFromString(JsonRpcResponse.serializer(), responseText)
     }
 
     private fun parseSseResponse(sseText: String): JsonRpcResponse {
-        // Parse SSE format: look for "data: " lines and find the JSON-RPC response
         val lines = sseText.lines()
         val dataLines = lines.filter { it.startsWith("data: ") }
         for (line in dataLines) {
@@ -104,7 +154,6 @@ class McpClient(
             throw McpException("Initialize failed: ${response.error.message}")
         }
 
-        // Send initialized notification (no id, no response expected)
         sendNotification("notifications/initialized")
     }
 
@@ -115,13 +164,40 @@ class McpClient(
         }
         val requestBody = json.encodeToString(JsonObject.serializer(), body)
 
-        client.post(url) {
-            contentType(ContentType.Application.Json)
-            sessionId?.let { header("Mcp-Session-Id", it) }
-            this@McpClient.headers.keys.forEach { key ->
-                header(key, this@McpClient.headers[key]!!)
+        var currentUrl = url
+        var redirectCount = 0
+        val maxRedirects = 3
+
+        while (true) {
+            val response = client.post(currentUrl) {
+                contentType(ContentType.Application.Json)
+                sessionId?.let { header("Mcp-Session-Id", it) }
+                this@McpClient.headers.keys.forEach { key ->
+                    header(key, this@McpClient.headers[key]!!)
+                }
+                setBody(requestBody)
             }
-            setBody(requestBody)
+
+            if (response.status == HttpStatusCode.MovedPermanently ||
+                response.status == HttpStatusCode.Found ||
+                response.status == HttpStatusCode.SeeOther ||
+                response.status == HttpStatusCode.TemporaryRedirect ||
+                response.status == HttpStatusCode.PermanentRedirect
+            ) {
+                redirectCount++
+                if (redirectCount > maxRedirects) {
+                    throw McpException("Too many redirects (max $maxRedirects)")
+                }
+                val location = response.headers["Location"]
+                    ?: throw McpException("Redirect without Location header")
+                val redirectResult = McpUrlValidator.validate(location, allowPrivateIps)
+                if (!redirectResult.isValid) {
+                    throw McpException("Redirect target rejected: ${redirectResult.error}")
+                }
+                currentUrl = location
+                continue
+            }
+            return
         }
     }
 

@@ -54,7 +54,16 @@ class McpServerManager(private val appSettings: AppSettings) {
         }
     }
 
-    fun addServer(name: String, url: String, headers: Map<String, String>): McpServerConfig {
+    fun addServer(name: String, url: String, headers: Map<String, String>, allowPrivateIps: Boolean = false): McpServerConfig {
+        // Validate URL before adding
+        val urlResult = McpUrlValidator.validate(url, allowPrivateIps)
+        if (!urlResult.isValid) {
+            throw McpException("Invalid MCP server URL or headers")
+        }
+        val headerResult = McpUrlValidator.validateHeaders(headers)
+        if (!headerResult.isValid) {
+            throw McpException("Invalid MCP server URL or headers")
+        }
         val servers = getServers().toMutableList()
         val id = generateServerId(name, servers)
         // If the user adds a popular endpoint manually without headers, still apply defaults
@@ -100,6 +109,11 @@ class McpServerManager(private val appSettings: AppSettings) {
         // Close existing client if any
         mutex.withLock { clients[serverId] }?.close()
 
+        // Validate URL before connecting
+        val urlResult = McpUrlValidator.validate(server.url, false)
+        if (!urlResult.isValid) {
+            return Result.failure(McpException("Invalid server URL: ${urlResult.error}"))
+        }
         val client = McpClient(server.url, server.headers)
         return try {
             client.initialize()

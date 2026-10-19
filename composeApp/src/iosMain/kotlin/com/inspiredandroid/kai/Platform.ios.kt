@@ -121,6 +121,8 @@ actual fun getAppFilesDirectory(): String {
 }
 
 @OptIn(ExperimentalSettingsImplementation::class)
+actual fun resolveHostAddresses(hostname: String): List<String> = emptyList()
+
 actual fun createSecureSettings(): Settings = KeychainSettings(service = "com.inspiredandroid.kai")
 
 actual fun createLegacySettings(): Settings? = NSUserDefaultsSettings(platform.Foundation.NSUserDefaults.standardUserDefaults)

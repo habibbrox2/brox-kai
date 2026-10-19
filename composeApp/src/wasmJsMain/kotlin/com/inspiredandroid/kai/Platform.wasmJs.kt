@@ -56,6 +56,8 @@ actual fun getAppFilesDirectory(): String {
     return ""
 }
 
+actual fun resolveHostAddresses(hostname: String): List<String> = emptyList()
+
 actual fun createSecureSettings(): Settings {
     // Web has no secure storage - using localStorage
     return StorageSettings()

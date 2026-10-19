@@ -1,3 +1,54 @@
+## Brox Kai v2.0 — P0-B Shell Hardening
+
+### Security
+- Replaced blocklist with allowlist (fail-closed) for shell command execution
+- Eliminated shell interpretation — commands run directly via ProcessBuilder (no `sh -c`/`cmd /c`)
+- Added shell metacharacter rejection (`;`, `|`, `&`, `$`, backticks, etc.)
+- Added path traversal protection (`..` in arguments)
+- Added dangerous flag rejection (`-rf`, `-R`, `--force`, etc.)
+- Extended blocked environment variables (added JAVA_TOOL_OPTIONS, PYTHONSTARTUP, NODE_OPTIONS, etc.)
+- Added working directory restriction (must be within project root)
+- Added environment variable value validation (reject metacharacters)
+
+### Changed
+- `ShellCommandTool.kt` — complete rewrite: allowlist-based, no shell interpretation
+- Tool description updated to reflect no pipes/redirections/chaining support
+
+### Limitations
+- Pipes (`|`), redirections (`>`), chaining (`&&`) no longer supported
+- Allowlist may need expansion for additional use cases
+
+---
+
+## Brox Kai v2.0 — P0-A Security Hardening
+
+### Security
+- Restricted Android cleartext HTTP to localhost only (was globally permitted)
+- Disabled Android backup (`allowBackup=false`) — prevents ADB/cloud data exfiltration
+- Tightened backup/data-extraction rules to exclude conversation DB and encrypted settings
+- Added MCP SSRF protection: URL validation (scheme, IP range, credentials, encoding), connection-time re-validation, redirect validation, header sanitization
+- Disabled lenient JSON parsing in MCP client
+- Added SHA-256 checksum generation and verification for release artifacts
+- Documented protection boundaries and limitations in SECURITY.md
+
+### Added
+- `McpUrlValidator` — KMP-compatible URL validator (Android, Desktop, iOS, Web)
+- `McpUrlValidatorTest` — 28 unit test cases
+- `docs/P0-A-IMPLEMENTATION-PLAN.md` — detailed implementation plan
+
+### Changed
+- `McpClient` — fail-fast URL validation, manual redirect handling (max 3 hops)
+- `McpServerManager` — validates URLs before adding/connecting servers
+- Platform files — `resolveHostAddresses` expect/actual (JVM: InetAddress, iOS/Web: fail closed)
+
+### Limitations (documented, not guarantees)
+- DNS rebinding TOCTOU window exists
+- Proxy bypass possible
+- No connection-time IP pinning (Ktor limitation)
+- Unsigned checksums (integrity only)
+
+---
+
 ## v3.3.0 — 2026-10-02
 
 ### Features

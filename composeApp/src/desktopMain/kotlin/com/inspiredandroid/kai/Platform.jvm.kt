@@ -135,6 +135,12 @@ actual fun getAppFilesDirectory(): String {
     return kaiDir.absolutePath
 }
 
+actual fun resolveHostAddresses(hostname: String): List<String> = try {
+    java.net.InetAddress.getAllByName(hostname).map { it.hostAddress }
+} catch (_: Exception) {
+    emptyList()
+}
+
 actual fun createSecureSettings(): Settings = EncryptedFileSettings()
 
 actual fun createLegacySettings(): Settings? = null // Same storage location, no migration needed

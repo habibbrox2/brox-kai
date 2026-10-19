@@ -17,6 +17,8 @@ expect fun createSecureSettings(): Settings
 
 expect fun createLegacySettings(): Settings?
 
+expect fun resolveHostAddresses(hostname: String): List<String>
+
 expect fun getBackgroundDispatcher(): CoroutineContext
 
 expect fun onDragAndDropEventDropped(event: DragAndDropEvent): PlatformFile?

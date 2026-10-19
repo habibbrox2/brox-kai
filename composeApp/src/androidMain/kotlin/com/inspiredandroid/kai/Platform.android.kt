@@ -160,6 +160,12 @@ private fun createEncryptedPrefs(context: Context): android.content.SharedPrefer
     )
 }
 
+actual fun resolveHostAddresses(hostname: String): List<String> = try {
+    java.net.InetAddress.getAllByName(hostname).map { it.hostAddress }
+} catch (_: Exception) {
+    emptyList()
+}
+
 actual fun createLegacySettings(): Settings? {
     val context: Context by inject(Context::class.java)
     val prefs = context.getSharedPreferences("com.inspiredandroid.kai_preferences", Context.MODE_PRIVATE)
