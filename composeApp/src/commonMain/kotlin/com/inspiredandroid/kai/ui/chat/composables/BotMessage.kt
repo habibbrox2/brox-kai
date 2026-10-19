@@ -258,7 +258,7 @@ private fun ReasoningBlockquote(
                     Row(modifier = Modifier.height(IntrinsicSize.Min)) {
                         VerticalDivider(
                             thickness = 2.dp,
-                            color = MaterialTheme.colorScheme.outlineVariant,
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
                             modifier = Modifier.fillMaxHeight(),
                         )
                         SelectionContainer(modifier = Modifier.padding(start = 10.dp)) {

@@ -70,7 +70,7 @@ internal fun EmptyState(
         Text(
             text = stringResource(Res.string.welcome_message),
             modifier = Modifier.padding(horizontal = 16.dp),
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.headlineSmall,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onBackground,
         )

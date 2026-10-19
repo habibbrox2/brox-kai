@@ -44,19 +44,19 @@ val broxCharcoal = Color(0xFF1A1F2B)
 val broxLightSurface = Color(0xFFF5F8FC)
 val broxMutedText = Color(0xFF718096)
 
-val darkPurple = Color(0xFF6200EE)
+val darkPurple = Color(0xFF0B2B5B)
 val lightPurple = Color(0xff8063C5)
-val gradientBrush = androidx.compose.ui.graphics.Brush.horizontalGradient(listOf(darkPurple, lightPurple))
+val gradientBrush = androidx.compose.ui.graphics.Brush.horizontalGradient(listOf(broxNavy, broxCyan))
 
 // Animated border gradient colors
-val gradientPurple = Color(0xFF9C27B0)
-val gradientViolet = Color(0xFF7C4DFF)
-val gradientMagenta = Color(0xFFE040FB)
+val gradientPurple = broxNavy
+val gradientViolet = broxCyan
+val gradientMagenta = broxDeepNavy
 
 fun Modifier.handCursor() = pointerHoverIcon(PointerIcon.Hand, overrideDescendants = true)
 
 val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFFBB86FC),
+    primary = broxCyan,
     onPrimary = Color(0xFF000000),
     surface = Color(0xFF1E1E1E),
     background = Color(0xFF121212),
@@ -107,7 +107,7 @@ fun Modifier.kaiAdaptiveCardSurface(shape: Shape = CardDefaults.shape): Modifier
     )
 
 val LightColorScheme = lightColorScheme(
-    primary = darkPurple,
+    primary = broxNavy,
     onPrimary = Color(0xFFFFFFFF),
     surface = Color(0xFFF2F2F2),
     background = Color(0xFFFFFFFF),
