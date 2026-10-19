@@ -4,7 +4,7 @@
 <div align="center">
 
 <br>
-<img src="site/img/logo_animation.svg" height="80">
+<img src="site/img/logo_animation_readme.svg" height="125" alt="Brox Kai v2.0 animated logo">
 <br>
 <br>
 

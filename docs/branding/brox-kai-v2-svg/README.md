@@ -9,6 +9,7 @@ Use **Brox Kai v2.0** as one complete brand name. The `v2.0` text is part of the
 - `04_Monochrome/`: single-color symbol variants.
 - `05_Documentation/`: design notes and manifest.
 - `06_Brand_Board/`: presentation board showing the logo, wordmark, chat loading state, palette and desktop app use.
+- Animated logo assets: [`site/img/logo_animation.svg`](../../../site/img/logo_animation.svg) is the original standalone BK loading mark; [`site/img/logo_animation_readme.svg`](../../../site/img/logo_animation_readme.svg) is the refined BK plus Brox Kai v2.0 animation used in the repository README.
 
 ## Palette
 - Navy Blue: #0B2B5B

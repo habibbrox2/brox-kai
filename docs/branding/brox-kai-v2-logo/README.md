@@ -14,6 +14,7 @@ Palette reference:
 - `05_Monochrome/`: single-color silhouette variants and common sizes.
 - `06_Previews/`: contact sheet preview.
 - `manifest.json`: generated asset list, dimensions, and notes.
+- Animated logo assets are maintained in [`site/img/logo_animation.svg`](../../../site/img/logo_animation.svg) (original BK loading mark) and [`site/img/logo_animation_readme.svg`](../../../site/img/logo_animation_readme.svg) (refined BK plus Brox Kai v2.0 wordmark used by the README).
 
 ## Important source-quality notes
 1. The first reference image contains a checkerboard pattern baked into its RGB pixels. Its geometric reference crops are therefore **not guaranteed to have a transparent background**.

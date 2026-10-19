@@ -55,6 +55,8 @@ fun SettingsDetailPane(
             ) {
                 when (uiState.currentTab) {
                     SettingsTab.General -> {
+                        SettingsOverview(uiState = uiState, sandboxInstalled = sandboxState.sandboxInstalled)
+                        Spacer(Modifier.height(SettingsSpacing.md))
                         GeneralContent(uiState = uiState, actions = actions)
                     }
 
