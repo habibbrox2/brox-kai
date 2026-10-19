@@ -1,4 +1,4 @@
-# Kai 9000
+# Brox Kai v2.0
 
 <img src="https://img.shields.io/badge/Platform-Web-f7df1c?logo=javascript" alt="Web"> <img src="https://img.shields.io/badge/Platform-Android-34a853.svg?logo=android" alt="Android" /> <img src="https://img.shields.io/badge/Platform-iOS-lightgrey.svg?logo=apple" alt="iOS" /> <img src="https://img.shields.io/badge/Platform-Windows/macOS/Linux-e10707.svg?logo=openjdk" alt="Platform JVM" />
 <div align="center">
@@ -10,7 +10,9 @@
 
 An **open-source AI assistant with persistent memory** that runs on **Android, iOS, Windows, Mac, Linux, and Web**.
 
-**[Website](https://kai9000.com)** - **[Documentation](https://kai9000.com/docs/)**
+A security-hardened fork of [Kai 9000](https://github.com/SimonSchubert/Kai) with enhanced SSRF protection, shell command hardening, and Brox branding.
+
+**[Website](https://kai9000.com)** - **[Documentation](https://kai9000.com/docs/)** - **[Source](https://github.com/habibbrox2/brox-kai)**
 </div>
 
 <div align="center">
@@ -76,6 +78,7 @@ Kai 9000's Interactive UI lets the AI generate full interactive screens — quiz
 - **Autonomous heartbeat** — Periodic self-checks that surface anything needing attention
 - **Settings export/import** — Backup and restore all settings as a JSON file
 - **Encrypted storage** — Conversations stored locally with encryption
+- **Security hardened** — SSRF protection on MCP servers, fail-closed shell command execution, Android backup disabled, HTTPS-only network policy
 - **Text to speech** — Listen to AI responses
 - **Linux Sandbox** — On Android, the AI can run shell commands, scripts, and tools in a secure sandboxed Linux environment
 - **Image attachments** — Attach images to any conversation
