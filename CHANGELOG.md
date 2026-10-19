@@ -1,3 +1,33 @@
+## Brox Kai v2.0 — Chat UI Upgrade (Phase 1 & 2) + Follow-up Suggestions
+
+### Added
+- **Phase 1 — Foundations**: `ChatDesignTokens.kt` (spacing, shapes, surface/status colors), plus reusable `StatusPill`, `PanelHeading`, `ChatActionButton` components.
+- **Phase 2 — Responsive shell**: `ChatAdaptivePolicy` (compact/medium/expanded), `ChatShell` (adaptive rail/main/side-panel/overlays), `ChatTimeline`, `ChatComposer`, `ConversationRail` extractions; conversation column centered at 760dp.
+- **Follow-up suggestions**: after a successful (non-interactive) reply, the app generates 3 short follow-up questions via a silent LLM call and shows them as chips below the last assistant message; tapping a chip sends it. State is cleared on new chat / conversation load / error.
+
+### Changed
+- `ChatScreen.kt` — `ChatModeScreen` now composes through `ChatShell` (header/rail/main/overlays) instead of a monolithic Box/Column.
+- `ChatViewModel.kt` — follow-up generation + clearing wired into ask/clearHistory/startNewChat/loadConversation.
+- `ChatUiState.kt` — added `followUpSuggestions: ImmutableList<String>`.
+
+---
+
+## Brox Kai v2.0 — Full Logo & Animation Replacement
+
+### Changed
+- Replaced every remaining upstream Kai logo/animation with Brox Kai artwork:
+  - **In-app animated logo** (`LogoAnimation.kt`) — the old two purple orbs are now the Brox BK monogram easing apart and reuniting, theme-adaptive (cyan + navy on light, cyan + supporting blue on dark).
+  - **Android adaptive icon** — `composeApp` launcher foreground, background and a new `ic_launcher_monochrome.xml` now use the Brox BK monogram (matching `androidApp`).
+  - **Android notification icon** (`ic_notification.xml`) — purple rings replaced with a white BK alpha mask.
+  - **Web app icon** (`site/img/icon.svg`, `composeApp/.../wasmJsMain/resources/icon.svg`) — Brox navy/cyan app icon.
+  - **Favicons** (`site/img/favicon.ico`, wasm `favicon.ico`) — regenerated as multi-size Brox ICOs (16/32/48/64).
+  - **Apple touch icon** (`apple-icon-180x180.png`) — regenerated from the Brox 384px export.
+  - **Animated hero logo** (`site/img/logo_animation.svg`) — Brox BK symbol with a float + sparkle animation.
+  - **Animated logo GIF** (`site/img/logo_animation.gif`) — replaced with the Brox animation (`Brox_Kai_v2_logo_animation.gif`), used by the README; the loose root copy was removed.
+- `site/index.html` — hero mascot alt text updated to "Brox Kai animated logo".
+
+---
+
 ## Brox Kai v2.0 — OpenCode Console Integration
 
 ### Added

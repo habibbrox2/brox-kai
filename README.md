@@ -4,7 +4,7 @@
 <div align="center">
 
 <br>
-<img src="site/img/logo_animation.gif" height="80">
+<img src="site/img/logo_animation.svg" height="80">
 <br>
 <br>
 
@@ -30,6 +30,7 @@ Brox Kai v2.0 is a security-hardened fork of [Kai 9000](https://github.com/Simon
 ### Branding
 - Brox Kai brand colors (Navy + Cyan) applied throughout the UI
 - Brox Kai logo and visual identity
+- Editable logo assets and the v2.0 brand board are in [`docs/branding/brox-kai-v2-svg`](docs/branding/brox-kai-v2-svg/README.md)
 
 ### UI Polish
 - Chat screen improvements (message bubbles, empty state, input area)

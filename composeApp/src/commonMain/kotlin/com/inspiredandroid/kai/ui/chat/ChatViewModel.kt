@@ -227,6 +227,7 @@ class ChatViewModel(
                     error = null,
                     showFreeProviderSuggestions = false,
                     files = persistentListOf(),
+                    followUpSuggestions = persistentListOf(),
                 )
             }
             // Android 17+ blocks LAN traffic without the local network permission — without
@@ -252,6 +253,10 @@ class ChatViewModel(
                 _state.update {
                     it.copy(isLoading = false)
                 }
+
+                if (!_state.value.isInteractiveMode) {
+                    generateFollowUpSuggestions()
+                }
             } catch (exception: Exception) {
                 // CancellationException must be re-thrown to properly propagate coroutine cancellation
                 if (exception is CancellationException) throw exception
@@ -265,6 +270,7 @@ class ChatViewModel(
                         error = exception.toUiError(),
                         showFreeProviderSuggestions = showUpsell,
                         isLoading = false,
+                        followUpSuggestions = persistentListOf(),
                     )
                 }
             }
@@ -275,6 +281,38 @@ class ChatViewModel(
      * True unless the active service points at a local network host and the user
      * denied the local network permission. Cheap no-op on non-Android platforms.
      */
+    private suspend fun generateFollowUpSuggestions() {
+        val history = dataRepository.chatHistory.value
+        val lastAssistant = history.lastRenderedAssistant() ?: return
+        val lastUser = history.lastOrNull { it.role == History.Role.USER } ?: return
+        val prompt = buildString {
+            appendLine("Given this conversation:")
+            appendLine("User: ${lastUser.content.take(400)}")
+            appendLine("Assistant: ${lastAssistant.content.take(800)}")
+            appendLine()
+            appendLine("Suggest exactly 3 short follow-up questions the user might ask next.")
+            append("Return only the questions, one per line, no numbering, no extra text.")
+        }
+        val result = try {
+            dataRepository.askSilently(prompt)
+        } catch (_: Exception) {
+            return
+        }
+        val suggestions = result.lines()
+            .map { line ->
+                line.trim()
+                    .replace(Regex("^[0-9]+[.)]\\s*"), "")
+                    .replace(Regex("^[-*]\\s*"), "")
+                    .trim()
+            }
+            .filter { it.isNotBlank() && it.length in 3..120 }
+            .distinct()
+            .take(3)
+        if (suggestions.isNotEmpty()) {
+            _state.update { it.copy(followUpSuggestions = suggestions.toImmutableList()) }
+        }
+    }
+
     private suspend fun ensureLocalNetworkPermission(): Boolean {
         val instance = dataRepository.getConfiguredServiceInstances().firstOrNull() ?: return true
         val baseUrl = dataRepository.getInstanceBaseUrl(instance.instanceId, Service.fromId(instance.serviceId))
@@ -308,7 +346,7 @@ class ChatViewModel(
     private fun clearHistory() {
         dataRepository.clearHistory()
         _state.update {
-            it.copy(error = null, showFreeProviderSuggestions = false)
+            it.copy(error = null, showFreeProviderSuggestions = false, followUpSuggestions = persistentListOf())
         }
     }
 
@@ -462,6 +500,7 @@ class ChatViewModel(
                 isInteractiveMode = isInteractive,
                 isLoading = false,
                 composerPrefill = null,
+                followUpSuggestions = persistentListOf(),
             )
         }
     }
@@ -531,6 +570,7 @@ class ChatViewModel(
                 isInteractiveMode = false,
                 isLoading = false,
                 composerPrefill = composerPrefill,
+                followUpSuggestions = persistentListOf(),
             )
         }
     }

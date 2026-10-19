@@ -1,26 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100" role="img" aria-labelledby="title desc">
-  <title id="title">Brox Kai geometric symbol</title>
-  <desc id="desc">Original vector reconstruction for Brox Kai v2.0</desc>
-
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Brox Kai BK monogram</title>
+  <desc id="desc">Cyan and electric blue B joined with a midnight navy K.</desc>
   <defs>
-    <linearGradient id="cyanNavy" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#00D1E8"/>
-      <stop offset="1" stop-color="#087BCB"/>
-    </linearGradient>
-    <linearGradient id="navyTone" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#0B2B5B"/>
-      <stop offset="1" stop-color="#06152E"/>
+    <linearGradient id="cyan-blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#00D1E8"/><stop offset="1" stop-color="#168BDB"/>
     </linearGradient>
   </defs>
-
-  <path fill="url(#cyanNavy)" d="M42 24 L65 10 Q70 7 75 11 L93 23 Q98 27 98 34 L98 57 L85 67 L85 36 L69 25 L54 34 L54 66 L40 74 L40 31 Q40 27 42 24 Z"/>
-  <path fill="#0B2B5B" d="M25 37 L39 28 L39 68 L53 77 L68 68 L81 77 L60 90 Q54 94 48 90 L28 78 Q24 75 24 69 L24 43 Q24 39 25 37 Z"/>
-  <path fill="#00D1E8" d="M25 37 L39 28 L39 68 L28 76 Q24 73 24 68 L24 43 Q24 39 25 37 Z"/>
-  <path fill="#087BCB" d="M53 77 L68 68 L81 77 L61 90 Q55 94 49 90 L39 84 Z"/>
-  <path fill="#0B2B5B" d="M65 10 Q70 7 75 11 L93 23 Q98 27 98 34 L98 57 L85 67 L85 36 L69 25 L54 34 L43 26 Z"/>
-  <path fill="#00D1E8" d="M42 24 L65 10 Q70 7 75 11 L84 17 L58 34 L54 34 L54 66 L40 74 L40 31 Q40 27 42 24 Z"/>
-  <path fill="#0B2B5B" d="M54 34 L69 25 L85 36 L85 67 L68 78 L54 69 L54 55 L66 62 L73 57 L73 42 L61 35 Z"/>
-  <path fill="#00D1E8" d="M49 45 L60 39 L71 45 L71 57 L60 63 L49 57 Z" opacity="0.15"/>
-  <path fill="#00D1E8" d="M60 43 L63.8 52 L73 56 L63.8 60 L60 69 L56.2 60 L47 56 L56.2 52 Z"/>
-
+  <path d="M104 96H240C300 96 333 129 333 176C333 207 317 230 291 244C328 257 349 284 349 321C349 377 309 416 246 416H104V96ZM176 158V222H232C252 222 264 210 264 190C264 170 252 158 232 158H176ZM176 280V354H240C263 354 276 340 276 317C276 294 262 280 239 280H176Z" fill="url(#cyan-blue)" fill-rule="evenodd"/>
+  <path d="M354 96H422L328 253L425 416H346L270 287L354 96Z" fill="#0B2B5B"/>
 </svg>
