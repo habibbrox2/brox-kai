@@ -233,7 +233,5 @@ object McpUrlValidator {
         return false
     }
 
-    private fun containsControlChars(s: String): Boolean {
-        return s.any { it.code < 0x20 || it.code == 0x7F }
-    }
+    private fun containsControlChars(s: String): Boolean = s.any { it.code < 0x20 || it.code == 0x7F }
 }

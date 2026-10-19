@@ -354,7 +354,7 @@ private fun TopBar(onNavigateBack: () -> Unit) {
         ) {
             Icon(
                 imageVector = BackIcon,
-                contentDescription = null,
+                contentDescription = "Navigate back",
                 tint = MaterialTheme.colorScheme.onBackground,
             )
         }
@@ -472,7 +472,7 @@ private fun BottomInfo() {
                 })
                 .handCursor(),
             painter = painterResource(Res.drawable.github_mark),
-            contentDescription = null,
+            contentDescription = "GitHub repository",
             tint = MaterialTheme.colorScheme.onBackground,
         )
 

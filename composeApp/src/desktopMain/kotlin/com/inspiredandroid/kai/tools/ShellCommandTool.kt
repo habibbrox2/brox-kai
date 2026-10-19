@@ -44,8 +44,12 @@ private val ALLOWED_EXECUTABLES = setOf(
 
 // Dangerous flags that are never allowed
 private val BLOCKED_FLAGS = setOf(
-    "-rf", "-r", "-f", "--recursive", "--force",
-    "-R",  // chmod -R
+    "-rf",
+    "-r",
+    "-f",
+    "--recursive",
+    "--force",
+    "-R", // chmod -R
 )
 
 // Shell metacharacters that indicate injection attempts
@@ -64,14 +68,11 @@ private fun isAllowedExecutable(executable: String): Boolean {
     return baseName in ALLOWED_EXECUTABLES
 }
 
-private fun containsShellMetacharacters(s: String): Boolean =
-    s.any { it in SHELL_METACHARACTERS }
+private fun containsShellMetacharacters(s: String): Boolean = s.any { it in SHELL_METACHARACTERS }
 
-private fun hasDangerousFlags(args: List<String>): Boolean =
-    args.any { it in BLOCKED_FLAGS || it.startsWith("--") && it in BLOCKED_FLAGS }
+private fun hasDangerousFlags(args: List<String>): Boolean = args.any { it in BLOCKED_FLAGS || (it.startsWith("--") && it in BLOCKED_FLAGS) }
 
-private fun hasPathTraversal(args: List<String>): Boolean =
-    args.any { it.contains("..") }
+private fun hasPathTraversal(args: List<String>): Boolean = args.any { it.contains("..") }
 
 // Grace for the readers to hit EOF after the shell exits.
 private const val STREAM_DRAIN_GRACE_SECONDS = 2L
@@ -200,7 +201,10 @@ object ShellCommandTool : Tool {
         val background = args["background"] as? Boolean ?: false
         if (background) {
             return ProcessManagerTool.processManager.startBackground(
-                parts.joinToString(" "), timeoutSeconds, workingDir, envMap
+                parts.joinToString(" "),
+                timeoutSeconds,
+                workingDir,
+                envMap,
             )
         }
 
