@@ -1,0 +1,2036 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for Kai - AI Assistant App">
+      
+      
+      
+        <link rel="canonical" href="https://kai9000.com/docs/UI-IMPROVEMENT-PLAN/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Brox Kai v2.0 — AI Assistant Frontend UI Audit & Polish Plan - Kai Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#brox-kai-v20-ai-assistant-frontend-ui-audit-polish-plan" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Kai Documentation" class="md-header__button md-logo" aria-label="Kai Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kai Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Brox Kai v2.0 — AI Assistant Frontend UI Audit &amp; Polish Plan
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Kai Documentation" class="md-nav__button md-logo" aria-label="Kai Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Kai Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Features
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Features
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/chat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chat & Conversations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/multi-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multi-Service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/tools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MCP Servers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/dynamic-ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dynamic UI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/memories/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Memories
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/heartbeat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Heartbeat
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/tasks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tasks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/daemon/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Daemon
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/encryption/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Encryption
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/on-device-inference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    On-Device Inference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/reasoning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reasoning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/system-prompts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Prompts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/skills/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Skills
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/sandbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Linux Sandbox
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/kai-build/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kai Build
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/sms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/appearance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Appearance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/settings-export-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Settings Export & Import
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/splinterlands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Splinterlands
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../desktop-release-smoketest/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Desktop Release Smoke Test
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-branding-visual-identity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Branding &amp; Visual Identity
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Branding &amp; Visual Identity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-logo-app-identity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 Logo &amp; App Identity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-color-scheme-theme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 Color Scheme &amp; Theme
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-typography" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 Typography
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-chat-screen-primary-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Chat Screen (Primary UI)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Chat Screen (Primary UI)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-empty-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Empty State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-message-bubbles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Message Bubbles
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-input-area" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Input Area
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-top-bar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 Top Bar
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-chat-history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5 Chat History
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-settings-screen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Settings Screen
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Settings Screen">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-navigation-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Navigation &amp; Layout
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-providermodel-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Provider/Model Selection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-mcp-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 MCP Settings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-tool-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 Tool Settings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-general-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 General Settings
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-markdown-rich-content" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Markdown &amp; Rich Content
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Markdown &amp; Rich Content">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-markdown-renderer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Markdown Renderer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-dynamic-ui-kai-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Dynamic UI (Kai UI)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-sandbox-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Sandbox UI
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Sandbox UI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-sandbox-screens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Sandbox Screens
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-terminal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Terminal
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-build-screen-kai-build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Build Screen (Kai Build)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Build Screen (Kai Build)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-build-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Build UI
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-components-reusable-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Components &amp; Reusable UI
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Components &amp; Reusable UI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-shared-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 Shared Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-icons" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 Icons
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-accessibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Accessibility
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Accessibility">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-screen-reader-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 Screen Reader Support
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-visual-accessibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 Visual Accessibility
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-motion-animation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 Motion &amp; Animation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Performance
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Performance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-rendering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 Rendering
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 Memory
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-cross-platform-consistency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Cross-Platform Consistency
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. Cross-Platform Consistency">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101-platform-specific" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1 Platform-Specific
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#102-responsive-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.2 Responsive Design
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-phases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation Phases
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation Phases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-audit-inventory-read-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 1: Audit &amp; Inventory (Read-Only)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-branding-theme-high-impact-low-effort" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2: Branding &amp; Theme (High Impact, Low Effort)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-chat-screen-polish-high-impact-medium-effort" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 3: Chat Screen Polish (High Impact, Medium Effort)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-4-settings-components-medium-impact-medium-effort" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 4: Settings &amp; Components (Medium Impact, Medium Effort)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-5-accessibility-performance-medium-impact-high-effort" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 5: Accessibility &amp; Performance (Medium Impact, High Effort)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-6-cross-platform-polish-low-impact-high-effort" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 6: Cross-Platform Polish (Low Impact, High Effort)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#priority-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Priority Matrix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#files-to-audit-key-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Files to Audit (Key Files)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Files to Audit (Key Files)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#chat" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chat
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Settings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#theme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Theme
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#markdown" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Markdown
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="brox-kai-v20-ai-assistant-frontend-ui-audit-polish-plan">Brox Kai v2.0 — AI Assistant Frontend UI Audit &amp; Polish Plan</h1>
+<h2 id="overview">Overview</h2>
+<p>This plan covers a comprehensive audit and polish of the AI Assistant frontend UI,
+focusing on visual consistency, UX improvements, accessibility, performance, and branding.</p>
+<h2 id="1-branding-visual-identity">1. Branding &amp; Visual Identity</h2>
+<h3 id="11-logo-app-identity">1.1 Logo &amp; App Identity</h3>
+<ul>
+<li>[ ] Ensure Brox Kai logo is used consistently across all screens (TopBar, EmptyState, Settings, About)</li>
+<li>[ ] Update app name references from "Kai" to "Brox Kai" in UI strings</li>
+<li>[ ] Verify logo animation (LogoAnimation.kt) uses new brand assets</li>
+<li>[ ] Check splash screen / launcher icon consistency</li>
+</ul>
+<h3 id="12-color-scheme-theme">1.2 Color Scheme &amp; Theme</h3>
+<ul>
+<li>[ ] Audit <code>Theme.kt</code> — ensure Brox Kai brand colors are applied</li>
+<li>[ ] Dark/light theme consistency across all screens</li>
+<li>[ ] Accent color usage (buttons, links, active states)</li>
+<li>[ ] Error/warning/success color semantics consistent</li>
+</ul>
+<h3 id="13-typography">1.3 Typography</h3>
+<ul>
+<li>[ ] Consistent font families and sizes across screens</li>
+<li>[ ] Heading hierarchy (H1-H6 equivalent in Compose)</li>
+<li>[ ] Code block font (monospace) consistency in markdown rendering</li>
+<li>[ ] Line height and letter spacing for readability</li>
+</ul>
+<h2 id="2-chat-screen-primary-ui">2. Chat Screen (Primary UI)</h2>
+<h3 id="21-empty-state">2.1 Empty State</h3>
+<ul>
+<li>[ ] EmptyState.kt — welcome message, suggested prompts, logo display</li>
+<li>[ ] First-run experience (onboarding hints)</li>
+<li>[ ] Suggested action chips</li>
+</ul>
+<h3 id="22-message-bubbles">2.2 Message Bubbles</h3>
+<ul>
+<li>[ ] BotMessage.kt — markdown rendering, code blocks, tool results</li>
+<li>[ ] UserMessage.kt — input display, attachment previews</li>
+<li>[ ] ToolMessage.kt — tool call/result formatting, collapsible sections</li>
+<li>[ ] ErrorMessage.kt — error styling, retry button, dismiss</li>
+<li>[ ] Message spacing and alignment consistency</li>
+</ul>
+<h3 id="23-input-area">2.3 Input Area</h3>
+<ul>
+<li>[ ] Text input field styling and placeholder</li>
+<li>[ ] Send button state (enabled/disabled/loading)</li>
+<li>[ ] Attachment button (image, file)</li>
+<li>[ ] Voice input button (if applicable)</li>
+<li>[ ] Skill autocomplete (SkillAutocomplete.kt) positioning and styling</li>
+<li>[ ] Multi-line input handling</li>
+</ul>
+<h3 id="24-top-bar">2.4 Top Bar</h3>
+<ul>
+<li>[ ] TopBar.kt — model selector, settings gear, new chat button</li>
+<li>[ ] Title display (conversation name or "New Chat")</li>
+<li>[ ] Action button spacing and touch targets</li>
+</ul>
+<h3 id="25-chat-history">2.5 Chat History</h3>
+<ul>
+<li>[ ] ChatHistorySheet.kt — conversation list, search, delete</li>
+<li>[ ] Empty history state</li>
+<li>[ ] Conversation preview (last message, timestamp)</li>
+<li>[ ] Swipe-to-delete or long-press menu</li>
+</ul>
+<h2 id="3-settings-screen">3. Settings Screen</h2>
+<h3 id="31-navigation-layout">3.1 Navigation &amp; Layout</h3>
+<ul>
+<li>[ ] SettingsScreen.kt — section list, scroll behavior</li>
+<li>[ ] SettingsListItem.kt — consistent item styling</li>
+<li>[ ] Section headers and dividers</li>
+</ul>
+<h3 id="32-providermodel-selection">3.2 Provider/Model Selection</h3>
+<ul>
+<li>[ ] ModelSelectionSheet.kt — model list, search, filter</li>
+<li>[ ] Provider cards with logo and status</li>
+<li>[ ] Free provider suggestions (FreeProviderSuggestionsPanel.kt)</li>
+</ul>
+<h3 id="33-mcp-settings">3.3 MCP Settings</h3>
+<ul>
+<li>[ ] McpSection.kt — server list, add/edit/delete</li>
+<li>[ ] Connection status indicators</li>
+<li>[ ] URL validation feedback (new McpUrlValidator integration)</li>
+</ul>
+<h3 id="34-tool-settings">3.4 Tool Settings</h3>
+<ul>
+<li>[ ] ToolsSettings.kt — tool enable/disable toggles</li>
+<li>[ ] Tool description and status</li>
+</ul>
+<h3 id="35-general-settings">3.5 General Settings</h3>
+<ul>
+<li>[ ] GeneralSettings.kt — theme, language, etc.</li>
+<li>[ ] Export/Import (ExportImportSection.kt)</li>
+</ul>
+<h2 id="4-markdown-rich-content">4. Markdown &amp; Rich Content</h2>
+<h3 id="41-markdown-renderer">4.1 Markdown Renderer</h3>
+<ul>
+<li>[ ] MarkdownRenderer.kt — heading, paragraph, list, table, code block</li>
+<li>[ ] CodeHighlighter.kt — syntax highlighting accuracy</li>
+<li>[ ] CodeFenceBlock.kt — copy button, language label</li>
+<li>[ ] MathRenderer.kt — LaTeX rendering quality</li>
+<li>[ ] InlineContent.kt — image, link, bold, italic, code</li>
+</ul>
+<h3 id="42-dynamic-ui-kai-ui">4.2 Dynamic UI (Kai UI)</h3>
+<ul>
+<li>[ ] KaiUiRenderer.kt — custom UI components from AI</li>
+<li>[ ] KaiUiParser.kt — parsing accuracy</li>
+<li>[ ] KaiUiNodeBuilders.kt — component builders</li>
+<li>[ ] TTS integration (KaiUiTts.kt)</li>
+</ul>
+<h2 id="5-sandbox-ui">5. Sandbox UI</h2>
+<h3 id="51-sandbox-screens">5.1 Sandbox Screens</h3>
+<ul>
+<li>[ ] SandboxTabsContent.kt — tab navigation</li>
+<li>[ ] SandboxFileBrowserScreen.kt — file tree, navigation</li>
+<li>[ ] SandboxPackagesScreen.kt — package list, install</li>
+<li>[ ] SandboxStatusText.kt — status indicators</li>
+</ul>
+<h3 id="52-terminal">5.2 Terminal</h3>
+<ul>
+<li>[ ] TerminalSheet.kt — terminal emulator UI</li>
+<li>[ ] TerminalKeyRow.kt / TerminalKeyIcons.kt — virtual keyboard</li>
+<li>[ ] AnsiParser.kt — ANSI color rendering</li>
+</ul>
+<h2 id="6-build-screen-kai-build">6. Build Screen (Kai Build)</h2>
+<h3 id="61-build-ui">6.1 Build UI</h3>
+<ul>
+<li>[ ] KaiBuildScreen.kt — project list, build status</li>
+<li>[ ] BuildSetupContent.kt — setup wizard</li>
+<li>[ ] BuildTerminalContent.kt — terminal output</li>
+<li>[ ] BuildSessionBar.kt — session management</li>
+<li>[ ] BuildProjectsContent.kt — project cards</li>
+</ul>
+<h2 id="7-components-reusable-ui">7. Components &amp; Reusable UI</h2>
+<h3 id="71-shared-components">7.1 Shared Components</h3>
+<ul>
+<li>[ ] KaiChip.kt — chip styling consistency</li>
+<li>[ ] KaiSlider.kt — slider theming</li>
+<li>[ ] KaiSearchField.kt — search input styling</li>
+<li>[ ] SettingsListItem.kt — list item consistency</li>
+<li>[ ] SmallIconButton.kt — icon button sizing</li>
+<li>[ ] RefreshIconButton.kt — refresh animation</li>
+<li>[ ] AnimatedGradientBorder.kt — gradient animation performance</li>
+<li>[ ] FullScreenImageHost.kt — image viewer</li>
+</ul>
+<h3 id="72-icons">7.2 Icons</h3>
+<ul>
+<li>[ ] KaiIcons.kt — icon set completeness</li>
+<li>[ ] Consistent icon sizing and tinting</li>
+</ul>
+<h2 id="8-accessibility">8. Accessibility</h2>
+<h3 id="81-screen-reader-support">8.1 Screen Reader Support</h3>
+<ul>
+<li>[ ] Content descriptions on all interactive elements</li>
+<li>[ ] Semantic roles (button, heading, etc.)</li>
+<li>[ ] Focus management (keyboard navigation)</li>
+</ul>
+<h3 id="82-visual-accessibility">8.2 Visual Accessibility</h3>
+<ul>
+<li>[ ] Color contrast ratios (WCAG AA minimum)</li>
+<li>[ ] Touch target sizes (minimum 48dp)</li>
+<li>[ ] Text scaling support</li>
+</ul>
+<h3 id="83-motion-animation">8.3 Motion &amp; Animation</h3>
+<ul>
+<li>[ ] Reduced motion support</li>
+<li>[ ] Animation performance (60fps target)</li>
+<li>[ ] Loading state indicators</li>
+</ul>
+<h2 id="9-performance">9. Performance</h2>
+<h3 id="91-rendering">9.1 Rendering</h3>
+<ul>
+<li>[ ] Lazy loading for long chat histories</li>
+<li>[ ] Image loading optimization</li>
+<li>[ ] Markdown rendering performance for large messages</li>
+</ul>
+<h3 id="92-memory">9.2 Memory</h3>
+<ul>
+<li>[ ] Bitmap caching and cleanup</li>
+<li>[ ] Stream collector memory management</li>
+</ul>
+<h2 id="10-cross-platform-consistency">10. Cross-Platform Consistency</h2>
+<h3 id="101-platform-specific">10.1 Platform-Specific</h3>
+<ul>
+<li>[ ] Android: Material You dynamic colors</li>
+<li>[ ] Desktop: window management, menu bar</li>
+<li>[ ] iOS: native feel (if applicable)</li>
+<li>[ ] Web: responsive layout</li>
+</ul>
+<h3 id="102-responsive-design">10.2 Responsive Design</h3>
+<ul>
+<li>[ ] Tablet/landscape layout</li>
+<li>[ ] Minimum window size handling</li>
+</ul>
+<h2 id="implementation-phases">Implementation Phases</h2>
+<h3 id="phase-1-audit-inventory-read-only">Phase 1: Audit &amp; Inventory (Read-Only)</h3>
+<ul>
+<li>Screenshot all screens on Desktop + Android</li>
+<li>Document current state vs. desired state</li>
+<li>Identify top 10 visual inconsistencies</li>
+<li>Create priority matrix (impact vs. effort)</li>
+</ul>
+<h3 id="phase-2-branding-theme-high-impact-low-effort">Phase 2: Branding &amp; Theme (High Impact, Low Effort)</h3>
+<ul>
+<li>Logo integration verification</li>
+<li>Color scheme update</li>
+<li>Typography standardization</li>
+</ul>
+<h3 id="phase-3-chat-screen-polish-high-impact-medium-effort">Phase 3: Chat Screen Polish (High Impact, Medium Effort)</h3>
+<ul>
+<li>Message bubble refinements</li>
+<li>Input area improvements</li>
+<li>Empty state enhancement</li>
+</ul>
+<h3 id="phase-4-settings-components-medium-impact-medium-effort">Phase 4: Settings &amp; Components (Medium Impact, Medium Effort)</h3>
+<ul>
+<li>Settings screen cleanup</li>
+<li>Component consistency</li>
+<li>Icon standardization</li>
+</ul>
+<h3 id="phase-5-accessibility-performance-medium-impact-high-effort">Phase 5: Accessibility &amp; Performance (Medium Impact, High Effort)</h3>
+<ul>
+<li>Screen reader support</li>
+<li>Color contrast fixes</li>
+<li>Performance optimization</li>
+</ul>
+<h3 id="phase-6-cross-platform-polish-low-impact-high-effort">Phase 6: Cross-Platform Polish (Low Impact, High Effort)</h3>
+<ul>
+<li>Platform-specific refinements</li>
+<li>Responsive design</li>
+</ul>
+<h2 id="priority-matrix">Priority Matrix</h2>
+<table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>Area</th>
+<th>Effort</th>
+<th>Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P1</td>
+<td>Branding (logo, colors, name)</td>
+<td>Low</td>
+<td>High</td>
+</tr>
+<tr>
+<td>P1</td>
+<td>Chat message bubbles</td>
+<td>Medium</td>
+<td>High</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>Settings screen consistency</td>
+<td>Medium</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>Markdown rendering quality</td>
+<td>Medium</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>Accessibility (contrast, touch targets)</td>
+<td>High</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>Performance optimization</td>
+<td>High</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>Cross-platform polish</td>
+<td>High</td>
+<td>Low</td>
+</tr>
+</tbody>
+</table>
+<h2 id="files-to-audit-key-files">Files to Audit (Key Files)</h2>
+<h3 id="chat">Chat</h3>
+<ul>
+<li><code>ui/chat/ChatScreen.kt</code></li>
+<li><code>ui/chat/composables/BotMessage.kt</code></li>
+<li><code>ui/chat/composables/UserMessage.kt</code></li>
+<li><code>ui/chat/composables/TopBar.kt</code></li>
+<li><code>ui/chat/composables/EmptyState.kt</code></li>
+<li><code>ui/chat/composables/ChatHistorySheet.kt</code></li>
+</ul>
+<h3 id="settings">Settings</h3>
+<ul>
+<li><code>ui/settings/SettingsScreen.kt</code></li>
+<li><code>ui/settings/SettingsListItem.kt</code></li>
+<li><code>ui/settings/GeneralSettings.kt</code></li>
+<li><code>ui/settings/ModelSelectionSheet.kt</code></li>
+</ul>
+<h3 id="theme">Theme</h3>
+<ul>
+<li><code>ui/Theme.kt</code></li>
+</ul>
+<h3 id="components">Components</h3>
+<ul>
+<li><code>ui/components/*.kt</code></li>
+</ul>
+<h3 id="markdown">Markdown</h3>
+<ul>
+<li><code>ui/markdown/MarkdownRenderer.kt</code></li>
+<li><code>ui/markdown/MarkdownInlineRenderer.kt</code></li>
+<li><code>ui/markdown/CodeFenceBlock.kt</code></li>
+</ul>
+<h2 id="notes">Notes</h2>
+<ul>
+<li>This is a planning document only — no code changes until explicit approval per phase</li>
+<li>Each phase requires separate approval before implementation</li>
+<li>Screenshots should be captured before and after each phase</li>
+<li>User communicates in Bengali; keep responses bilingual</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.expand", "search.highlight", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

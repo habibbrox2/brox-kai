@@ -1,0 +1,1898 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for Kai - AI Assistant App">
+      
+      
+      
+        <link rel="canonical" href="https://kai9000.com/docs/UI-AUDIT-REPORT-PHASE1/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Brox Kai v2.0 — UI Audit Report (Phase 1: Read-Only) - Kai Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#brox-kai-v20-ui-audit-report-phase-1-read-only" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Kai Documentation" class="md-header__button md-logo" aria-label="Kai Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kai Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Brox Kai v2.0 — UI Audit Report (Phase 1: Read-Only)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Kai Documentation" class="md-nav__button md-logo" aria-label="Kai Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Kai Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Features
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Features
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/chat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chat & Conversations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/multi-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multi-Service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/tools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MCP Servers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/dynamic-ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dynamic UI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/memories/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Memories
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/heartbeat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Heartbeat
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/tasks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tasks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/daemon/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Daemon
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/encryption/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Encryption
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/on-device-inference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    On-Device Inference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/reasoning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reasoning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/system-prompts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Prompts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/skills/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Skills
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/sandbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Linux Sandbox
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/kai-build/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kai Build
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/sms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/appearance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Appearance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/settings-export-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Settings Export & Import
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/splinterlands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Splinterlands
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../desktop-release-smoketest/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Desktop Release Smoke Test
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#audit-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Audit Scope
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-theme-branding-audit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Theme &amp; Branding Audit
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Theme &amp; Branding Audit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#findings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Findings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recommendation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommendation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-chat-screen-audit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Chat Screen Audit
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Chat Screen Audit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#findings_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Findings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recommendation_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommendation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-message-bubble-audit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Message Bubble Audit
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Message Bubble Audit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#findings-botmessage-usermessage-toolmessage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Findings (BotMessage, UserMessage, ToolMessage)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recommendation_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommendation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-settings-screen-audit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Settings Screen Audit
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Settings Screen Audit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#findings_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Findings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recommendation_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommendation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-components-audit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Components Audit
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Components Audit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#findings_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Findings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recommendation_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommendation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-accessibility-audit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Accessibility Audit
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Accessibility Audit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#findings_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Findings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recommendation_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommendation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-performance-audit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Performance Audit
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Performance Audit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#findings_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Findings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recommendation_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommendation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-cross-platform-audit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Cross-Platform Audit
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Cross-Platform Audit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#findings_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Findings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recommendation_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommendation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#top-10-priority-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Top 10 Priority Issues
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next Steps
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#files-audited" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Files Audited
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="brox-kai-v20-ui-audit-report-phase-1-read-only">Brox Kai v2.0 — UI Audit Report (Phase 1: Read-Only)</h1>
+<h2 id="audit-scope">Audit Scope</h2>
+<p>Comprehensive read-only audit of AI Assistant Frontend UI across all screens and components.
+No code changes were made during this phase.</p>
+<h2 id="1-theme-branding-audit">1. Theme &amp; Branding Audit</h2>
+<h3 id="findings">Findings</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Issue</th>
+<th>Severity</th>
+<th>File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Brox Kai brand colors defined (<code>broxNavy</code>, <code>broxCyan</code>) but <strong>NOT used</strong> in <code>DarkColorScheme</code>/<code>LightColorScheme</code> — still uses legacy purple (<code>darkPurple</code>/<code>lightPurple</code>)</td>
+<td>🔴 High</td>
+<td><code>Theme.kt</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>gradientBrush</code> uses purple gradient, not Brox brand colors</td>
+<td>🔴 High</td>
+<td><code>Theme.kt</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>DarkColorScheme</code> primary = <code>#BB86FC</code> (Material purple), should be <code>broxCyan</code></td>
+<td>🟡 Medium</td>
+<td><code>Theme.kt</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>LightColorScheme</code> primary = <code>darkPurple</code> (<code>#6200EE</code>), should be <code>broxNavy</code></td>
+<td>🟡 Medium</td>
+<td><code>Theme.kt</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>broxNavy</code>, <code>broxCyan</code>, <code>broxDeepNavy</code> defined but unused anywhere</td>
+<td>🟡 Medium</td>
+<td><code>Theme.kt</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>animatedGradientBorder</code> uses purple/magenta gradient, not brand colors</td>
+<td>🟡 Medium</td>
+<td><code>Theme.kt</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="recommendation">Recommendation</h3>
+<ul>
+<li>Replace primary colors with Brox brand palette</li>
+<li>Update gradientBrush to use broxNavy → broxCyan</li>
+<li>Ensure all screens use MaterialTheme.colorScheme (not hardcoded colors)</li>
+</ul>
+<h2 id="2-chat-screen-audit">2. Chat Screen Audit</h2>
+<h3 id="findings_1">Findings</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Issue</th>
+<th>Severity</th>
+<th>File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>EmptyState</code> uses <code>LogoAnimation()</code> — verify it shows Brox logo</td>
+<td>🟡 Medium</td>
+<td><code>EmptyState.kt</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Welcome message string <code>welcome_message</code> — check if branded</td>
+<td>🟢 Low</td>
+<td><code>EmptyState.kt</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Interactive mode top bar title uses <code>interactive_title</code> string</td>
+<td>🟢 Low</td>
+<td><code>ChatScreen.kt</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>EmptyState</code> has hardcoded <code>TerminalGreenOnDark</code>/<code>TerminalGreenOnLight</code> colors</td>
+<td>🟡 Medium</td>
+<td><code>EmptyState.kt</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Chat history LazyColumn uses <code>CenterHorizontally</code> alignment — may cause layout issues on wide screens</td>
+<td>🟡 Medium</td>
+<td><code>ChatScreen.kt</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>showScrollToBottom</code> FAB uses default M3 styling — no brand theming</td>
+<td>🟢 Low</td>
+<td><code>ChatScreen.kt</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="recommendation_1">Recommendation</h3>
+<ul>
+<li>Verify LogoAnimation uses new brand assets</li>
+<li>Replace hardcoded terminal green with theme colors</li>
+<li>Consider left-aligning chat messages on wide screens</li>
+</ul>
+<h2 id="3-message-bubble-audit">3. Message Bubble Audit</h2>
+<h3 id="findings-botmessage-usermessage-toolmessage">Findings (BotMessage, UserMessage, ToolMessage)</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Issue</th>
+<th>Severity</th>
+<th>File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>BotMessage uses <code>MaterialTheme.colorScheme</code> — good</td>
+<td>✅ OK</td>
+<td><code>BotMessage.kt</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>UserMessage uses <code>MaterialTheme.colorScheme</code> — good</td>
+<td>✅ OK</td>
+<td><code>UserMessage.kt</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>ToolMessage collapse/expand animation — verify smoothness</td>
+<td>🟡 Medium</td>
+<td><code>ToolMessage.kt</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Code block copy button — verify functionality</td>
+<td>🟢 Low</td>
+<td><code>CodeFenceBlock.kt</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Markdown table rendering — verify overflow handling</td>
+<td>🟡 Medium</td>
+<td><code>MarkdownRenderer.kt</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="recommendation_2">Recommendation</h3>
+<ul>
+<li>Test message rendering with long content</li>
+<li>Verify code block syntax highlighting accuracy</li>
+<li>Check table horizontal scroll on narrow screens</li>
+</ul>
+<h2 id="4-settings-screen-audit">4. Settings Screen Audit</h2>
+<h3 id="findings_2">Findings</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Issue</th>
+<th>Severity</th>
+<th>File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>SettingsListItem</code> — verify consistent styling</td>
+<td>🟡 Medium</td>
+<td><code>SettingsListItem.kt</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Model selection sheet — verify search/filter works</td>
+<td>🟢 Low</td>
+<td><code>ModelSelectionSheet.kt</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>MCP section — URL validation feedback needs integration</td>
+<td>🟡 Medium</td>
+<td><code>McpSection.kt</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Tool settings — toggle state persistence</td>
+<td>🟢 Low</td>
+<td><code>ToolsSettings.kt</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="recommendation_3">Recommendation</h3>
+<ul>
+<li>Add URL validation error display in MCP section</li>
+<li>Ensure settings items use consistent icon sizing</li>
+</ul>
+<h2 id="5-components-audit">5. Components Audit</h2>
+<h3 id="findings_3">Findings</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Issue</th>
+<th>Severity</th>
+<th>File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>KaiChip</code> — verify selected/unselected states</td>
+<td>🟢 Low</td>
+<td><code>KaiChip.kt</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>KaiSlider</code> — verify thumb and track styling</td>
+<td>🟢 Low</td>
+<td><code>KaiSlider.kt</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>KaiSearchField</code> — verify clear button and focus</td>
+<td>🟢 Low</td>
+<td><code>KaiSearchField.kt</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>AnimatedGradientBorder</code> — performance concern with animation</td>
+<td>🟡 Medium</td>
+<td><code>AnimatedGradientBorder.kt</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>FullScreenImageHost</code> — verify zoom/pan gestures</td>
+<td>🟢 Low</td>
+<td><code>FullScreenImageHost.kt</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="recommendation_4">Recommendation</h3>
+<ul>
+<li>Profile AnimatedGradientBorder for jank</li>
+<li>Test image viewer with large images</li>
+</ul>
+<h2 id="6-accessibility-audit">6. Accessibility Audit</h2>
+<h3 id="findings_4">Findings</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Issue</th>
+<th>Severity</th>
+<th>File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Many Icon components have <code>contentDescription = null</code></td>
+<td>🔴 High</td>
+<td>Multiple</td>
+</tr>
+<tr>
+<td>2</td>
+<td>No <code>semantics</code> modifiers on interactive elements</td>
+<td>🔴 High</td>
+<td>Multiple</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Touch targets may be &lt; 48dp in some places</td>
+<td>🟡 Medium</td>
+<td>Multiple</td>
+</tr>
+<tr>
+<td>4</td>
+<td>No reduced motion support</td>
+<td>🟡 Medium</td>
+<td>Multiple</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Color contrast — verify WCAG AA for all text</td>
+<td>🟡 Medium</td>
+<td>Theme.kt</td>
+</tr>
+</tbody>
+</table>
+<h3 id="recommendation_5">Recommendation</h3>
+<ul>
+<li>Add content descriptions to all icons</li>
+<li>Add semantics roles to buttons, cards, etc.</li>
+<li>Ensure minimum 48dp touch targets</li>
+<li>Test with TalkBack/VoiceOver</li>
+</ul>
+<h2 id="7-performance-audit">7. Performance Audit</h2>
+<h3 id="findings_5">Findings</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Issue</th>
+<th>Severity</th>
+<th>File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>remember</code> blocks in ChatScreen are complex — potential recomposition issues</td>
+<td>🟡 Medium</td>
+<td><code>ChatScreen.kt</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>parseMarkdown</code> called in <code>remember</code> — good</td>
+<td>✅ OK</td>
+<td><code>ChatScreen.kt</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Image loading — verify caching</td>
+<td>🟢 Low</td>
+<td>Multiple</td>
+</tr>
+<tr>
+<td>4</td>
+<td>LazyColumn with <code>contentType</code> — good optimization</td>
+<td>✅ OK</td>
+<td><code>ChatScreen.kt</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="recommendation_6">Recommendation</h3>
+<ul>
+<li>Profile recomposition with Compose Layout Inspector</li>
+<li>Add <code>@Stable</code>/<code>@Immutable</code> annotations where missing</li>
+</ul>
+<h2 id="8-cross-platform-audit">8. Cross-Platform Audit</h2>
+<h3 id="findings_6">Findings</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Issue</th>
+<th>Severity</th>
+<th>File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Platform-specific UI code in <code>androidMain</code>/<code>desktopMain</code>/<code>iosMain</code></td>
+<td>🟢 Low</td>
+<td>Multiple</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>handCursor()</code> only relevant for Desktop</td>
+<td>🟢 Low</td>
+<td><code>Theme.kt</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>navigationBarsPadding</code>/<code>statusBarsPadding</code> — verify on all platforms</td>
+<td>🟡 Medium</td>
+<td>Multiple</td>
+</tr>
+</tbody>
+</table>
+<h3 id="recommendation_7">Recommendation</h3>
+<ul>
+<li>Test on all target platforms</li>
+<li>Verify responsive layout on different screen sizes</li>
+</ul>
+<h2 id="top-10-priority-issues">Top 10 Priority Issues</h2>
+<table>
+<thead>
+<tr>
+<th>Rank</th>
+<th>Issue</th>
+<th>Impact</th>
+<th>Effort</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Brand colors not applied (Theme.kt)</td>
+<td>High</td>
+<td>Low</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Missing accessibility (content descriptions)</td>
+<td>High</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Hardcoded colors in EmptyState</td>
+<td>Medium</td>
+<td>Low</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Gradient uses legacy purple</td>
+<td>Medium</td>
+<td>Low</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Touch target sizes</td>
+<td>Medium</td>
+<td>Low</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Color contrast verification</td>
+<td>Medium</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Markdown table overflow</td>
+<td>Medium</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>8</td>
+<td>ToolMessage animation smoothness</td>
+<td>Low</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Image loading optimization</td>
+<td>Low</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Cross-platform padding verification</td>
+<td>Low</td>
+<td>Low</td>
+</tr>
+</tbody>
+</table>
+<h2 id="next-steps">Next Steps</h2>
+<ul>
+<li>Phase 2: Branding &amp; Theme (apply Brox Kai colors)</li>
+<li>Phase 3: Chat Screen Polish (message bubbles, input, empty state)</li>
+<li>Phase 4: Settings &amp; Components</li>
+<li>Phase 5: Accessibility &amp; Performance</li>
+<li>Phase 6: Cross-Platform Polish</li>
+</ul>
+<h2 id="files-audited">Files Audited</h2>
+<ul>
+<li><code>ui/Theme.kt</code> (197 lines)</li>
+<li><code>ui/chat/ChatScreen.kt</code> (990+ lines)</li>
+<li><code>ui/chat/composables/EmptyState.kt</code> (155 lines)</li>
+<li><code>ui/chat/composables/BotMessage.kt</code></li>
+<li><code>ui/chat/composables/UserMessage.kt</code></li>
+<li><code>ui/chat/composables/TopBar.kt</code></li>
+<li><code>ui/chat/composables/ChatHistorySheet.kt</code></li>
+<li><code>ui/components/*.kt</code></li>
+<li><code>ui/markdown/*.kt</code></li>
+<li><code>ui/settings/*.kt</code></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.expand", "search.highlight", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
