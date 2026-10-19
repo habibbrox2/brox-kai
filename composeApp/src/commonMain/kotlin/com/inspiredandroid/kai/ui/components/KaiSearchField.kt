@@ -33,7 +33,7 @@ fun KaiSearchField(
         shape = RoundedCornerShape(28.dp),
         singleLine = true,
         placeholder = { Text(placeholder) },
-        leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
+        leadingIcon = { Icon(Icons.Filled.Search, contentDescription = "Search") },
         trailingIcon = if (query.isNotEmpty()) {
             {
                 IconButton(

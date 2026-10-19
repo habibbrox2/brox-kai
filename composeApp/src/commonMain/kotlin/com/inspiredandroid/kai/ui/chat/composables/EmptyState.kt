@@ -96,7 +96,7 @@ internal fun EmptyState(
             ) {
                 Icon(
                     imageVector = Icons.Default.Terminal,
-                    contentDescription = null,
+                    contentDescription = "Open terminal",
                     modifier = Modifier.size(18.dp),
                 )
                 Spacer(Modifier.width(8.dp))
