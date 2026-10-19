@@ -1,3 +1,17 @@
+## Brox Kai v2.0 — OpenCode Console Integration
+
+### Added
+- Added OpenCode Console default models (20 curated coding models)
+  - Free models: Big Pickle, GLM-5.3-Flash Free, DeepSeek V4.1 Flash Free, MiniMax M3.1 Flash Free, Beam Free, LL Alpha Free, Exo Free, MiMo-V2.6-Flash Free, Nemotron 3 Ultra Free, Nemotron 3.5 Lightning Free
+  - Paid models: Claude Sonnet 5.5, Claude Opus 5.5, GPT 6.1 Sol, GPT 5.5, GPT 5.3 Codex, Grok 4.7, GLM 5.3, Kimi K2.7 Code, DeepSeek V4 Pro, Qwen3.8 Max
+- Default model set to `big-pickle` (free)
+- Updated API key URL to point to OpenCode Console dashboard (`opencode.ai/console`)
+
+### Changed
+- `Service.kt` — OpenCode service enhanced with curated model list and Console links
+
+---
+
 ## Brox Kai v2.0 — P0-B Shell Hardening
 
 ### Security
