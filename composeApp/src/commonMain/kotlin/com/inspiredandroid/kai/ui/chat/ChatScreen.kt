@@ -687,6 +687,7 @@ private fun ChatModeScreen(
                                     onStartInteractiveMode = uiState.actions.enterInteractiveMode
                                         .takeUnless { primaryIsOnDevice },
                                     onOpenKaiBuild = onOpenKaiBuild,
+                                    onQuickStart = { prompt -> uiState.actions.ask(prompt) },
                                 )
                             } else {
                                 ChatTimeline(
