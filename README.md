@@ -41,8 +41,8 @@ Brox Kai v2.0 is a security-hardened fork of [Kai 9000](https://github.com/Simon
 
 ### Brox Kai v2.0 Release
 Download the latest release from [GitHub Releases](https://github.com/habibbrox2/brox-kai/releases/tag/v2.0.0):
-- **Android APK (Foss):** `androidApp-foss-release.apk`
-- **Windows (x64):** `Kai-Windows-x64.zip`
+- **Android APK (Foss):** `Brox-Kai-2.0-Android.apk`
+- **Windows (x64):** `Brox-Kai-2.0-Windows-x64.msi` / `Brox-Kai-2.0-Windows-x64.zip`
 
 ## Features
 
