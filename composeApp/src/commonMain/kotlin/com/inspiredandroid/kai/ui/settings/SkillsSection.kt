@@ -274,10 +274,9 @@ private fun AddSkillDialog(
 
                 if (installError != null) {
                     Spacer(Modifier.height(8.dp))
-                    Text(
-                        text = installError,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.error,
+                    SettingsStatusBanner(
+                        message = installError,
+                        severity = SettingsBannerSeverity.Error,
                     )
                 }
 
@@ -331,10 +330,9 @@ private fun AddSkillDialog(
                     }
 
                     browseFailed -> {
-                        Text(
-                            text = stringResource(Res.string.settings_skills_browse_failed),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.error,
+                        SettingsStatusBanner(
+                            message = stringResource(Res.string.settings_skills_browse_failed),
+                            severity = SettingsBannerSeverity.Error,
                         )
                     }
 

@@ -89,6 +89,8 @@ internal fun McpServersSection(
     onAddPopularMcpServer: (PopularMcpServer) -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
+        var pendingRemoval by remember { mutableStateOf<McpServerUiState?>(null) }
+
         Text(
             text = stringResource(Res.string.settings_mcp_servers),
             style = MaterialTheme.typography.titleMedium,
@@ -107,11 +109,24 @@ internal fun McpServersSection(
             McpServerCard(
                 server = server,
                 onToggle = { enabled -> onToggleMcpServer(server.id, enabled) },
-                onRemove = { onRemoveMcpServer(server.id) },
+                onRemove = { pendingRemoval = server },
                 onRefresh = { onRefreshMcpServer(server.id) },
                 onToggleTool = onToggleTool,
             )
             Spacer(Modifier.height(8.dp))
+        }
+
+        pendingRemoval?.let { target ->
+            SettingsConfirmDialog(
+                title = "Remove ${target.name}?",
+                message = "This MCP server and its tools will be removed from your workspace. You can re-add it later.",
+                confirmLabel = "Remove",
+                onConfirm = {
+                    onRemoveMcpServer(target.id)
+                    pendingRemoval = null
+                },
+                onDismiss = { pendingRemoval = null },
+            )
         }
 
         OutlinedButton(
