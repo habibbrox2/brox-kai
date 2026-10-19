@@ -12,7 +12,7 @@ An **open-source AI assistant with persistent memory** that runs on **Android, i
 
 A security-hardened fork of [Kai 9000](https://github.com/SimonSchubert/Kai) with enhanced SSRF protection, shell command hardening, and Brox branding.
 
-**[Website](https://kai9000.com)** - **[Documentation](https://kai9000.com/docs/)** - **[Source](https://github.com/habibbrox2/brox-kai)**
+**[Website](https://kai9000.com)** - **[Documentation](https://kai9000.com/docs/)** - **[Source](https://github.com/habibbrox2/brox-kai)** - **[Releases](https://github.com/habibbrox2/brox-kai/releases)**
 </div>
 
 <div align="center">
@@ -26,6 +26,13 @@ A security-hardened fork of [Kai 9000](https://github.com/SimonSchubert/Kai) wit
 </div>
 
 ## Installation
+
+### Brox Kai v2.0 Release
+Download the latest release from [GitHub Releases](https://github.com/habibbrox2/brox-kai/releases/tag/v2.0.0):
+- **Android APK (Foss):** `androidApp-foss-release.apk`
+- **Windows (x64):** `Kai-Windows-x64.zip`
+
+## Installation (Upstream Kai)
 
 [![App Store](https://raw.githubusercontent.com/SimonSchubert/Kai/main/screenshots/app_store_badge.png)](https://apps.apple.com/us/app/kai-ai/id6758148023)
 [![Play Store](https://raw.githubusercontent.com/SimonSchubert/Kai/main/screenshots/play_store_badge.png)](https://play.google.com/store/apps/details?id=com.inspiredandroid.kai)
