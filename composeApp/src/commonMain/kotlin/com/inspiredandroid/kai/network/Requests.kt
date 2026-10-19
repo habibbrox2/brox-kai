@@ -548,7 +548,15 @@ class Requests {
 
             402 -> throw OpenAICompatibleQuotaExhaustedException()
 
-            403 -> throw OpenAICompatibleContentModerationException(moderationDetail)
+            403 -> {
+                // OpenCode answers unauthenticated requests with 403 (not 401), so a missing or
+                // rejected key looks like a moderation block if mapped generically. Surface the
+                // real cause as an invalid-key error so the UI (and the Free fallback) react right.
+                if (service == Service.OpenCode) {
+                    throw OpenAICompatibleInvalidApiKeyException()
+                }
+                throw OpenAICompatibleContentModerationException(moderationDetail)
+            }
 
             404 -> throw OpenAICompatibleModelNotFoundException()
 

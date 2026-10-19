@@ -6,9 +6,14 @@
   - Paid models: Claude Sonnet 5.5, Claude Opus 5.5, GPT 6.1 Sol, GPT 5.5, GPT 5.3 Codex, Grok 4.7, GLM 5.3, Kimi K2.7 Code, DeepSeek V4 Pro, Qwen3.8 Max
 - Default model set to `big-pickle` (free)
 - Updated API key URL to point to OpenCode Console dashboard (`opencode.ai/console`)
+- API key is now **optional** for OpenCode:
+  - **With key** → authenticated access to Console models (free + paid)
+  - **Without key** → requests carry no `Authorization` header; the public model catalog still loads, and a rejected chat request (OpenCode answers 403) is reported as an invalid-key error so the built-in **Free** service fallback takes over automatically.
+- OpenCode 403 responses now map to "invalid API key" instead of a misleading "content moderation" error.
 
 ### Changed
-- `Service.kt` — OpenCode service enhanced with curated model list and Console links
+- `Service.kt` — OpenCode service enhanced with curated model list, Console links, and optional API key (`requiresApiKey = false`, `supportsOptionalApiKey = true`)
+- `Requests.kt` — OpenCode 403 → invalid-key error mapping
 
 ---
 
