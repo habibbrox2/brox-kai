@@ -1015,6 +1015,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#fork-app-version-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fork app-version policy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#ui-guidance" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1044,25 +1055,28 @@
 
 <h1 id="brox-kai-v20-brand-name-usage">Brox Kai v2.0 — Brand Name Usage</h1>
 <h2 id="canonical-name">Canonical name</h2>
-<p><strong>Brox Kai v2.0</strong> is one complete product and brand name. The text <code>v2.0</code> is part of the name; it does not identify an app, project, or release version.</p>
+<p><strong>Brox Kai</strong> is the product and brand name. The text <code>v2.0</code> is not part of the brand name and must not be used as a badge, parenthetical, secondary label, or other brand identifier.</p>
 <h2 id="how-to-present-it">How to present it</h2>
 <ul>
-<li>Write the full name as <code>Brox Kai v2.0</code> in product titles, onboarding, store copy, documentation, marketing, and sponsorship content.</li>
-<li>Keep <code>v2.0</code> on the same visual level as <code>Brox Kai</code>: the same typeface, baseline, weight, and color treatment unless an approved wordmark defines otherwise.</li>
-<li>Do not put <code>v2.0</code> in a badge, parenthesis, superscript, secondary label, or separate version field.</li>
-<li><code>Brox Kai</code> may be used as a short form only after the full name has been established in the same context.</li>
+<li>Write the full name as <code>Brox Kai</code> in product titles, onboarding, store copy, documentation, marketing, and sponsorship content.</li>
+<li>Do not put <code>v2.0</code> in a badge, parenthesis, secondary label, or separate version field.</li>
+<li><code>BK2.0</code> may be used as a short form only after <code>Brox Kai</code> has been established in the same context.</li>
 </ul>
 <h2 id="technical-versions-and-releases">Technical versions and releases</h2>
-<p>Build numbers, Git tags, package versions, and release labels are technical metadata. Present them separately from the product name, for example:</p>
-<div class="highlight"><pre><span></span><code>Brox Kai v2.0
-Build 2.0.0
+<p>Build numbers, Git tags, package versions, and release labels are technical metadata. Present them separately from the product name.</p>
+<h2 id="fork-app-version-policy">Fork app-version policy</h2>
+<p>The fork's app version is technical release metadata, separate from the brand name. Use semantic versioning (<code>MAJOR.MINOR.PATCH</code>): increment PATCH for compatible fixes, MINOR for backward-compatible features, and MAJOR for incompatible changes.</p>
+<p>For the first independently distributed fork release with its own package identity, start at <strong><code>1.0.0</code></strong>. Until then, the code still carries Kai 9000's <code>3.3.0</code> app version and upstream application identifier. If the fork must remain an in-place update of that upstream package, ship the first fork update as <strong><code>3.3.1</code></strong> and increase Android <code>versionCode</code> from <code>117</code> to <code>118</code>. Once the fork has its own package identity, start independent releases at <code>1.0.0</code>.</p>
+<p>Example:</p>
+<div class="highlight"><pre><span></span><code>Brox Kai
+App version 1.0.0
 </code></pre></div>
-<p>Never use a technical build number to redefine, shorten, or split the product name.</p>
+<p>Never use an app version or technical build number to redefine or split the product name.</p>
 <h2 id="ui-guidance">UI guidance</h2>
 <ul>
-<li>App headers, splash screens, dashboard greetings, and Settings titles should display <code>Brox Kai v2.0</code> as one name.</li>
+<li>App headers, splash screens, dashboard greetings, and Settings titles should display <code>Brox Kai</code> as the product name.</li>
 <li>Use the approved full wordmark whenever there is enough room. Use the BK icon alone in constrained spaces such as app icons and compact navigation.</li>
-<li>Ensure screen readers announce the complete name as “Brox Kai v two point zero”.</li>
+<li>Ensure screen readers announce the complete name as “Brox Kai”.</li>
 </ul>
 
 
