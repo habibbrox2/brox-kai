@@ -1,3 +1,25 @@
+## Brox Kai v2.0 - Premium Chat UI + Code Editor (Plan 7)
+
+### Added
+- Chat-first launch: Android and every other platform now open directly into the Chat UI; the Dashboard lives as a sidebar link (brand click)
+- New AppSidebar: New Chat button + live search, time-grouped conversation list (Pinned / Today / Yesterday / Previous 7 Days / Previous 30 Days / Older), rename / pin / delete via per-row menu, bottom destinations (Dashboard, Interactive UI, Kai Build on Android, Settings) plus the Brox Kai 2.0 brand
+- ModalNavigationDrawer sidebar on compact windows + permanent 280dp rail on expanded windows
+- Redesigned TopBar: drawer toggle, centered model-selector pill, right-side quick actions (sandbox, speech output, settings)
+- Redesigned EmptyState: small animated mark, "How can I help you today?" heading, 2x2 quick-start cards with title + subtext and hover glow
+- Response action bar under every assistant message: Copy, Thumbs Up/Down (local-only), Regenerate, Read Aloud
+- CodeFenceBlock header: language tag + "Copy code" button + "Open in editor" hook
+- New CodeEditorScreen: monospace editable editor opened from any chat code block
+- Settings restructured to 4 tabs: General, Model and API Key, Data Control, Account and Plan
+- Error handling moved from centered ErrorMessage blocks to a top-right toast badge with retry
+- Time-based chat history grouping, rename, pin, delete and live title search
+
+### Changed
+- SettingsTab enum reduced from 6 to 4 (General, Model, Data, Account)
+- Conversation gains isPinned / pinnedAt (defaulted, backward compatible)
+- App start destination changed from Dashboard to Home (Chat)
+
+---
+
 ## Brox Kai v2.0 — Auto-Release Pipeline (Auto Version Bump + GitHub Release)
 
 ### Added

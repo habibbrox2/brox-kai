@@ -54,119 +54,119 @@ Brand rules:
 
 ### Phase 1 — Chat-first shell: default route + sidebar navigation
 
-- [ ] `App.kt`: `startDestination = Home` (Chat) on every platform; Dashboard
+- [x] `App.kt`: `startDestination = Home` (Chat) on every platform; Dashboard
       becomes an ordinary pushed destination.
-- [ ] Remove the 3-tab segmented navigation bar (dashboard/chat/settings) from
+- [x] Remove the 3-tab segmented navigation bar (dashboard/chat/settings) from
       `App.kt`/`TopBar` — the sidebar replaces it; `navigationTabBar` params pass
       `null`.
-- [ ] New `ui/sidebar/AppSidebar.kt` (presentation-only, reused by drawer + rail):
+- [x] New `ui/sidebar/AppSidebar.kt` (presentation-only, reused by drawer + rail):
       - **Top**: New Chat button (prominent, ➕) + search field (`KaiSearchField`).
       - **Middle**: conversation list (Phase 4 adds grouping/search/rename/pin).
       - **Bottom**: brand/profile row (owner identity, local avatar), Dashboard
         link, Interactive UI entry (Android), Settings gear.
-- [ ] `ChatModeScreen`/`ChatShell`: on expanded windows the sidebar is the
+- [x] `ChatModeScreen`/`ChatShell`: on expanded windows the sidebar is the
       permanent left rail (replacing `ConversationRail`); on compact windows it
       is a `ModalNavigationDrawer` opened by a hamburger toggle in the `TopBar`.
-- [ ] `TopBar` redesign: **left** = drawer toggle (compact) / brand (expanded),
+- [x] `TopBar` redesign: **left** = drawer toggle (compact) / brand (expanded),
       **center** = model selector pill (service icon + name + chevron, opens the
       existing selector popup), **right** = quick actions (speech toggle,
       Settings gear); legacy icon clutter removed.
-- [ ] Sidebar navigation callbacks wired in `App.kt` (Dashboard, Settings,
+- [x] Sidebar navigation callbacks wired in `App.kt` (Dashboard, Settings,
       Interactive mode, Kai Build on Android).
-- [ ] Compile: desktop + wasm green.
+- [x] Compile: desktop + wasm green.
 
 ### Phase 2 — Empty state redesign (welcome screen)
 
-- [ ] Remove `Start Interactive UI` and `Open Kai Build` buttons from
+- [x] Remove `Start Interactive UI` and `Open Kai Build` buttons from
       `EmptyState` entirely.
-- [ ] Minimal small logo (reduced `LogoAnimation`) + light heading
+- [x] Minimal small logo (reduced `LogoAnimation`) + light heading
       "How can I help you today?".
-- [ ] Quick cards Write / Code / Research / Build as a **2×2 grid**, each with
+- [x] Quick cards Write / Code / Research / Build as a **2×2 grid**, each with
       title + subtext ("Code — Write & debug code"), subtle border and
       hover/touch glow accent (`animatedGradientBorder`).
-- [ ] Privacy note kept, compact.
-- [ ] Compile: desktop + wasm green.
+- [x] Privacy note kept, compact.
+- [x] Compile: desktop + wasm green.
 
 ### Phase 3 — Conversation view: bubbles + response action bar
 
-- [ ] User message: right-aligned bubble with light background.
-- [ ] Assistant response: full-width container, custom typography, scroll.
-- [ ] Response action bar under every assistant message: **Copy, Thumbs
+- [x] User message: right-aligned bubble with light background.
+- [x] Assistant response: full-width container, custom typography, scroll.
+- [x] Response action bar under every assistant message: **Copy, Thumbs
       Up/Down, Regenerate, Read Aloud** (extends `MessageActionRow`; feedback is
       local-only UI state — no backend).
-- [ ] Code blocks: keep syntax highlighting; header shows language tag +
+- [x] Code blocks: keep syntax highlighting; header shows language tag +
       "Copy Code" button + **Open in editor** (Phase 7 hook).
-- [ ] Compile: desktop + wasm green.
+- [x] Compile: desktop + wasm green.
 
 ### Phase 4 — Chat history management
 
-- [ ] Time-based grouping: **Today / Yesterday / Previous 7 Days / Previous
+- [x] Time-based grouping: **Today / Yesterday / Previous 7 Days / Previous
       30 Days** (shared by sidebar list and history sheet).
-- [ ] Item actions on hover (desktop) / long-press (mobile): **Rename** (title
+- [x] Item actions on hover (desktop) / long-press (mobile): **Rename** (title
       edit dialog → new `renameConversation` action), **Pin** (new
       `isPinned`/`pinnedAt` fields on `Conversation`, pinned group on top),
       **Delete** (existing undo flow).
-- [ ] Inline **search bar** above the history list filtering titles live.
-- [ ] Data layer: `Conversation` serialization fields (defaulted → backward
+- [x] Inline **search bar** above the history list filtering titles live.
+- [x] Data layer: `Conversation` serialization fields (defaulted → backward
       compatible), `ConversationStorage`, repository + viewmodel actions.
-- [ ] Compile: desktop + wasm green.
+- [x] Compile: desktop + wasm green.
 
 ### Phase 5 — Settings restructure to 4 tabs
 
-- [ ] `SettingsTab` → `General, Model, Data, Account` (serializable; dashboard
+- [x] `SettingsTab` → `General, Model, Data, Account` (serializable; dashboard
       deep links remapped).
-- [ ] **General**: theme, language, auto-scroll + folded sub-sections for the
+- [x] **General**: theme, language, auto-scroll + folded sub-sections for the
       existing Agent / Tools / Sandbox / Integrations content (section headers,
       nothing removed).
-- [ ] **Model & API Key**: existing Services content (keys, models, temperature,
+- [x] **Model & API Key**: existing Services content (keys, models, temperature,
       token limits, custom endpoints).
-- [ ] **Data Control**: chat history save on/off, Export Chat Data, Clear All
+- [x] **Data Control**: chat history save on/off, Export Chat Data, Clear All
       Conversations.
-- [ ] **Account & Plan**: owner profile card (reuse `SupportProfile`),
+- [x] **Account & Plan**: owner profile card (reuse `SupportProfile`),
       system status / app version / plan status.
-- [ ] Rail + strip labels, detail pane routing, dashboard deep links updated.
-- [ ] Compile: desktop + wasm green.
+- [x] Rail + strip labels, detail pane routing, dashboard deep links updated.
+- [x] Compile: desktop + wasm green.
 
 ### Phase 6 — Input bar + error toasts
 
-- [ ] Composer: fixed bottom, attach (+) left, send (↑) right with active
+- [x] Composer: fixed bottom, attach (+) left, send (↑) right with active
       highlight while typing (verify + polish), stop state preserved.
-- [ ] Voice **input** (speech-to-text): only if a cross-platform STT path
+- [x] Voice **input** (speech-to-text): only if a cross-platform STT path
       already exists; otherwise the mic slot is omitted (no fake buttons) and
       the existing speech-output toggle stays in the header.
-- [ ] Errors: replace centered `ErrorMessage` blocks with a **top-right toast /
+- [x] Errors: replace centered `ErrorMessage` blocks with a **top-right toast /
       alert badge** overlay (auto-dismiss, retry action) above the input bar;
       snackbar host kept for transient messages.
-- [ ] Compile: desktop + wasm green.
+- [x] Compile: desktop + wasm green.
 
 ### Phase 7 — Code editor workspace (unified, chat-first)
 
-- [ ] New `editor` package: `CodeEditorScreen` + workspace state (in-memory
+- [x] New `editor` package: `CodeEditorScreen` + workspace state (in-memory
       file store seeded from AI code blocks via "Open in editor", plus sandbox
       project files where available).
-- [ ] Layout: file tree (left), tabbed editor (center, monospace editable with
+- [x] Layout: file tree (left), tabbed editor (center, monospace editable with
       highlight preview), terminal tab (bottom/right — Android sandbox shell /
       desktop shell where available).
-- [ ] Opening behavior: mobile = full-screen route with back-to-chat; desktop
+- [x] Opening behavior: mobile = full-screen route with back-to-chat; desktop
       expanded = split pane beside the chat (editor as the `ChatShell`
       side-panel slot), compact desktop = full-screen like mobile.
-- [ ] Save/reload, dirty indicators, copy-all; behavior stays local (no
+- [x] Save/reload, dirty indicators, copy-all; behavior stays local (no
       filesystem writes outside the sandbox/workspace).
-- [ ] Compile: desktop + wasm green.
+- [x] Compile: desktop + wasm green.
 
 ### Phase 8 — Docs, changelog, verification
 
-- [ ] Progress status section below all checked.
-- [ ] CHANGELOG entry for Plan 7.
-- [ ] Final desktop + wasm compile; commit per phase; push.
+- [x] Progress status section below all checked.
+- [x] CHANGELOG entry for Plan 7.
+- [x] Final desktop + wasm compile; commit per phase; push.
 
 ## Progress status
 
-### Phase 1 — Chat-first shell
-### Phase 2 — Empty state
-### Phase 3 — Conversation view
-### Phase 4 — History management
-### Phase 5 — Settings 4 tabs
-### Phase 6 — Input & toasts
-### Phase 7 — Code editor
-### Phase 8 — Docs
+### Phase 1 — Chat-first shell ✅
+### Phase 2 — Empty state ✅
+### Phase 3 — Conversation view ✅
+### Phase 4 — History management ✅
+### Phase 5 — Settings 4 tabs ✅
+### Phase 6 — Input & toasts ✅
+### Phase 7 — Code editor ✅
+### Phase 8 — Docs ✅ (this file + CHANGELOG.md)
