@@ -123,6 +123,7 @@ import kai.composeapp.generated.resources.Res
 import kai.composeapp.generated.resources.fallback_answered_by
 import kai.composeapp.generated.resources.fallback_service_failed
 import kai.composeapp.generated.resources.fallback_trying_next
+import kai.composeapp.generated.resources.ic_refresh
 import kai.composeapp.generated.resources.ic_stop
 import kai.composeapp.generated.resources.interactive_back_content_description
 import kai.composeapp.generated.resources.interactive_exit_content_description
@@ -140,6 +141,7 @@ import kotlinx.coroutines.launch
 import nl.marc_apps.tts.TextToSpeechInstance
 import nl.marc_apps.tts.errors.TextToSpeechSynthesisInterruptedError
 import org.jetbrains.compose.resources.getString
+import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -494,8 +496,6 @@ private fun InteractiveModeContent(
                         error = error,
                         retry = uiState.actions.retry,
                     )
-                } else {
-                    ErrorMessage(error = error, retry = uiState.actions.retry)
                 }
             }
         }
@@ -779,6 +779,49 @@ private fun ChatModeScreen(
                         modifier = Modifier.align(BottomCenter).padding(bottom = 80.dp),
                     ) { data ->
                         Snackbar(snackbarData = data)
+                    }
+                    // Toast-style error badge (Plan 7, Phase 6): replaces the
+                    // centered ErrorMessage blocks; auto-dismisses after 6s.
+                    uiState.error?.let { error ->
+                        if (!uiState.showFreeProviderSuggestions) {
+                            androidx.compose.animation.AnimatedVisibility(
+                                visible = true,
+                                enter = androidx.compose.animation.fadeIn() + androidx.compose.animation.scaleIn(),
+                                exit = androidx.compose.animation.fadeOut() + androidx.compose.animation.scaleOut(),
+                                modifier = Modifier.align(Alignment.TopEnd).padding(16.dp),
+                            ) {
+                                Surface(
+                                    shape = RoundedCornerShape(12.dp),
+                                    color = MaterialTheme.colorScheme.errorContainer,
+                                    tonalElevation = 4.dp,
+                                    shadowElevation = 8.dp,
+                                ) {
+                                    Row(
+                                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    ) {
+                                        Text(
+                                            text = uiErrorText(error),
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.onErrorContainer,
+                                            modifier = Modifier.widthIn(max = 260.dp),
+                                        )
+                                        IconButton(
+                                            onClick = uiState.actions.retry,
+                                            modifier = Modifier.size(28.dp).handCursor(),
+                                        ) {
+                                            Icon(
+                                                imageVector = vectorResource(Res.drawable.ic_refresh),
+                                                contentDescription = "Retry",
+                                                tint = MaterialTheme.colorScheme.onErrorContainer,
+                                                modifier = Modifier.size(16.dp),
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
                 modifier = Modifier.background(MaterialTheme.colorScheme.background).navigationBarsPadding().statusBarsPadding().imePadding(),

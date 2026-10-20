@@ -290,8 +290,6 @@ fun ChatTimeline(
                             error = error,
                             retry = uiState.actions.retry,
                         )
-                    } else {
-                        ErrorMessage(error = error, retry = uiState.actions.retry)
                     }
                 }
             }
