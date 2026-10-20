@@ -169,6 +169,7 @@ private fun SkillCard(
     onRemove: () -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
+    var showRemoveConfirm by remember { mutableStateOf(false) }
 
     Card(
         onClick = { expanded = !expanded },
@@ -207,7 +208,7 @@ private fun SkillCard(
             if (expanded && !skill.isBuiltIn) {
                 Spacer(Modifier.height(8.dp))
 
-                TextButton(onClick = onRemove, modifier = Modifier.handCursor()) {
+                TextButton(onClick = { showRemoveConfirm = true }, modifier = Modifier.handCursor()) {
                     Text(
                         text = stringResource(Res.string.settings_skills_remove),
                         color = MaterialTheme.colorScheme.error,
@@ -215,6 +216,21 @@ private fun SkillCard(
                 }
             }
         }
+    }
+
+    if (showRemoveConfirm) {
+        // Uninstall now asks first (Plan 4, Phase 5), matching file delete and
+        // package uninstall elsewhere in the workspace.
+        SettingsConfirmDialog(
+            title = "Uninstall this skill?",
+            message = "\"/${skill.id}\" will be removed from the sandbox.",
+            confirmLabel = "Uninstall",
+            onConfirm = {
+                showRemoveConfirm = false
+                onRemove()
+            },
+            onDismiss = { showRemoveConfirm = false },
+        )
     }
 }
 

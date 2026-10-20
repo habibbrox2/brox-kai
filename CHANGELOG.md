@@ -1,3 +1,20 @@
+## Brox Kai v2.0 — Tools & Sandbox Workspace UI Upgrade (Plan 4)
+
+### Added
+
+- Shared operational components (`ui/components/OperationalComponents.kt`): status vocabulary, status color ramp, `StatusBadge` (text + color), `CapabilityCountCard`, `CollectionEmptyState`.
+- Tools Overview header summarizing enabled native tools, connected MCP servers, and installed skills with attention/needs-setup badges (responsive 3/2/1 columns).
+- Native tools search/filter when 8+ tools are present, with localized-name matching and a no-match empty state.
+- Sandbox setup readiness flow: distribution from state, Needs setup / Installing / Failed badge, storage + session expectations, and a "Retry setup" action after failure.
+- Common sandbox workspace header (semantic heading + Ready badge) shared by Terminal, Files, and Packages.
+- Explicit confirmation before skill uninstall (previously a single tap removed the skill).
+
+### Changed
+
+- MCP server cards: raw status dot replaced with a text status badge including `Disabled` and `Not checked` states; dedicated empty state for the server list.
+- Sandbox subtab selector: only the selected tab is primary + semibold (previously all three tabs were primary, hiding the active tab); `Role.Tab`/selected semantics on tabs and session chips.
+- Session chips get a larger touch target; skills and native tools use dedicated empty-state cards instead of plain text.
+
 ## Brox Kai v2.0 — Kai Build Workspace UI Upgrade (Plan 3)
 
 ### Added

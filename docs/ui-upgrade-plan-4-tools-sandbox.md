@@ -117,3 +117,38 @@ SandboxWorkspace
 - MCP and skill installation may be asynchronous. Every mutation must render a durable in-progress or error state from the view model.
 - Sandbox availability is platform-dependent. Keep capability flags in state and avoid platform checks inside shared cards.
 - Terminal performance and focus can regress if nested scroll or gesture handlers are added carelessly; keep the terminal pane isolated from surrounding scroll containers.
+
+## Progress status
+
+All five phases are implemented, each compiled against the desktop target and committed separately.
+
+### Phase 1 — Shared operational components (done)
+
+- New `ui/components/OperationalComponents.kt`: `OperationalStatus` vocabulary (Connected / Connecting / Disabled / Installing / NeedsSetup / Error / Active / Ready), a shared status color ramp, `StatusBadge` (dot + text so status never rides on color alone), `CapabilityCountCard`, and `CollectionEmptyState`.
+- MCP server cards show a text status badge (including `Disabled` and `Not checked`, not just the four connection colors) and a dedicated empty state.
+- Skills show a `Needs setup` badge on the sandbox prerequisite plus an empty-state card; native tools use the empty-state card too.
+
+### Phase 2 — Tools management page (done)
+
+- Tools Overview header: count cards for enabled native tools (`X / Y`), connected MCP servers (`X / Y`), and installed skills, each with an attention/needs-setup status badge. Responsive 3/2/1-column layout.
+- Native tools gain a search/filter field when the collection has 8+ items; localized display names are resolved first so localized names match. No-match shows a dedicated empty state.
+- Popular servers remain a separate discovery area (inside the add-server dialog, never mixed with active connections). Skills keep the installed/discoverable split with progress and error banners from Plan 2.
+
+### Phase 3 — Sandbox setup (done)
+
+- The setup card is a readiness flow: distribution name comes from state (fixing a stale hard-coded "Alpine Linux"), a Needs setup / Installing / Failed status badge, the distro's own storage-expectation copy, a session-persistence line, progress with cancel, and an error that is never the only content on screen.
+- After a failure the primary action becomes "Retry setup" instead of repeating the original invitation.
+- Skills already link to the sandbox setup flow via the Phase 1 prerequisite badge + button.
+
+### Phase 4 — Sandbox workspace (done)
+
+- Common workspace header (semantic `heading()` + `Ready` status badge) shared by Terminal, Files, and Packages.
+- Subtab selector: previously every tab was primary-colored, making the active tab invisible; now only the selected tab is primary + semibold, with `Role.Tab` and `selected` semantics.
+- Session chips get `Role.Tab`/`selected` semantics and a larger (8dp vertical) touch target.
+- Session selection stays above the terminal on all sizes (existing model); each pane keeps its own scroll container.
+
+### Phase 5 — Accessibility, safety, and validation (done, with notes)
+
+- Skill uninstall now requires explicit confirmation via `SettingsConfirmDialog`, matching file delete and package uninstall (which already confirmed). MCP server removal and service deletion keep their Plan 2 confirmations.
+- Stateful controls in the workspace carry accessible names/state: tab selectors and session chips expose `Role.Tab` + selected; file/package action icons have either a content description or are decorative next to labeled text.
+- Deferred / out of scope: a per-session close action (the session view model has no close operation — adding one changes behavior, not just UI), screenshot automation, and a full keyboard-navigation audit pass. These stay open as follow-ups.
