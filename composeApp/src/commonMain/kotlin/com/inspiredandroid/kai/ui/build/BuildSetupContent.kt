@@ -27,9 +27,7 @@ import com.inspiredandroid.kai.ui.settings.SettingsCard
 import kai.composeapp.generated.resources.Res
 import kai.composeapp.generated.resources.kai_build_setup_agents_description
 import kai.composeapp.generated.resources.kai_build_setup_agents_title
-import kai.composeapp.generated.resources.kai_build_setup_description
 import kai.composeapp.generated.resources.kai_build_setup_install
-import kai.composeapp.generated.resources.kai_build_setup_title
 import kai.composeapp.generated.resources.kai_build_step_base_packages
 import kai.composeapp.generated.resources.kai_build_step_configure
 import kai.composeapp.generated.resources.kai_build_step_download
@@ -41,6 +39,10 @@ import org.jetbrains.compose.resources.stringResource
 /**
  * First screen a user lands on: install Debian, optionally with coding agents.
  * Doubles as the progress surface for later agent installs.
+ *
+ * Phase 4 (Plan 3) turns this into a step-based setup surface: an environment
+ * status header, a numbered step guide, install progress with cancellation, and
+ * an actionable retry path when setup or an agent install fails.
  */
 @Composable
 internal fun BuildSetupContent(
@@ -52,6 +54,13 @@ internal fun BuildSetupContent(
     modifier: Modifier = Modifier,
 ) {
     val installing = state.environment as? BuildEnvironmentState.Installing
+    val hasError = state.lastError != null
+    // Derive the active step purely from existing UI state: never invent progress.
+    val activeStep = when {
+        installing != null -> SetupStep.Install
+        hasError -> SetupStep.Recover
+        else -> SetupStep.Options
+    }
 
     Column(
         modifier = modifier
@@ -60,28 +69,14 @@ internal fun BuildSetupContent(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Text(
-            text = stringResource(Res.string.kai_build_setup_title),
-            style = MaterialTheme.typography.headlineSmall,
-            color = MaterialTheme.colorScheme.onBackground,
-        )
-        Text(
-            text = stringResource(Res.string.kai_build_setup_description),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+        BuildEnvironmentHeader(state = state)
+
+        BuildStepGuide(activeStep = activeStep)
 
         SettingsCard(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                text = stringResource(Res.string.kai_build_setup_agents_title),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-            Text(
-                text = stringResource(Res.string.kai_build_setup_agents_description),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(bottom = 8.dp),
+            BuildSectionHeader(
+                title = stringResource(Res.string.kai_build_setup_agents_title),
+                subtitle = stringResource(Res.string.kai_build_setup_agents_description),
             )
             BuildAgents.all.forEach { agent ->
                 Row(
@@ -117,13 +112,74 @@ internal fun BuildSetupContent(
             }
         }
 
+        // Actionable recovery: name the failure and offer a retry that reuses the
+        // existing install action rather than leaving a dead-end error string.
         state.lastError?.let { error ->
-            Text(
-                text = error,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.error,
+            SetupErrorCard(
+                message = error,
+                canRetry = installing == null,
+                onRetry = onInstall,
             )
         }
+    }
+}
+
+/** The setup flow as explicit steps so a new user always knows where they are. */
+private enum class SetupStep { Options, Install, Recover }
+
+/**
+ * Numbered guide for the setup flow (Plan 3, Phase 4). Marks the current step
+ * semantically so screen readers announce progress through setup.
+ */
+@Composable
+private fun BuildStepGuide(activeStep: SetupStep) {
+    val steps = listOf(
+        SetupStep.Options to stringResource(Res.string.kai_build_setup_agents_title),
+        SetupStep.Install to stringResource(Res.string.kai_build_setup_install),
+        SetupStep.Recover to "Verify",
+    )
+    val activeIndex = steps.indexOfFirst { it.first == activeStep }
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(BuildSpacing.sm),
+    ) {
+        steps.forEachIndexed { index, (_, label) ->
+            val state = when {
+                index == activeIndex -> BuildStatusKind.Running
+                index < activeIndex -> BuildStatusKind.Success
+                else -> BuildStatusKind.Idle
+            }
+            BuildStatusPill(
+                label = "${index + 1}. $label",
+                kind = state,
+                modifier = Modifier.weight(1f),
+            )
+        }
+    }
+}
+
+/**
+ * Failure surface for setup or agent install with an explicit retry action
+ * (Plan 3, Phase 4, item 3).
+ */
+@Composable
+private fun SetupErrorCard(
+    message: String,
+    canRetry: Boolean,
+    onRetry: () -> Unit,
+) {
+    SettingsCard(modifier = Modifier.fillMaxWidth()) {
+        BuildSectionHeader(
+            title = "Setup failed",
+            subtitle = message,
+            trailing = {
+                if (canRetry) {
+                    Button(onClick = onRetry, modifier = Modifier.handCursor()) {
+                        Text("Retry")
+                    }
+                }
+            },
+        )
     }
 }
 

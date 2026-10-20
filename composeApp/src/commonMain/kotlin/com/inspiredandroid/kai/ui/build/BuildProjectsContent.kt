@@ -24,7 +24,6 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -53,7 +52,6 @@ import com.inspiredandroid.kai.ui.settings.SettingsCard
 import kai.composeapp.generated.resources.Res
 import kai.composeapp.generated.resources.kai_build_new_project_title
 import kai.composeapp.generated.resources.kai_build_open_with
-import kai.composeapp.generated.resources.kai_build_projects_add_agent
 import kai.composeapp.generated.resources.kai_build_projects_create
 import kai.composeapp.generated.resources.kai_build_projects_empty
 import kai.composeapp.generated.resources.kai_build_projects_new_placeholder
