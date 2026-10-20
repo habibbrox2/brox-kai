@@ -29,6 +29,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.inspiredandroid.kai.SandboxController
@@ -82,6 +88,21 @@ internal fun SandboxTabsContent(
             modifier = modifier,
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
+            // Common workspace header (Plan 4, Phase 4): one identity and one
+            // readiness statement shared by Terminal, Files, and Packages.
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = "Sandbox workspace",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.weight(1f).semantics { heading() },
+                )
+                StatusBadge(label = "Ready", status = OperationalStatus.Ready)
+            }
+
             SandboxSubTabSelector(currentTab = subTab, onSelectTab = onSelectTab)
 
             Box(modifier = Modifier.fillMaxWidth().weight(1f)) {
@@ -225,7 +246,11 @@ private fun SessionChipRow(viewModel: SandboxSessionViewModel) {
                 modifier = Modifier
                     .handCursor()
                     .clip(RoundedCornerShape(50))
-                    .clickable { viewModel.selectSession(tab.id) },
+                    .clickable { viewModel.selectSession(tab.id) }
+                    .semantics {
+                        role = Role.Tab
+                        selected = isSelected
+                    },
                 shape = RoundedCornerShape(50),
                 color = if (isSelected) {
                     MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
@@ -241,7 +266,9 @@ private fun SessionChipRow(viewModel: SandboxSessionViewModel) {
                             Res.string.sandbox_session_chip_session
                         },
                     ),
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                    // 8dp vertical for a more comfortable touch target (Plan 4,
+                    // Phase 4); the chip only appears with two or more sessions.
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
                     color = if (isSelected) {
                         MaterialTheme.colorScheme.primary
                     } else {
@@ -269,7 +296,11 @@ private fun SandboxSubTabSelector(
                 modifier = Modifier
                     .handCursor()
                     .clip(RoundedCornerShape(50))
-                    .clickable { onSelectTab(tab) },
+                    .clickable { onSelectTab(tab) }
+                    .semantics {
+                        role = Role.Tab
+                        selected = isSelected
+                    },
                 shape = RoundedCornerShape(50),
                 color = if (isSelected) {
                     MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
@@ -284,7 +315,15 @@ private fun SandboxSubTabSelector(
                         SandboxSubTab.Packages -> stringResource(Res.string.settings_sandbox_subtab_packages)
                     },
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                    color = MaterialTheme.colorScheme.primary,
+                    // Only the selected tab is primary (and bold); unselected reads
+                    // as secondary so the active tab is visible at a glance
+                    // (Plan 4, Phase 4 — previously every tab was primary).
+                    color = if (isSelected) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
+                    fontWeight = if (isSelected) FontWeight.SemiBold else null,
                     style = MaterialTheme.typography.labelLarge,
                     maxLines = 1,
                 )
