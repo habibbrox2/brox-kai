@@ -67,6 +67,8 @@ class ChatViewModel(
         selectService = ::selectService,
         loadConversation = ::loadConversation,
         deleteConversation = ::deleteConversation,
+        renameConversation = ::renameConversation,
+        togglePinConversation = ::togglePinConversation,
         clearUnreadHeartbeat = ::clearUnreadHeartbeat,
         clearSnackbar = ::clearSnackbar,
         undoDeleteConversation = ::undoDeleteConversation,
@@ -177,6 +179,7 @@ class ChatViewModel(
                     updatedAt = it.updatedAt,
                     isHeartbeat = isHeartbeat,
                     isInteractive = isInteractive,
+                    isPinned = it.isPinned,
                 )
             }
         state.copy(
@@ -512,6 +515,18 @@ class ChatViewModel(
             delay(4.seconds)
             dataRepository.deleteConversation(id)
             _state.update { it.copy(pendingConversationDeletion = null) }
+        }
+    }
+
+    private fun renameConversation(id: String, title: String) {
+        viewModelScope.launch(backgroundDispatcher) {
+            dataRepository.renameConversation(id, title)
+        }
+    }
+
+    private fun togglePinConversation(id: String) {
+        viewModelScope.launch(backgroundDispatcher) {
+            dataRepository.togglePinConversation(id)
         }
     }
 

@@ -599,6 +599,8 @@ private fun ChatModeScreen(
                 scope.launch { drawerState.close() }
             },
             onDeleteConversation = uiState.actions.deleteConversation,
+            onRenameConversation = uiState.actions.renameConversation,
+            onTogglePinConversation = uiState.actions.togglePinConversation,
             onNavigateToDashboard = onNavigateToDashboard,
             onNavigateToSettings = onNavigateToSettings,
             onEnterInteractiveMode = uiState.actions.enterInteractiveMode.takeUnless { primaryIsOnDevice },

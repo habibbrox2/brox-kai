@@ -27,6 +27,8 @@ data class Conversation(
     val title: String = "",
     val type: String = TYPE_CHAT,
     val shellTranscript: List<TerminalLine> = emptyList(),
+    val isPinned: Boolean = false,
+    val pinnedAt: Long = 0L,
 ) {
     companion object {
         const val TYPE_CHAT = "chat"

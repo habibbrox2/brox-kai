@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlin.time.Clock
 
 expect fun readLegacyConversationFile(): ByteArray?
 expect fun deleteLegacyConversationFile()
@@ -100,6 +101,41 @@ class ConversationStorage(
             current.filter { it.id != id }
         }
         persistence.delete(id, mutableConversations.value)
+    }
+
+    fun renameConversation(id: String, title: String) {
+        var changed: Conversation? = null
+        mutableConversations.update { current ->
+            val index = current.indexOfFirst { it.id == id }
+            if (index < 0) {
+                current
+            } else {
+                val updated = current[index].copy(title = title)
+                changed = updated
+                current.toMutableList().apply { set(index, updated) }
+            }
+        }
+        changed?.let { persistence.save(it, mutableConversations.value) }
+    }
+
+    fun togglePinConversation(id: String) {
+        var changed: Conversation? = null
+        mutableConversations.update { current ->
+            val index = current.indexOfFirst { it.id == id }
+            if (index < 0) {
+                current
+            } else {
+                val existing = current[index]
+                val nowPinned = !existing.isPinned
+                val updated = existing.copy(
+                    isPinned = nowPinned,
+                    pinnedAt = if (nowPinned) Clock.System.now().toEpochMilliseconds() else 0L,
+                )
+                changed = updated
+                current.toMutableList().apply { set(index, updated) }
+            }
+        }
+        changed?.let { persistence.save(it, mutableConversations.value) }
     }
 
     private fun migrateLegacy() {

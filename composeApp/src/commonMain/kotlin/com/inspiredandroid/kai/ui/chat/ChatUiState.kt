@@ -64,6 +64,7 @@ data class ConversationSummary(
     val updatedAt: Long,
     val isHeartbeat: Boolean = false,
     val isInteractive: Boolean = false,
+    val isPinned: Boolean = false,
 )
 
 @Immutable

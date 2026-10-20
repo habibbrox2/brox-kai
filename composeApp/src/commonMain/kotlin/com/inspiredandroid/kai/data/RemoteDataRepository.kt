@@ -1698,6 +1698,14 @@ class RemoteDataRepository(
         sandboxController.closeSession(id)
     }
 
+    override fun renameConversation(id: String, title: String) {
+        conversationStorage.renameConversation(id, title)
+    }
+
+    override fun togglePinConversation(id: String) {
+        conversationStorage.togglePinConversation(id)
+    }
+
     override fun regenerate() {
         chatHistory.update { history ->
             val lastUserIndex = history.indexOfLast { it.role == History.Role.USER }
