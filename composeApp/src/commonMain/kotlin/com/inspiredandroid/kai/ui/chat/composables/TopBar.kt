@@ -5,12 +5,11 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dns
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -22,76 +21,80 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.inspiredandroid.kai.data.ServiceEntry
 import com.inspiredandroid.kai.ui.chat.ChatActions
 import com.inspiredandroid.kai.ui.handCursor
 import kai.composeapp.generated.resources.Res
-import kai.composeapp.generated.resources.chat_history_content_description
-import kai.composeapp.generated.resources.ic_add
-import kai.composeapp.generated.resources.ic_history
 import kai.composeapp.generated.resources.ic_settings
 import kai.composeapp.generated.resources.ic_volume_off
 import kai.composeapp.generated.resources.ic_volume_up
-import kai.composeapp.generated.resources.new_chat_content_description
 import kai.composeapp.generated.resources.sandbox_content_description
 import kai.composeapp.generated.resources.settings_content_description
 import kai.composeapp.generated.resources.toggle_speech_output_content_description
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import nl.marc_apps.tts.TextToSpeechInstance
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
+/**
+ * Chat workspace header (Plan 7, Phase 1).
+ *
+ * ChatGPT/Gemini-style layout: a drawer toggle on the left (only while the
+ * sidebar is not permanently visible), the model selector pill centered, and
+ * the quick actions (sandbox, speech output, settings) on the right. History
+ * and new-chat live in [AppSidebar] now, so the legacy leading icons are gone.
+ */
 @Composable
 internal fun TopBar(
     textToSpeech: TextToSpeechInstance? = null,
     isSpeechOutputEnabled: Boolean,
     isSpeaking: Boolean,
     actions: ChatActions,
-    isChatHistoryEmpty: Boolean,
-    hasSavedConversations: Boolean,
     onNavigateToSettings: () -> Unit,
-    onNavigateToDashboard: (() -> Unit)? = null,
     isSandboxAvailable: Boolean,
     isSandboxOpen: Boolean,
     isShellExecuting: Boolean,
     onToggleSandbox: () -> Unit,
-    onShowHistory: () -> Unit,
-    navigationTabBar: (@Composable () -> Unit)? = null,
+    onOpenDrawer: (() -> Unit)? = null,
+    services: ImmutableList<ServiceEntry> = persistentListOf(),
 ) {
-    if (navigationTabBar != null) {
-        Box(
-            modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 64.dp),
-        ) {
-            Row(modifier = Modifier.align(Alignment.CenterStart)) {
-                LeadingButtons(textToSpeech, isSpeechOutputEnabled, isSpeaking, actions, isChatHistoryEmpty, hasSavedConversations, onShowHistory, isSandboxAvailable, isSandboxOpen, isShellExecuting, onToggleSandbox)
-            }
-            Box(modifier = Modifier.align(Alignment.Center)) {
-                navigationTabBar()
-            }
-            Row(modifier = Modifier.align(Alignment.CenterEnd)) {
-                if (textToSpeech != null) {
-                    SpeechToggleButton(textToSpeech, isSpeechOutputEnabled, isSpeaking, actions)
-                }
-            }
-        }
-    } else {
-        Row {
-            LeadingButtons(textToSpeech, isSpeechOutputEnabled, isSpeaking, actions, isChatHistoryEmpty, hasSavedConversations, onShowHistory, isSandboxAvailable, isSandboxOpen, isShellExecuting, onToggleSandbox)
-            Spacer(Modifier.weight(1f))
-            if (textToSpeech != null) {
-                SpeechToggleButton(textToSpeech, isSpeechOutputEnabled, isSpeaking, actions)
-            }
-            // Without the tab bar (mobile/iOS) the dashboard still needs a way
-            // back from the chat workspace (Plan 6).
-            if (onNavigateToDashboard != null) {
+    Box(
+        modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 56.dp),
+    ) {
+        Row(modifier = Modifier.align(Alignment.CenterStart)) {
+            if (onOpenDrawer != null) {
                 IconButton(
                     modifier = Modifier.handCursor(),
-                    onClick = onNavigateToDashboard,
+                    onClick = onOpenDrawer,
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.Home,
-                        contentDescription = "Home",
+                        imageVector = Icons.Default.Menu,
+                        contentDescription = "Open navigation",
                         tint = MaterialTheme.colorScheme.onBackground,
                     )
                 }
+            }
+        }
+        Box(modifier = Modifier.align(Alignment.Center)) {
+            if (services.isNotEmpty()) {
+                ServiceSelector(
+                    services = services,
+                    onSelectService = actions.selectService,
+                    showLabel = true,
+                )
+            }
+        }
+        Row(modifier = Modifier.align(Alignment.CenterEnd)) {
+            if (isSandboxAvailable) {
+                SandboxToggleButton(
+                    isSandboxOpen = isSandboxOpen,
+                    isShellExecuting = isShellExecuting,
+                    onToggleSandbox = onToggleSandbox,
+                )
+            }
+            if (textToSpeech != null) {
+                SpeechToggleButton(textToSpeech, isSpeechOutputEnabled, isSpeaking, actions)
             }
             IconButton(
                 modifier = Modifier.handCursor(),
@@ -108,83 +111,43 @@ internal fun TopBar(
 }
 
 @Composable
-private fun LeadingButtons(
-    textToSpeech: TextToSpeechInstance?,
-    isSpeechOutputEnabled: Boolean,
-    isSpeaking: Boolean,
-    actions: ChatActions,
-    isChatHistoryEmpty: Boolean,
-    hasSavedConversations: Boolean,
-    onShowHistory: () -> Unit,
-    isSandboxAvailable: Boolean,
+private fun SandboxToggleButton(
     isSandboxOpen: Boolean,
     isShellExecuting: Boolean,
     onToggleSandbox: () -> Unit,
 ) {
-    if (hasSavedConversations) {
-        IconButton(
-            modifier = Modifier.handCursor(),
-            onClick = onShowHistory,
-        ) {
-            Icon(
-                imageVector = vectorResource(Res.drawable.ic_history),
-                contentDescription = stringResource(Res.string.chat_history_content_description),
-                tint = MaterialTheme.colorScheme.onBackground,
+    val flashAlpha = remember { Animatable(0f) }
+    LaunchedEffect(isShellExecuting) {
+        if (isShellExecuting) {
+            flashAlpha.snapTo(0.4f)
+            flashAlpha.animateTo(
+                targetValue = 0f,
+                animationSpec = tween(durationMillis = 800, easing = FastOutSlowInEasing),
             )
         }
     }
-    if (!isChatHistoryEmpty) {
-        IconButton(
-            modifier = Modifier.handCursor(),
-            onClick = {
-                if (isSpeechOutputEnabled && isSpeaking) {
-                    actions.setIsSpeaking(false, "")
-                    textToSpeech?.stop()
-                }
-                actions.startNewChat()
+    val primary = MaterialTheme.colorScheme.primary
+    val checkedContainer = primary.copy(alpha = 0.2f)
+    val flashContainer = primary.copy(alpha = flashAlpha.value)
+    IconToggleButton(
+        checked = isSandboxOpen,
+        onCheckedChange = { onToggleSandbox() },
+        modifier = Modifier.handCursor(),
+        colors = IconButtonDefaults.iconToggleButtonColors(
+            containerColor = flashContainer,
+            checkedContainerColor = if (flashAlpha.value > 0f) flashContainer else checkedContainer,
+            checkedContentColor = MaterialTheme.colorScheme.primary,
+        ),
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Dns,
+            contentDescription = stringResource(Res.string.sandbox_content_description),
+            tint = if (isSandboxOpen) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.onBackground
             },
-        ) {
-            Icon(
-                imageVector = vectorResource(Res.drawable.ic_add),
-                contentDescription = stringResource(Res.string.new_chat_content_description),
-                tint = MaterialTheme.colorScheme.onBackground,
-            )
-        }
-    }
-    if (isSandboxAvailable) {
-        val flashAlpha = remember { Animatable(0f) }
-        LaunchedEffect(isShellExecuting) {
-            if (isShellExecuting) {
-                flashAlpha.snapTo(0.4f)
-                flashAlpha.animateTo(
-                    targetValue = 0f,
-                    animationSpec = tween(durationMillis = 800, easing = FastOutSlowInEasing),
-                )
-            }
-        }
-        val primary = MaterialTheme.colorScheme.primary
-        val checkedContainer = primary.copy(alpha = 0.2f)
-        val flashContainer = primary.copy(alpha = flashAlpha.value)
-        IconToggleButton(
-            checked = isSandboxOpen,
-            onCheckedChange = { onToggleSandbox() },
-            modifier = Modifier.handCursor(),
-            colors = IconButtonDefaults.iconToggleButtonColors(
-                containerColor = flashContainer,
-                checkedContainerColor = if (flashAlpha.value > 0f) flashContainer else checkedContainer,
-                checkedContentColor = MaterialTheme.colorScheme.primary,
-            ),
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Dns,
-                contentDescription = stringResource(Res.string.sandbox_content_description),
-                tint = if (isSandboxOpen) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.onBackground
-                },
-            )
-        }
+        )
     }
 }
 

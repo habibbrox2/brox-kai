@@ -44,9 +44,9 @@ fun main() {
                 }
 
                 else -> {
-                    // Dashboard is the launch destination (Plan 6); only make
-                    // sure the browser history is bound to a real entry.
-                    navController.navigate(Dashboard) { launchSingleTop = true }
+                    // Chat is the launch destination (Plan 7); bind the browser
+                    // history to a real entry.
+                    navController.navigate(Home) { launchSingleTop = true }
                 }
             }
             navController.bindToBrowserNavigation { entry ->

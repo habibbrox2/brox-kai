@@ -46,10 +46,18 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.Surface
+import androidx.compose.material3.rememberDrawerState
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -83,12 +91,11 @@ import com.inspiredandroid.kai.data.supportsAgenticFlows
 import com.inspiredandroid.kai.getBackgroundDispatcher
 import com.inspiredandroid.kai.onDragAndDropEventDropped
 import com.inspiredandroid.kai.ui.build.KaiBuildScreen
+import com.inspiredandroid.kai.ui.chat.composables.AppSidebar
 import com.inspiredandroid.kai.ui.chat.composables.BotMessage
 import com.inspiredandroid.kai.ui.chat.composables.ChatComposer
-import com.inspiredandroid.kai.ui.chat.composables.ChatHistorySheet
 import com.inspiredandroid.kai.ui.chat.composables.ChatTimeline
 import com.inspiredandroid.kai.ui.chat.composables.CircleIconButton
-import com.inspiredandroid.kai.ui.chat.composables.ConversationRail
 import com.inspiredandroid.kai.ui.chat.composables.EmptyState
 import com.inspiredandroid.kai.ui.chat.composables.ErrorMessage
 import com.inspiredandroid.kai.ui.chat.composables.FreeProviderSuggestionsPanel
@@ -114,6 +121,8 @@ import com.inspiredandroid.kai.ui.sandbox.SandboxTabsContent
 import com.inspiredandroid.kai.ui.settings.SandboxUiState
 import com.inspiredandroid.kai.ui.settings.SandboxViewModel
 import kai.composeapp.generated.resources.Res
+import kai.composeapp.generated.resources.snackbar_conversation_deleted
+import kai.composeapp.generated.resources.snackbar_undo
 import kai.composeapp.generated.resources.fallback_answered_by
 import kai.composeapp.generated.resources.fallback_service_failed
 import kai.composeapp.generated.resources.fallback_trying_next
@@ -143,7 +152,6 @@ fun ChatScreen(
     onNavigateToDashboard: (() -> Unit)? = null,
     isSandboxAvailable: Boolean = false,
     isKaiBuildAvailable: Boolean = false,
-    navigationTabBar: (@Composable () -> Unit)? = null,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
@@ -154,7 +162,6 @@ fun ChatScreen(
         onNavigateToDashboard = onNavigateToDashboard,
         isSandboxAvailable = isSandboxAvailable,
         isKaiBuildAvailable = isKaiBuildAvailable,
-        navigationTabBar = navigationTabBar,
     )
 }
 
@@ -166,7 +173,6 @@ fun ChatScreenContent(
     onNavigateToDashboard: (() -> Unit)? = null,
     isSandboxAvailable: Boolean = false,
     isKaiBuildAvailable: Boolean = false,
-    navigationTabBar: (@Composable () -> Unit)? = null,
     initialSandboxOpen: Boolean = false,
     previewSandboxState: SandboxUiState? = null,
     previewSandboxLines: ImmutableList<TerminalLine> = persistentListOf(),
@@ -196,7 +202,6 @@ fun ChatScreenContent(
             onNavigateToDashboard = onNavigateToDashboard,
             isSandboxAvailable = isSandboxAvailable,
             onOpenKaiBuild = { isKaiBuildOpen = true }.takeIf { isKaiBuildAvailable },
-            navigationTabBar = navigationTabBar,
             initialSandboxOpen = initialSandboxOpen,
             previewSandboxState = previewSandboxState,
             previewSandboxLines = previewSandboxLines,
@@ -508,7 +513,6 @@ private fun ChatModeScreen(
     onNavigateToDashboard: (() -> Unit)?,
     isSandboxAvailable: Boolean,
     onOpenKaiBuild: (() -> Unit)?,
-    navigationTabBar: (@Composable () -> Unit)?,
     initialSandboxOpen: Boolean = false,
     previewSandboxState: SandboxUiState? = null,
     previewSandboxLines: ImmutableList<TerminalLine> = persistentListOf(),
@@ -522,6 +526,8 @@ private fun ChatModeScreen(
     }
     val keyboardController = LocalSoftwareKeyboardController.current
     val snackbarHostState = remember { SnackbarHostState() }
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(uiState.composerPrefill) {
         val prefill = uiState.composerPrefill ?: return@LaunchedEffect
@@ -552,6 +558,21 @@ private fun ChatModeScreen(
         uiState.actions.clearSnackbar()
     }
 
+    val deletedMessage = stringResource(Res.string.snackbar_conversation_deleted)
+    val undoLabel = stringResource(Res.string.snackbar_undo)
+    LaunchedEffect(uiState.pendingConversationDeletion) {
+        val pendingId = uiState.pendingConversationDeletion ?: return@LaunchedEffect
+        snackbarHostState.currentSnackbarData?.dismiss()
+        val result = snackbarHostState.showSnackbar(
+            message = deletedMessage,
+            actionLabel = undoLabel,
+            duration = SnackbarDuration.Short,
+        )
+        if (result == SnackbarResult.ActionPerformed) {
+            uiState.actions.undoDeleteConversation()
+        }
+    }
+
     val filteredConversations = remember(uiState.savedConversations, uiState.pendingConversationDeletion) {
         val pendingId = uiState.pendingConversationDeletion
         if (pendingId != null) uiState.savedConversations.filter { it.id != pendingId }.toImmutableList() else uiState.savedConversations
@@ -564,191 +585,200 @@ private fun ChatModeScreen(
         }
     }
 
+    val primaryIsOnDevice = uiState.availableServices
+        .firstOrNull()
+        ?.let { Service.fromId(it.serviceId).isOnDevice } == true
+
+    val sidebar: @Composable () -> Unit = {
+        AppSidebar(
+            uiState = uiState,
+            filteredConversations = filteredConversations,
+            onNewChat = { uiState.actions.startNewChat() },
+            onConversationSelected = { id ->
+                uiState.actions.loadConversation(id)
+                isSandboxOpen = false
+                scope.launch { drawerState.close() }
+            },
+            onDeleteConversation = uiState.actions.deleteConversation,
+            onNavigateToDashboard = onNavigateToDashboard,
+            onNavigateToSettings = onNavigateToSettings,
+            onEnterInteractiveMode = uiState.actions.enterInteractiveMode.takeUnless { primaryIsOnDevice },
+            onOpenKaiBuild = onOpenKaiBuild,
+        )
+    }
+
     BoxWithConstraints(Modifier.fillMaxSize()) {
         val expanded = chatWindowSizeClass(maxWidth) == ChatWindowSizeClass.Expanded
         val isPreview = LocalInspectionMode.current
         val sandboxViewModel = if (isSandboxOpen && !isPreview) koinViewModel<SandboxViewModel>() else null
         val sandboxState = if (isSandboxOpen) (sandboxViewModel?.state?.collectAsStateWithLifecycle()?.value ?: previewSandboxState ?: SandboxUiState()) else null
-        ChatShell(
-            header = {
-                TopBar(
-                    textToSpeech = textToSpeech,
-                    isSpeechOutputEnabled = uiState.isSpeechOutputEnabled,
-                    isSpeaking = uiState.isSpeaking,
-                    actions = uiState.actions,
-                    isChatHistoryEmpty = uiState.history.isEmpty(),
-                    hasSavedConversations = filteredConversations.any { it.id != uiState.currentConversationId },
-                    onNavigateToSettings = onNavigateToSettings,
-                    onNavigateToDashboard = onNavigateToDashboard,
-                    isSandboxAvailable = isSandboxAvailable,
-                    isSandboxOpen = isSandboxOpen,
-                    isShellExecuting = isShellExecuting,
-                    onToggleSandbox = { isSandboxOpen = !isSandboxOpen },
-                    onShowHistory = {
-                        keyboardController?.hide()
-                        showHistorySheet = true
-                    },
-                    navigationTabBar = navigationTabBar,
-                )
-            },
-            conversationRail = {
-                ConversationRail(
-                    uiState = uiState,
-                    filteredConversations = filteredConversations,
-                    onNewChat = uiState.actions.startNewChat,
-                    onConversationSelected = { id ->
-                        uiState.actions.loadConversation(id)
-                        isSandboxOpen = false
-                    },
-                )
-            },
-            mainContent = {
-                HeartbeatBanner(
-                    visible = uiState.hasUnreadHeartbeat,
-                    onTap = {
-                        uiState.heartbeatConversationId?.let { uiState.actions.loadConversation(it) }
-                        uiState.actions.clearUnreadHeartbeat()
-                        isSandboxOpen = false
-                    },
-                    onDismiss = {
-                        uiState.actions.clearUnreadHeartbeat()
-                    },
-                )
 
-                PendingSmsBanners(
-                    drafts = uiState.smsDrafts,
-                    onSend = uiState.actions.sendSmsDraft,
-                    onDiscard = uiState.actions.discardSmsDraft,
-                )
-
-                uiState.warning?.let { warning ->
-                    Text(
-                        text = stringResource(warning),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
-                    )
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            gesturesEnabled = !expanded,
+            drawerContent = {
+                Surface(
+                    modifier = Modifier.width(300.dp).fillMaxHeight(),
+                    color = MaterialTheme.colorScheme.surfaceContainerLow,
+                    tonalElevation = 2.dp,
+                ) {
+                    sidebar()
                 }
-
-                if (isSandboxOpen && !expanded) {
-                    val sandboxState = sandboxState ?: (previewSandboxState ?: SandboxUiState())
-                    SandboxTabsContent(
-                        sandboxState = sandboxState,
-                        onSetupSandbox = sandboxViewModel?.let { { it.onSetupSandbox() } } ?: {},
-                        onCancelSandbox = sandboxViewModel?.let { { it.onCancelSandbox() } } ?: {},
-                        previewLines = previewSandboxLines,
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
+            },
+        ) {
+            ChatShell(
+                header = {
+                    TopBar(
+                        textToSpeech = textToSpeech,
+                        isSpeechOutputEnabled = uiState.isSpeechOutputEnabled,
+                        isSpeaking = uiState.isSpeaking,
+                        actions = uiState.actions,
+                        onNavigateToSettings = onNavigateToSettings,
+                        isSandboxAvailable = isSandboxAvailable,
+                        isSandboxOpen = isSandboxOpen,
+                        isShellExecuting = isShellExecuting,
+                        onToggleSandbox = { isSandboxOpen = !isSandboxOpen },
+                        onOpenDrawer = {
+                            scope.launch { keyboardController?.hide(); drawerState.open() }
+                            Unit
+                        }.takeIf { !expanded },
+                        services = uiState.availableServices,
                     )
-                } else {
-                    Box(Modifier.weight(1f)) {
-                        var isDropping by remember {
-                            mutableStateOf(false)
-                        }
-                        val addFile by rememberUpdatedState(uiState.actions.addFile)
-                        val canAcceptDrop by rememberUpdatedState(uiState.supportedFileExtensions.isNotEmpty())
-                        val shouldStartDragAndDrop = remember { { _: DragAndDropEvent -> canAcceptDrop } }
-                        val dropTarget = remember {
-                            object : DragAndDropTarget {
-                                override fun onEntered(event: DragAndDropEvent) {
-                                    super.onEntered(event)
-                                    isDropping = true
-                                }
-                                override fun onExited(event: DragAndDropEvent) {
-                                    super.onExited(event)
-                                    isDropping = false
-                                }
-                                override fun onDrop(event: DragAndDropEvent): Boolean {
-                                    val file = onDragAndDropEventDropped(event)
-                                    if (file != null) addFile(file)
-                                    isDropping = false
-                                    return file != null
+                },
+                conversationRail = if (expanded) { { sidebar() } } else null,
+                mainContent = {
+                    HeartbeatBanner(
+                        visible = uiState.hasUnreadHeartbeat,
+                        onTap = {
+                            uiState.heartbeatConversationId?.let { uiState.actions.loadConversation(it) }
+                            uiState.actions.clearUnreadHeartbeat()
+                            isSandboxOpen = false
+                        },
+                        onDismiss = {
+                            uiState.actions.clearUnreadHeartbeat()
+                        },
+                    )
+
+                    PendingSmsBanners(
+                        drafts = uiState.smsDrafts,
+                        onSend = uiState.actions.sendSmsDraft,
+                        onDiscard = uiState.actions.discardSmsDraft,
+                    )
+
+                    uiState.warning?.let { warning ->
+                        Text(
+                            text = stringResource(warning),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
+                        )
+                    }
+
+                    if (isSandboxOpen && !expanded) {
+                        val sandboxState = sandboxState ?: (previewSandboxState ?: SandboxUiState())
+                        SandboxTabsContent(
+                            sandboxState = sandboxState,
+                            onSetupSandbox = sandboxViewModel?.let { { it.onSetupSandbox() } } ?: {},
+                            onCancelSandbox = sandboxViewModel?.let { { it.onCancelSandbox() } } ?: {},
+                            previewLines = previewSandboxLines,
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                        )
+                    } else {
+                        Box(Modifier.weight(1f)) {
+                            var isDropping by remember {
+                                mutableStateOf(false)
+                            }
+                            val addFile by rememberUpdatedState(uiState.actions.addFile)
+                            val canAcceptDrop by rememberUpdatedState(uiState.supportedFileExtensions.isNotEmpty())
+                            val shouldStartDragAndDrop = remember { { _: DragAndDropEvent -> canAcceptDrop } }
+                            val dropTarget = remember {
+                                object : DragAndDropTarget {
+                                    override fun onEntered(event: DragAndDropEvent) {
+                                        super.onEntered(event)
+                                        isDropping = true
+                                    }
+                                    override fun onExited(event: DragAndDropEvent) {
+                                        super.onExited(event)
+                                        isDropping = false
+                                    }
+                                    override fun onDrop(event: DragAndDropEvent): Boolean {
+                                        val file = onDragAndDropEventDropped(event)
+                                        if (file != null) addFile(file)
+                                        isDropping = false
+                                        return file != null
+                                    }
                                 }
                             }
-                        }
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .blur(radius = if (isDropping) 4.dp else 0.dp)
-                                .dragAndDropTarget(
-                                    shouldStartDragAndDrop = shouldStartDragAndDrop,
-                                    target = dropTarget,
-                                ),
-                        ) {
-                            if (uiState.history.isEmpty()) {
-                                // Interactive UI mode isn't offered on on-device LiteRT: the kai-ui
-                                // component schema is too large for small Gemma models to coherently
-                                // attend to, and even the minimal variant we tried was unreliable.
-                                val primaryIsOnDevice = uiState.availableServices
-                                    .firstOrNull()
-                                    ?.let { Service.fromId(it.serviceId).isOnDevice } == true
-                                EmptyState(
-                                    modifier = Modifier.fillMaxWidth().weight(1f).widthIn(max = 760.dp),
-                                    isUsingSharedKey = uiState.showPrivacyInfo,
-                                    onStartInteractiveMode = uiState.actions.enterInteractiveMode
-                                        .takeUnless { primaryIsOnDevice },
-                                    onOpenKaiBuild = onOpenKaiBuild,
-                                    onQuickStart = { prompt -> uiState.actions.ask(prompt) },
-                                )
-                            } else {
-                                ChatTimeline(
-                                    uiState = uiState,
-                                    textToSpeech = textToSpeech,
-                                    modifier = Modifier.fillMaxWidth().weight(1f),
-                                )
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .blur(radius = if (isDropping) 4.dp else 0.dp)
+                                    .dragAndDropTarget(
+                                        shouldStartDragAndDrop = shouldStartDragAndDrop,
+                                        target = dropTarget,
+                                    ),
+                            ) {
+                                if (uiState.history.isEmpty()) {
+                                    val primaryIsOnDeviceLocal = primaryIsOnDevice
+                                    EmptyState(
+                                        modifier = Modifier.fillMaxWidth().weight(1f).widthIn(max = 760.dp),
+                                        isUsingSharedKey = uiState.showPrivacyInfo,
+                                        onStartInteractiveMode = uiState.actions.enterInteractiveMode
+                                            .takeUnless { primaryIsOnDeviceLocal },
+                                        onOpenKaiBuild = onOpenKaiBuild,
+                                        onQuickStart = { prompt -> uiState.actions.ask(prompt) },
+                                    )
+                                } else {
+                                    ChatTimeline(
+                                        uiState = uiState,
+                                        textToSpeech = textToSpeech,
+                                        modifier = Modifier.fillMaxWidth().weight(1f),
+                                    )
+                                }
                             }
                         }
                     }
-                }
 
-                if (!isSandboxOpen) {
-                    ChatComposer(
-                        uiState = uiState,
-                        questionInputText = questionInputText,
-                        onTextStateChange = { questionInputText = it },
-                        isSandboxOpen = isSandboxOpen,
-                    )
-                }
-            },
-            sidePanel = if (isSandboxOpen && expanded) {
-                {
-                    val sbState = sandboxState ?: (previewSandboxState ?: SandboxUiState())
-                    SandboxTabsContent(
-                        sandboxState = sbState,
-                        onSetupSandbox = sandboxViewModel?.let { { it.onSetupSandbox() } } ?: {},
-                        onCancelSandbox = sandboxViewModel?.let { { it.onCancelSandbox() } } ?: {},
-                        previewLines = previewSandboxLines,
-                        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
-                    )
-                }
-            } else {
-                null
-            },
-            overlays = {
-                SnackbarHost(
-                    hostState = snackbarHostState,
-                    modifier = Modifier.align(BottomCenter).padding(bottom = 80.dp),
-                ) { data ->
-                    Snackbar(snackbarData = data)
-                }
-                if (showHistorySheet) {
-                    ChatHistorySheet(
-                        conversations = filteredConversations,
-                        currentConversationId = uiState.currentConversationId,
-                        pendingConversationDeletion = uiState.pendingConversationDeletion,
-                        actions = uiState.actions,
-                        onDismiss = { showHistorySheet = false },
-                        onConversationSelected = { isSandboxOpen = false },
-                    )
-                }
-            },
-            modifier = Modifier.background(MaterialTheme.colorScheme.background).navigationBarsPadding().statusBarsPadding().imePadding(),
-        )
+                    if (!isSandboxOpen) {
+                        ChatComposer(
+                            uiState = uiState,
+                            questionInputText = questionInputText,
+                            onTextStateChange = { questionInputText = it },
+                            isSandboxOpen = isSandboxOpen,
+                        )
+                    }
+                },
+                sidePanel = if (isSandboxOpen && expanded) {
+                    {
+                        val sbState = sandboxState ?: (previewSandboxState ?: SandboxUiState())
+                        SandboxTabsContent(
+                            sandboxState = sbState,
+                            onSetupSandbox = sandboxViewModel?.let { { it.onSetupSandbox() } } ?: {},
+                            onCancelSandbox = sandboxViewModel?.let { { it.onCancelSandbox() } } ?: {},
+                            previewLines = previewSandboxLines,
+                            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+                        )
+                    }
+                } else {
+                    null
+                },
+                overlays = {
+                    SnackbarHost(
+                        hostState = snackbarHostState,
+                        modifier = Modifier.align(BottomCenter).padding(bottom = 80.dp),
+                    ) { data ->
+                        Snackbar(snackbarData = data)
+                    }
+                },
+                modifier = Modifier.background(MaterialTheme.colorScheme.background).navigationBarsPadding().statusBarsPadding().imePadding(),
+            )
+        }
     }
 }
 

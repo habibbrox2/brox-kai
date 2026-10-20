@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -43,6 +44,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.inspiredandroid.kai.BackIcon
 import com.inspiredandroid.kai.KaiBuildController
 import com.inspiredandroid.kai.SandboxController
 import com.inspiredandroid.kai.ui.chat.ChatUiState
@@ -89,6 +91,7 @@ fun DashboardScreen(
     onOpenSettings: (SettingsTab) -> Unit,
     onStartDesign: (String) -> Unit,
     onOpenConversation: (String) -> Unit,
+    onNavigateBack: (() -> Unit)? = null,
     navigationTabBar: (@Composable () -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
@@ -111,6 +114,7 @@ fun DashboardScreen(
         onOpenSettings = onOpenSettings,
         onStartDesign = onStartDesign,
         onOpenConversation = onOpenConversation,
+        onNavigateBack = onNavigateBack,
         navigationTabBar = navigationTabBar,
         modifier = modifier,
     )
@@ -130,6 +134,7 @@ internal fun DashboardScreenContent(
     onOpenSettings: (SettingsTab) -> Unit,
     onStartDesign: (String) -> Unit,
     onOpenConversation: (String) -> Unit,
+    onNavigateBack: (() -> Unit)? = null,
     navigationTabBar: (@Composable () -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
@@ -145,7 +150,10 @@ internal fun DashboardScreenContent(
                 .padding(vertical = 20.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
-            DashboardHeader(navigationTabBar = navigationTabBar)
+            DashboardHeader(
+                navigationTabBar = navigationTabBar,
+                onNavigateBack = onNavigateBack,
+            )
             ReadinessCard(state = state, onOpenSettings = onOpenSettings)
             DashboardActionGrid(
                 state = state,
@@ -169,6 +177,7 @@ internal fun DashboardScreenContent(
 @Composable
 private fun DashboardHeader(
     navigationTabBar: (@Composable () -> Unit)?,
+    onNavigateBack: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     val brand: @Composable () -> Unit = {
@@ -176,6 +185,18 @@ private fun DashboardHeader(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            if (onNavigateBack != null) {
+                IconButton(
+                    onClick = onNavigateBack,
+                    modifier = Modifier.handCursor(),
+                ) {
+                    Icon(
+                        imageVector = BackIcon,
+                        contentDescription = "Back to chat",
+                        tint = MaterialTheme.colorScheme.onBackground,
+                    )
+                }
+            }
             Image(
                 painter = painterResource(Res.drawable.logo),
                 contentDescription = null,
