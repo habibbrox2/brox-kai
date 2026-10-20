@@ -1,4 +1,15 @@
-## Brox Kai v2.0 — Services & Sponsors UI Upgrade (Plan 5)
+## Brox Kai v2.0 — Desktop Shell: `sleep` Allowed + Cancellation Test Fix
+
+### Added
+- Desktop `ShellCommandTool` allowlist now includes `sleep` — side-effect-free wait primitive, bounded by the existing per-call timeout (Android shell is unaffected: it runs inside the proot sandbox)
+
+### Fixed
+- `ShellCommandToolTest > cancelling a running command kills it` failed on CI: the P0-B test rewrite used `sleep 3`, which the fail-closed allowlist rejects, so the command never started and nothing was ever cancelled (the test body skips on Windows, so it only surfaced on the Linux runner)
+- Cancellation test now runs `sleep 27.314` (odd duration, collision-proof) and verifies via `ProcessHandle` that the process is actually killed after cancellation, replacing the vestigial marker-file check that nothing ever created
+
+---
+
+## Brox Kai v2.0 - Services & Sponsors UI Upgrade (Plan 5)
 
 ### Added
 

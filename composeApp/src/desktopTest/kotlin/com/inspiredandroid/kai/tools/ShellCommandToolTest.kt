@@ -3,7 +3,6 @@ package com.inspiredandroid.kai.tools
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
-import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -33,21 +32,23 @@ class ShellCommandToolTest {
     @Test
     fun `cancelling a running command kills it`() = runBlocking {
         if (isWindows) return@runBlocking
-        val marker = File.createTempFile("kai-shell-cancel", ".txt").apply { delete() }
-        try {
-            val elapsed = measureTime {
-                assertFailsWith<CancellationException> {
-                    withTimeout(1.seconds) {
-                        ShellCommandTool.execute(mapOf("command" to "sleep 3"))
-                    }
+        // Odd duration so the process scan below cannot collide with an
+        // unrelated `sleep` running elsewhere on the machine.
+        val elapsed = measureTime {
+            assertFailsWith<CancellationException> {
+                withTimeout(1.seconds) {
+                    ShellCommandTool.execute(mapOf("command" to "sleep 27.314"))
                 }
             }
-            assertTrue(elapsed < 3.seconds, "cancellation took $elapsed")
-
-            Thread.sleep(4_000)
-            assertFalse(marker.exists(), "command kept running after cancellation")
-        } finally {
-            marker.delete()
         }
+        assertTrue(elapsed < 3.seconds, "cancellation took $elapsed")
+
+        // The call returned promptly; now prove the command itself did not
+        // survive the cancellation (destroyTree in the finally block kills it).
+        Thread.sleep(1_000)
+        val survived = ProcessHandle.allProcesses().anyMatch { handle ->
+            handle.isAlive && handle.info().commandLine().orElse("").contains("sleep 27.314")
+        }
+        assertFalse(survived, "command kept running after cancellation")
     }
 }

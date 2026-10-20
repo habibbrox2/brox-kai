@@ -39,7 +39,7 @@ private val ALLOWED_EXECUTABLES = setOf(
     // Network (read-only)
     "curl", "wget",
     // Misc
-    "sort", "uniq", "diff", "sed", "awk", "tr", "cut", "tee", "xargs",
+    "sort", "uniq", "diff", "sed", "awk", "tr", "cut", "tee", "xargs", "sleep",
 )
 
 // Dangerous flags that are never allowed
