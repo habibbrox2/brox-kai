@@ -146,57 +146,51 @@ internal fun BotMessage(
         }
     }
     if (message.isEmpty()) return
-    Row(Modifier.padding(horizontal = 8.dp)) {
-        if (textToSpeech != null) {
-            val componentScope = rememberCoroutineScope()
-            SmallIconButton(
-                iconResource = if (isSpeaking) Res.drawable.ic_stop else Res.drawable.ic_volume_up,
-                contentDescription = stringResource(Res.string.bot_message_speech_content_description),
-                onClick = {
-                    componentScope.launch(getBackgroundDispatcher()) {
-                        textToSpeech.stop()
-                        if (isSpeaking) {
-                            setIsSpeaking(false)
-                        } else {
-                            setIsSpeaking(true)
-                            try {
-                                textToSpeech.say(text = message.toSpeakableText())
-                            } catch (ignore: TextToSpeechSynthesisInterruptedError) {
-                                // Expected interruption - no action needed
-                            } catch (e: Exception) {
-                                // Handle TTS errors gracefully (service failure, audio issues, etc.)
-                            }
-                            setIsSpeaking(false)
+    var thumbsUp by remember { mutableStateOf(false) }
+    var thumbsDown by remember { mutableStateOf(false) }
+    val copyToClipboard = rememberCopyToClipboard()
+    val componentScope = rememberCoroutineScope()
+    val uriHandler = LocalUriHandler.current
+    MessageActionRow(
+        modifier = Modifier.padding(horizontal = 8.dp),
+        onCopy = { copyToClipboard(message) },
+        onSpeak = if (textToSpeech != null) {
+            {
+                componentScope.launch(getBackgroundDispatcher()) {
+                    textToSpeech.stop()
+                    if (isSpeaking) {
+                        setIsSpeaking(false)
+                    } else {
+                        setIsSpeaking(true)
+                        try {
+                            textToSpeech.say(text = message.toSpeakableText())
+                        } catch (ignore: TextToSpeechSynthesisInterruptedError) {
+                            // Expected interruption - no action needed
+                        } catch (e: Exception) {
+                            // Handle TTS errors gracefully
                         }
+                        setIsSpeaking(false)
                     }
-                },
-            )
-        }
-        val copyToClipboard = rememberCopyToClipboard()
-        SmallIconButton(
-            iconResource = Res.drawable.ic_copy,
-            contentDescription = stringResource(Res.string.bot_message_copy_content_description),
-            onClick = { copyToClipboard(message) },
-        )
-        run {
-            val uriHandler = LocalUriHandler.current
-            SmallIconButton(
-                iconResource = Res.drawable.ic_flag,
-                contentDescription = stringResource(Res.string.bot_message_flag_content_description),
-                onClick = {
-                    uriHandler.openUri("https://form.jotform.com/250014908169355")
-                },
-            )
-        }
-        if (onRegenerate != null) {
-            SmallIconButton(
-                iconResource = Res.drawable.ic_refresh,
-                contentDescription = stringResource(Res.string.bot_message_regenerate_content_description),
-                onClick = onRegenerate,
-            )
-        }
-        Spacer(Modifier.weight(1f))
-    }
+                }
+            }
+        } else {
+            null
+        },
+        onThumbsUp = {
+            thumbsUp = !thumbsUp
+            if (thumbsUp) thumbsDown = false
+        },
+        onThumbsDown = {
+            thumbsDown = !thumbsDown
+            if (thumbsDown) thumbsUp = false
+        },
+        thumbsUpSelected = thumbsUp,
+        thumbsDownSelected = thumbsDown,
+        onRetry = onRegenerate,
+        onFlag = {
+            uriHandler.openUri("https://form.jotform.com/250014908169355")
+        },
+    )
 }
 
 @Composable

@@ -12,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -25,15 +26,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import com.inspiredandroid.kai.ui.rememberCopyToClipboard
-import kai.composeapp.generated.resources.Res
-import kai.composeapp.generated.resources.bot_message_copy_content_description
-import org.jetbrains.compose.resources.stringResource
 
 @Composable
 internal fun CodeFenceBlock(
     language: String?,
     code: String,
     modifier: Modifier = Modifier,
+    onOpenInEditor: ((String) -> Unit)? = null,
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val highlightColors = remember(colorScheme) { codeHighlightColors(colorScheme) }
@@ -58,15 +57,29 @@ internal fun CodeFenceBlock(
                     text = language?.takeIf { it.isNotBlank() } ?: "",
                     style = MaterialTheme.typography.labelSmall,
                 )
-                IconButton(
-                    onClick = { copyToClipboard(code) },
-                    modifier = Modifier.size(32.dp),
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.ContentCopy,
-                        contentDescription = stringResource(Res.string.bot_message_copy_content_description),
-                        modifier = Modifier.size(16.dp),
-                    )
+                Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                    if (onOpenInEditor != null) {
+                        IconButton(
+                            onClick = { onOpenInEditor(code) },
+                            modifier = Modifier.size(32.dp),
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = "Open in editor",
+                                modifier = Modifier.size(16.dp),
+                            )
+                        }
+                    }
+                    IconButton(
+                        onClick = { copyToClipboard(code) },
+                        modifier = Modifier.size(32.dp),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.ContentCopy,
+                            contentDescription = "Copy code",
+                            modifier = Modifier.size(16.dp),
+                        )
+                    }
                 }
             }
             HorizontalDivider(color = colorScheme.outline.copy(alpha = 0.2f))
