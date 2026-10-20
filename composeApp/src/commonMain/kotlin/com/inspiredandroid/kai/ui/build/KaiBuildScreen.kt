@@ -161,6 +161,7 @@ internal fun KaiBuildScreenContent(
                     activeSessionId = state.build.activeSessionId,
                     installedAgents = installedAgents,
                     filesSelected = filesOpen,
+                    project = project,
                     onBack = actions.closeProject,
                     onSelectSession = { id ->
                         filesOpen = false

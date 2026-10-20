@@ -56,6 +56,7 @@ internal fun BuildSessionBar(
     activeSessionId: String?,
     installedAgents: ImmutableList<BuildAgent>,
     filesSelected: Boolean,
+    project: String,
     onBack: () -> Unit,
     onSelectSession: (String) -> Unit,
     onCloseSession: (String) -> Unit,
@@ -76,6 +77,17 @@ internal fun BuildSessionBar(
             )
         }
 
+        // Project-aware header: name the active project so the session strip reads
+        // as a workspace, not a bare list of shells (Plan 3, Phase 3).
+        Text(
+            text = project,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSurface,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.padding(end = 8.dp),
+        )
+
         Row(
             modifier = Modifier.weight(1f).horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -95,6 +107,16 @@ internal fun BuildSessionBar(
                 label = stringResource(Res.string.kai_build_files_tab),
                 selected = filesSelected,
                 onSelect = onSelectFiles,
+            )
+        }
+
+        // Build/session status next to the title instead of only inside terminal
+        // text (Plan 3, Phase 3, item 6). Derived purely from the session's busy flag.
+        val activeSession = sessions.firstOrNull { it.id == activeSessionId }
+        if (activeSession != null) {
+            BuildStatusPill(
+                label = if (activeSession.busy) "Running" else "Idle",
+                kind = if (activeSession.busy) BuildStatusKind.Running else BuildStatusKind.Idle,
             )
         }
 
