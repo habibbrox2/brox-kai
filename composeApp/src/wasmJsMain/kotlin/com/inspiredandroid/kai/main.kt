@@ -40,11 +40,13 @@ fun main() {
             val initRoute = window.location.hash.substringAfter('#', "")
             when {
                 initRoute.endsWith("settings") -> {
-                    navController.navigate(Settings)
+                    navController.navigate(Settings())
                 }
 
                 else -> {
-                    navController.navigate(Home)
+                    // Dashboard is the launch destination (Plan 6); only make
+                    // sure the browser history is bound to a real entry.
+                    navController.navigate(Dashboard) { launchSingleTop = true }
                 }
             }
             navController.bindToBrowserNavigation { entry ->

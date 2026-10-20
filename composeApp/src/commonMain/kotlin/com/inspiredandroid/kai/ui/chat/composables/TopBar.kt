@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dns
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -47,6 +48,7 @@ internal fun TopBar(
     isChatHistoryEmpty: Boolean,
     hasSavedConversations: Boolean,
     onNavigateToSettings: () -> Unit,
+    onNavigateToDashboard: (() -> Unit)? = null,
     isSandboxAvailable: Boolean,
     isSandboxOpen: Boolean,
     isShellExecuting: Boolean,
@@ -76,6 +78,20 @@ internal fun TopBar(
             Spacer(Modifier.weight(1f))
             if (textToSpeech != null) {
                 SpeechToggleButton(textToSpeech, isSpeechOutputEnabled, isSpeaking, actions)
+            }
+            // Without the tab bar (mobile/iOS) the dashboard still needs a way
+            // back from the chat workspace (Plan 6).
+            if (onNavigateToDashboard != null) {
+                IconButton(
+                    modifier = Modifier.handCursor(),
+                    onClick = onNavigateToDashboard,
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Home,
+                        contentDescription = "Home",
+                        tint = MaterialTheme.colorScheme.onBackground,
+                    )
+                }
             }
             IconButton(
                 modifier = Modifier.handCursor(),

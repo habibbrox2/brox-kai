@@ -22,6 +22,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -90,6 +91,7 @@ data class KaiBuildActions(
 fun KaiBuildScreen(
     onExit: () -> Unit,
     modifier: Modifier = Modifier,
+    initialProject: String? = null,
     viewModel: KaiBuildViewModel = koinViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -115,6 +117,20 @@ fun KaiBuildScreen(
             sendMouse = viewModel::sendMouse,
             resizeTerminal = viewModel::resizeTerminal,
         )
+    }
+
+    // A dashboard resume link (Plan 6) opens the project once its environment
+    // is ready; a stale link (project or Debian gone) is dropped instead of
+    // showing a broken terminal.
+    var pendingProject by rememberSaveable { mutableStateOf(initialProject) }
+    LaunchedEffect(state.build) {
+        val pending = pendingProject ?: return@LaunchedEffect
+        if (state.build.isReady) {
+            if (pending in state.build.projects) {
+                viewModel.openProject(pending)
+            }
+            pendingProject = null
+        }
     }
 
     KaiBuildScreenContent(state = state, actions = actions, onExit = onExit, modifier = modifier)

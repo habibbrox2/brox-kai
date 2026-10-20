@@ -558,6 +558,15 @@ class ChatViewModel(
         }
     }
 
+    /**
+     * Dashboard Design card (Plan 6): a fresh chat whose composer opens with a
+     * design-starter prompt. The composer is the whole Design destination
+     * contract — there is no separate design workspace yet.
+     */
+    fun startDesignChat(prompt: String) {
+        startNewChat(composerPrefill = prompt)
+    }
+
     private fun startNewChat(composerPrefill: String? = null) {
         currentJob?.cancel()
         currentJob = null

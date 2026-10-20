@@ -29,6 +29,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.toRoute
 import coil3.ImageLoader
 import coil3.PlatformContext
 import coil3.compose.setSingletonImageLoaderFactory
@@ -42,12 +43,15 @@ import com.inspiredandroid.kai.tools.SetupPermissionHandler
 import com.inspiredandroid.kai.ui.DarkColorScheme
 import com.inspiredandroid.kai.ui.LightColorScheme
 import com.inspiredandroid.kai.ui.Theme
+import com.inspiredandroid.kai.ui.build.KaiBuildScreen
 import com.inspiredandroid.kai.ui.chat.ChatScreen
 import com.inspiredandroid.kai.ui.chat.ChatViewModel
 import com.inspiredandroid.kai.ui.components.FullScreenImageHost
+import com.inspiredandroid.kai.ui.dashboard.DashboardScreen
 import com.inspiredandroid.kai.ui.handCursor
 import com.inspiredandroid.kai.ui.rememberSandboxAwareUriHandler
 import com.inspiredandroid.kai.ui.settings.SettingsScreen
+import com.inspiredandroid.kai.ui.settings.SettingsTab
 import com.inspiredandroid.kai.ui.withBlackBackground
 import kai.composeapp.generated.resources.Res
 import kai.composeapp.generated.resources.tab_chat
@@ -63,12 +67,21 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.dsl.koinConfiguration
 
 @Serializable
+@SerialName("dashboard")
+object Dashboard
+
+@Serializable
 @SerialName("home")
 object Home
 
 @Serializable
 @SerialName("settings")
-object Settings
+data class Settings(val tab: SettingsTab? = null)
+
+/** Kai Build as a real destination (Plan 6), resumed into [project] when set. */
+@Serializable
+@SerialName("build")
+data class Build(val project: String = "")
 
 @Composable
 fun App(
@@ -165,32 +178,51 @@ private fun AppContent(
         Theme(colorScheme = effectiveColorScheme) {
             FullScreenImageHost {
                 val chatViewModel: ChatViewModel = koinViewModel()
+                val chatUiState by chatViewModel.state.collectAsStateWithLifecycle()
                 val showTabBar = currentPlatform !is Platform.Mobile
                 val currentBackStackEntry by navController.currentBackStackEntryAsState()
-                val isHome = currentBackStackEntry?.destination?.route == "home"
 
                 val navigationTabBar: @Composable () -> Unit = {
                     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
-                    val count = 2
+                    val count = 3
+                    // Typed destinations expose pattern routes ("settings?tab={tab}"),
+                    // so prefix checks cover both objects and parameterized routes.
+                    val destinationRoute = currentBackStackEntry?.destination?.route.orEmpty()
+                    val onDashboard = destinationRoute.startsWith("dashboard")
+                    val onChat = destinationRoute == "home"
+                    val onSettings = destinationRoute.startsWith("settings")
                     SingleChoiceSegmentedButtonRow {
                         SegmentedButton(
-                            selected = isHome,
+                            selected = onDashboard,
                             onClick = {
-                                navController.navigate(Home) {
-                                    popUpTo(Home) { inclusive = true }
+                                navController.navigate(Dashboard) {
+                                    popUpTo(Dashboard) { inclusive = true }
                                     launchSingleTop = true
                                 }
                             },
                             shape = SegmentedButtonDefaults.itemShape(index = if (isRtl) count - 1 else 0, count = count),
                             modifier = Modifier.handCursor(),
                         ) {
+                            Text("Dashboard")
+                        }
+                        SegmentedButton(
+                            selected = onChat,
+                            onClick = {
+                                navController.navigate(Home) {
+                                    popUpTo(Dashboard)
+                                    launchSingleTop = true
+                                }
+                            },
+                            shape = SegmentedButtonDefaults.itemShape(index = if (isRtl) count - 2 else 1, count = count),
+                            modifier = Modifier.handCursor(),
+                        ) {
                             Text(stringResource(Res.string.tab_chat))
                         }
                         SegmentedButton(
-                            selected = !isHome,
+                            selected = onSettings,
                             onClick = {
-                                navController.navigate(Settings) {
-                                    popUpTo(Home)
+                                navController.navigate(Settings()) {
+                                    popUpTo(Dashboard)
                                     launchSingleTop = true
                                 }
                             },
@@ -204,22 +236,63 @@ private fun AppContent(
 
                 NavHost(
                     navController,
-                    startDestination = Home,
+                    startDestination = Dashboard,
                     modifier = Modifier.background(MaterialTheme.colorScheme.background),
                 ) {
+                    composable<Dashboard> {
+                        DashboardScreen(
+                            chatUiState = chatUiState,
+                            isBuildAvailable = currentPlatform is Platform.Mobile.Android,
+                            isSandboxAvailable = currentPlatform is Platform.Mobile.Android,
+                            isDesignAvailable = true,
+                            onNavigateToChat = {
+                                navController.navigate(Home) {
+                                    popUpTo(Dashboard)
+                                    launchSingleTop = true
+                                }
+                            },
+                            onOpenBuild = { project ->
+                                navController.navigate(Build(project)) {
+                                    popUpTo(Dashboard)
+                                    launchSingleTop = true
+                                }
+                            },
+                            onOpenSettings = { tab ->
+                                navController.navigate(Settings(tab)) {
+                                    popUpTo(Dashboard)
+                                    launchSingleTop = true
+                                }
+                            },
+                            onStartDesign = { prompt ->
+                                chatViewModel.startDesignChat(prompt)
+                                navController.navigate(Home) {
+                                    popUpTo(Dashboard)
+                                    launchSingleTop = true
+                                }
+                            },
+                            navigationTabBar = if (showTabBar) navigationTabBar else null,
+                        )
+                    }
                     composable<Home> {
                         ChatScreen(
                             viewModel = chatViewModel,
                             textToSpeech = textToSpeech,
+                            onNavigateToDashboard = {
+                                navController.navigate(Dashboard) {
+                                    popUpTo(Home) { inclusive = true }
+                                    launchSingleTop = true
+                                }
+                            },
                             onNavigateToSettings = {
-                                navController.navigate(Settings)
+                                navController.navigate(Settings())
                             },
                             isSandboxAvailable = currentPlatform is Platform.Mobile.Android,
                             isKaiBuildAvailable = currentPlatform is Platform.Mobile.Android,
                             navigationTabBar = if (showTabBar) navigationTabBar else null,
                         )
                     }
-                    composable<Settings> {
+                    composable<Settings> { entry ->
+                        val initialTab = entry.toRoute<Settings>().tab
                         if (showTabBar) {
                             DisposableEffect(Unit) {
                                 onDispose {
@@ -228,11 +301,21 @@ private fun AppContent(
                             }
                         }
                         SettingsScreen(
+                            initialSettingsTab = initialTab,
                             onNavigateBack = {
                                 chatViewModel.refreshSettings()
                                 navController.navigateUp()
                             },
                             navigationTabBar = if (showTabBar) navigationTabBar else null,
+                        )
+                    }
+                    composable<Build> { entry ->
+                        val project = entry.toRoute<Build>().project
+                        KaiBuildScreen(
+                            initialProject = project,
+                            onExit = {
+                                navController.navigateUp()
+                            },
                         )
                     }
                 }

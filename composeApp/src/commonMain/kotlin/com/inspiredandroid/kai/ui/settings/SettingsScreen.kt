@@ -115,10 +115,20 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = koinViewModel(),
     sandboxViewModel: SandboxViewModel = koinViewModel(),
     onNavigateBack: () -> Unit,
+    initialSettingsTab: SettingsTab? = null,
     navigationTabBar: (@Composable () -> Unit)? = null,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
     val sandboxState by sandboxViewModel.state.collectAsStateWithLifecycle()
+
+    // A dashboard deep link (Plan 6) selects its tab once; later switches
+    // stay with the user.
+    LaunchedEffect(initialSettingsTab) {
+        val tab = initialSettingsTab ?: return@LaunchedEffect
+        if (viewModel.state.value.currentTab != tab) {
+            viewModel.actions.onSelectTab(tab)
+        }
+    }
 
     val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
     androidx.compose.runtime.DisposableEffect(lifecycleOwner) {
