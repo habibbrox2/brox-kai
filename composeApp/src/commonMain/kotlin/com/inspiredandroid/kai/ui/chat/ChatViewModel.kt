@@ -486,7 +486,7 @@ class ChatViewModel(
         ask(null)
     }
 
-    private fun loadConversation(id: String) {
+    fun loadConversation(id: String) {
         currentJob?.cancel()
         currentJob = null
         val conversation = dataRepository.savedConversations.value.find { it.id == id }

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -47,6 +46,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.inspiredandroid.kai.KaiBuildController
 import com.inspiredandroid.kai.SandboxController
 import com.inspiredandroid.kai.ui.chat.ChatUiState
+import com.inspiredandroid.kai.ui.chat.ConversationSummary
 import com.inspiredandroid.kai.ui.components.CollectionEmptyState
 import com.inspiredandroid.kai.ui.components.OperationalStatus
 import com.inspiredandroid.kai.ui.components.OperationalStatusColors
@@ -57,15 +57,27 @@ import com.inspiredandroid.kai.ui.kaiAdaptiveCardColors
 import com.inspiredandroid.kai.ui.settings.SettingsTab
 import kai.composeapp.generated.resources.Res
 import kai.composeapp.generated.resources.logo
+import kotlinx.datetime.format
+import kotlinx.datetime.format.DateTimeComponents
+import kotlinx.datetime.format.MonthNames
+import kotlinx.datetime.format.char
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 
-/**
- * Brox Kai home dashboard (Plan 6): a calm starting screen that composes
- * existing capabilities — chat, Kai Build, Design, and tools — instead of
- * duplicating their business logic. Cards dispatch navigation events; the
- * screen state is a display-safe aggregation from [buildDashboardUiState].
- */
+private val dashboardDateFormat = DateTimeComponents.Format {
+    day()
+    char(' ')
+    monthName(MonthNames.ENGLISH_ABBREVIATED)
+    char(' ')
+    year()
+}
+
+private fun formatDashboardDate(epochMillis: Long): String = try {
+    kotlin.time.Instant.fromEpochMilliseconds(epochMillis).format(dashboardDateFormat)
+} catch (_: Exception) {
+    ""
+}
+
 @Composable
 fun DashboardScreen(
     chatUiState: ChatUiState,
@@ -76,6 +88,7 @@ fun DashboardScreen(
     onOpenBuild: (String) -> Unit,
     onOpenSettings: (SettingsTab) -> Unit,
     onStartDesign: (String) -> Unit,
+    onOpenConversation: (String) -> Unit,
     navigationTabBar: (@Composable () -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
@@ -97,12 +110,12 @@ fun DashboardScreen(
         onOpenBuild = onOpenBuild,
         onOpenSettings = onOpenSettings,
         onStartDesign = onStartDesign,
+        onOpenConversation = onOpenConversation,
         navigationTabBar = navigationTabBar,
         modifier = modifier,
     )
 }
 
-/** Primary-action grid tiers (Plan 6): one column on compact, two on medium, four on expanded. */
 internal fun dashboardColumnsFor(width: Dp): Int = when {
     width < 600.dp -> 1
     width < 1000.dp -> 2
@@ -116,6 +129,7 @@ internal fun DashboardScreenContent(
     onOpenBuild: (String) -> Unit,
     onOpenSettings: (SettingsTab) -> Unit,
     onStartDesign: (String) -> Unit,
+    onOpenConversation: (String) -> Unit,
     navigationTabBar: (@Composable () -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
@@ -141,11 +155,13 @@ internal fun DashboardScreenContent(
                 onOpenSettings = onOpenSettings,
                 onStartDesign = onStartDesign,
             )
-            if (!state.hasSavedWork) {
-                CollectionEmptyState(
-                    message = "No saved work yet — conversations and build projects will show up here.",
-                )
-            }
+            RecentWorkSection(
+                state = state,
+                onOpenConversation = onOpenConversation,
+                onOpenBuild = onOpenBuild,
+                onViewAllConversations = onNavigateToChat,
+                onViewAllProjects = { onOpenBuild("") },
+            )
         }
     }
 }
@@ -295,7 +311,6 @@ private fun DashboardActionGrid(
     onStartDesign: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    // Stable order (Plan 6): Chat first, then Build, Design, Tools.
     val actions = listOf(
         DashboardAction(
             title = "Chat",
@@ -349,7 +364,6 @@ private fun DashboardActionGrid(
                         modifier = Modifier.weight(1f).fillMaxHeight(),
                     )
                 }
-                // Empty slots keep partial rows aligned with the grid above.
                 repeat(columns - rowActions.size) {
                     Spacer(modifier = Modifier.weight(1f))
                 }
@@ -378,7 +392,7 @@ private fun DashboardActionCard(
     } else {
         kaiAdaptiveCardBorder()
     }
-    val content: @Composable ColumnScope.() -> Unit = {
+    val content: @Composable androidx.compose.foundation.layout.ColumnScope.() -> Unit = {
         Row(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
             horizontalArrangement = Arrangement.spacedBy(14.dp),
@@ -432,12 +446,159 @@ private fun DashboardActionCard(
             content = content,
         )
     } else {
-        // Unavailable capabilities stay visible and honest, never broken links.
         Card(
             modifier = modifier.alpha(0.6f),
             colors = kaiAdaptiveCardColors(),
             border = border,
             content = content,
         )
+    }
+}
+
+@Composable
+private fun RecentWorkSection(
+    state: DashboardUiState,
+    onOpenConversation: (String) -> Unit,
+    onOpenBuild: (String) -> Unit,
+    onViewAllConversations: () -> Unit,
+    onViewAllProjects: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val conversations = state.recentConversations.take(4)
+    val projects = state.recentProjects.take(4)
+
+    if (conversations.isEmpty() && projects.isEmpty()) {
+        CollectionEmptyState(
+            message = "No saved work yet — conversations and build projects will show up here.",
+        )
+        return
+    }
+
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        if (conversations.isNotEmpty()) {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = "Recent conversations",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.weight(1f),
+                    )
+                    TextButton(onClick = onViewAllConversations) {
+                        Text("View all")
+                    }
+                }
+                conversations.forEach { conversation ->
+                    ConversationRow(
+                        conversation = conversation,
+                        onClick = { onOpenConversation(conversation.id) },
+                    )
+                }
+            }
+        }
+        if (projects.isNotEmpty() && state.isBuildAvailable) {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = "Recent projects",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.weight(1f),
+                    )
+                    TextButton(onClick = onViewAllProjects) {
+                        Text("View all")
+                    }
+                }
+                projects.forEach { project ->
+                    ProjectRow(
+                        project = project,
+                        onClick = { onOpenBuild(project) },
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ConversationRow(
+    conversation: ConversationSummary,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier.fillMaxWidth().handCursor(),
+        onClick = onClick,
+        colors = kaiAdaptiveCardColors(),
+        border = kaiAdaptiveCardBorder(),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+            ) {
+                Text(
+                    text = conversation.title,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Text(
+                    text = formatDashboardDate(conversation.updatedAt),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ProjectRow(
+    project: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier.fillMaxWidth().handCursor(),
+        onClick = onClick,
+        colors = kaiAdaptiveCardColors(),
+        border = kaiAdaptiveCardBorder(),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Build,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+            )
+            Text(
+                text = project,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f),
+            )
+        }
     }
 }

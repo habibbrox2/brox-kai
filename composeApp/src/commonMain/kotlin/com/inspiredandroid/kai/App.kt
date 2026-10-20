@@ -270,6 +270,13 @@ private fun AppContent(
                                     launchSingleTop = true
                                 }
                             },
+                            onOpenConversation = { id ->
+                                chatViewModel.loadConversation(id)
+                                navController.navigate(Home) {
+                                    popUpTo(Dashboard)
+                                    launchSingleTop = true
+                                }
+                            },
                             navigationTabBar = if (showTabBar) navigationTabBar else null,
                         )
                     }
