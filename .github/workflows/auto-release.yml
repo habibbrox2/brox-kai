@@ -1,0 +1,149 @@
+name: Auto Release
+
+# Brox Kai 2.0 — automatic release pipeline.
+# On every push to main:
+#   1. Bump the next v2.0.x version (patch +1 over the latest v2.0.* tag),
+#      update gradle/libs.versions.toml (appVersion + versionCode), commit and tag.
+#   2. Build the Foss APK, Windows x64 MSI and Windows x64 zip from that tag.
+#   3. Publish a GitHub Release named "Brox Kai 2.0 - v<version>".
+# The bump commit is pushed with the workflow GITHUB_TOKEN, which does not
+# retrigger workflows, so there is no release loop.
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: auto-release
+  cancel-in-progress: false
+
+jobs:
+  bump:
+    name: Bump version and tag
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.bump.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Bump version, commit and tag
+        id: bump
+        run: |
+          set -euo pipefail
+          LATEST=$(git tag --list 'v2.0.*' --sort=-v:refname | head -n1)
+          if [ -z "$LATEST" ]; then
+            echo "::error::No v2.0.* tag found — cannot derive the next Brox Kai 2.0 version"
+            exit 1
+          fi
+          PATCH="${LATEST#v2.0.}"
+          VERSION="2.0.$((PATCH + 1))"
+          sed -i "s/^appVersion = .*/appVersion = \"${VERSION}\"/" gradle/libs.versions.toml
+          CODE=$(grep -oP 'android-versionCode = "\K[0-9]+' gradle/libs.versions.toml)
+          NEW_CODE=$((CODE + 1))
+          sed -i "s/^android-versionCode = .*/android-versionCode = \"${NEW_CODE}\"/" gradle/libs.versions.toml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add gradle/libs.versions.toml
+          git commit -m "chore(release): v${VERSION}"
+          git tag "v${VERSION}"
+          git push origin HEAD:main "v${VERSION}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Released v${VERSION} (versionCode ${NEW_CODE})"
+
+  apk:
+    name: Build APK
+    needs: bump
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: v${{ needs.bump.outputs.version }}
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Set execution flag for gradlew
+        run: chmod +x gradlew
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          packages: platform-tools
+      - name: Install Android Build Tools
+        run: sdkmanager "build-tools;36.0.0"
+      - name: Build Foss APK
+        run: bash ./gradlew :androidApp:assembleFossRelease --stacktrace
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk-package
+          path: androidApp/build/outputs/apk/foss/release/*.apk
+
+  windows:
+    name: Build MSI and Zip
+    needs: bump
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: v${{ needs.bump.outputs.version }}
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Build MSI
+        run: ./gradlew packageReleaseMsi --stacktrace
+      - name: Build distributable
+        run: ./gradlew createReleaseDistributable --stacktrace
+      - name: Create zip
+        run: |
+          Compress-Archive -Path "composeApp/build/compose/binaries/main-release/app/Kai/*" -DestinationPath "Brox-Kai-${{ needs.bump.outputs.version }}-Windows-x64.zip"
+      - name: Upload MSI Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: msi-package
+          path: composeApp/build/compose/binaries/main-release/msi/*.msi
+      - name: Upload Zip Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: zip-package
+          path: Brox-Kai-*-Windows-x64.zip
+
+  release:
+    name: Publish GitHub Release
+    needs: [bump, apk, windows]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: v${{ needs.bump.outputs.version }}
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Rename assets to Brox Kai branding
+        run: |
+          set -euo pipefail
+          VERSION="${{ needs.bump.outputs.version }}"
+          cd dist
+          mv androidApp-foss-release*.apk "Brox-Kai-${VERSION}-Android.apk"
+          mv *.msi "Brox-Kai-${VERSION}-Windows-x64.msi"
+          ls -la
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Brox Kai 2.0 - v${{ needs.bump.outputs.version }}
+          tag_name: v${{ needs.bump.outputs.version }}
+          generate_release_notes: true
+          files: |
+            dist/Brox-Kai-*

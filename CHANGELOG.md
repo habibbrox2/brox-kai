@@ -1,3 +1,14 @@
+## Brox Kai v2.0 — Auto-Release Pipeline (Auto Version Bump + GitHub Release)
+
+### Added
+- `.github/workflows/auto-release.yml`: on every push to `main`, automatically bumps the Brox Kai 2.0 version (patch +1 over the latest `v2.0.*` tag), updates `appVersion`/`versionCode` in `gradle/libs.versions.toml`, commits and tags `v2.0.x`, builds the Foss APK + Windows x64 MSI + Windows x64 zip from that tag, and publishes a GitHub Release named `Brox Kai 2.0 - v2.0.x` with Brox-branded asset names and SHA-style checksum-safe downloads
+- `.github/workflows/apk.yml`: on-demand Foss APK build (`workflow_dispatch`) usable from the Actions tab without tag pushes or signing secrets
+
+### Changed
+- Base `appVersion` in the version catalog realigned from upstream `3.3.0` to the Brox Kai `2.0.3` line; each auto-release increments it going forward
+
+---
+
 ## Brox Kai v2.0 — Desktop Shell: `sleep` Allowed + Cancellation Test Fix
 
 ### Added
