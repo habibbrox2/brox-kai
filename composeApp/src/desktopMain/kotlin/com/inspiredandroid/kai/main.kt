@@ -3,17 +3,27 @@
 
 package com.inspiredandroid.kai
 
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import androidx.navigation.compose.rememberNavController
+import com.inspiredandroid.kai.updater.AutoUpdater
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kai.composeapp.generated.resources.Res
 import kai.composeapp.generated.resources.logo
 import nl.marc_apps.tts.TextToSpeechEngine
@@ -37,7 +47,7 @@ fun main() {
         Window(
             onCloseRequest = ::exitApplication,
             state = windowState,
-            title = "Kai 9000",
+            title = "Brox Kai 2.0",
             icon = painterResource(Res.drawable.logo),
         ) {
             // Defer TTS initialization until after the first frame
@@ -54,6 +64,43 @@ fun main() {
                 navController = navController,
                 textToSpeech = textToSpeech,
             )
+
+            // Auto-update check (desktop only)
+            val updaterScope = remember { CoroutineScope(Dispatchers.IO) }
+            val updateState = remember { mutableStateOf<AutoUpdater.UpdateState>(AutoUpdater.UpdateState.Idle) }
+            val checker = remember { AutoUpdater.createUpdateChecker(updaterScope) { updateState.value = it } }
+            LaunchedEffect(Unit) { checker.onStart() }
+            AutoUpdateDialog(updateState = updateState.value, onDismiss = { /* keep state */ })
         }
+    }
+}
+
+@Composable
+private fun AutoUpdateDialog(
+    updateState: AutoUpdater.UpdateState,
+    onDismiss: () -> Unit,
+) {
+    when (updateState) {
+        is AutoUpdater.UpdateState.UpdateAvailable -> {
+            AlertDialog(
+                onDismissRequest = onDismiss,
+                title = { Text("Update Available") },
+                text = {
+                    Text(
+                        "Brox Kai 2.0 ${updateState.version} is ready.\n\n${updateState.releaseNotes.take(500)}",
+                    )
+                },
+                confirmButton = {
+                    Button(onClick = {
+                        java.awt.Desktop.getDesktop().browse(java.net.URI(updateState.downloadUrl))
+                        onDismiss()
+                    }) { Text("Download & Install") }
+                },
+                dismissButton = {
+                    Button(onClick = onDismiss) { Text("Later") }
+                },
+            )
+        }
+        else -> Unit
     }
 }

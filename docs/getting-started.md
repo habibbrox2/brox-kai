@@ -15,33 +15,33 @@ Try Kai directly in your browser at [kai9000.com/app](https://kai9000.com/app/).
 ### Homebrew (macOS)
 
 ```bash
-brew install --cask simonschubert/tap/kai
+brew install --cask habibbrox2/tap/brox-kai
 ```
 
 ### AUR (Arch Linux)
 
 ```bash
-yay -S kai-bin
+yay -S brox-kai-bin
 ```
 
 ### Winget (Windows)
 
 ```bash
-winget install SimonSchubert.Kai
+winget install HabibBrox2.BroxKai
 ```
 
 ### Direct Downloads
 
 | Platform | Format | Download |
 |----------|--------|----------|
-| Android | APK | [GitHub Releases](https://github.com/SimonSchubert/Kai/releases) |
-| macOS | DMG | [GitHub Releases](https://github.com/SimonSchubert/Kai/releases) |
-| Windows | MSI | [GitHub Releases](https://github.com/SimonSchubert/Kai/releases) |
-| Linux | DEB | [GitHub Releases](https://github.com/SimonSchubert/Kai/releases) |
-| Linux | RPM | [GitHub Releases](https://github.com/SimonSchubert/Kai/releases) |
-| Linux | AppImage | [GitHub Releases](https://github.com/SimonSchubert/Kai/releases) |
-| Linux | Flatpak | [GitHub Releases](https://github.com/SimonSchubert/Kai/releases) |
-| Linux | Tarball | [GitHub Releases](https://github.com/SimonSchubert/Kai/releases) |
+| Android | APK | [GitHub Releases](https://github.com/habibbrox2/brox-kai-2.0/releases) |
+| macOS | DMG | [GitHub Releases](https://github.com/habibbrox2/brox-kai-2.0/releases) |
+| Windows | MSI | [GitHub Releases](https://github.com/habibbrox2/brox-kai-2.0/releases) |
+| Linux | DEB | [GitHub Releases](https://github.com/habibbrox2/brox-kai-2.0/releases) |
+| Linux | RPM | [GitHub Releases](https://github.com/habibbrox2/brox-kai-2.0/releases) |
+| Linux | AppImage | [GitHub Releases](https://github.com/habibbrox2/brox-kai-2.0/releases) |
+| Linux | Flatpak | [GitHub Releases](https://github.com/habibbrox2/brox-kai-2.0/releases) |
+| Linux | Tarball | [GitHub Releases](https://github.com/habibbrox2/brox-kai-2.0/releases) |
 
 ## First Steps
 

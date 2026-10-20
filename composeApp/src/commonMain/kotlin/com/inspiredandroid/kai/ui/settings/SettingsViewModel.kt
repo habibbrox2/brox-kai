@@ -298,7 +298,7 @@ class SettingsViewModel(
                         json(Json { ignoreUnknownKeys = true })
                     }
                 }
-                val response = client.get("https://ghs.vercel.app/v3/sponsors/SimonSchubert")
+                val response = client.get("https://ghs.vercel.app/v3/sponsors/habibbrox2")
                 if (response.status.isSuccess()) {
                     val dto = response.body<SponsorsResponseDto>()
                     _state.update {

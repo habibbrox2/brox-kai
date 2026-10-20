@@ -435,7 +435,7 @@ internal fun BottomInfo() {
                 .clip(CircleShape)
                 .size(24.dp)
                 .clickable(onClick = {
-                    uriHandler.openUri("https://github.com/SimonSchubert/Kai")
+                    uriHandler.openUri("https://github.com/habibbrox2/brox-kai-2.0")
                 })
                 .handCursor(),
             painter = painterResource(Res.drawable.github_mark),

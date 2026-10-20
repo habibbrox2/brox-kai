@@ -284,7 +284,7 @@ private object SupportLinks {
     const val SPONSOR_PROFILE_BASE = "https://github.com/"
 
     /** Existing upstream sponsorship CTA, unchanged. */
-    const val BECOME_SPONSOR = "https://github.com/sponsors/SimonSchubert"
+    const val BECOME_SPONSOR = "https://github.com/sponsors/habibbrox2"
 
     /** Existing partnership contact, unchanged. */
     const val PARTNERSHIPS = "https://schubert-simon.de"
