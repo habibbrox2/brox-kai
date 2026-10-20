@@ -729,9 +729,6 @@ private fun ChatModeScreen(
                                     EmptyState(
                                         modifier = Modifier.fillMaxWidth().weight(1f).widthIn(max = 760.dp),
                                         isUsingSharedKey = uiState.showPrivacyInfo,
-                                        onStartInteractiveMode = uiState.actions.enterInteractiveMode
-                                            .takeUnless { primaryIsOnDeviceLocal },
-                                        onOpenKaiBuild = onOpenKaiBuild,
                                         onQuickStart = { prompt -> uiState.actions.ask(prompt) },
                                     )
                                 } else {
