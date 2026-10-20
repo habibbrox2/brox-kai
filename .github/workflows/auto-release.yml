@@ -5,7 +5,8 @@ name: Auto Release
 #   1. Bump the next v2.0.x version (patch +1 over the latest v2.0.* tag),
 #      update gradle/libs.versions.toml (appVersion + versionCode), commit and tag.
 #   2. Build the Foss APK, Windows x64 MSI and Windows x64 zip from that tag.
-#   3. Publish a GitHub Release named "Brox Kai 2.0 - v<version>".
+#   3. Publish a GitHub Release named "Brox Kai 2.0 v<version>" — "Brox Kai 2.0"
+#      is the fixed brand name, only the 2.0.x version changes per release.
 # The bump commit is pushed with the workflow GITHUB_TOKEN, which does not
 # retrigger workflows, so there is no release loop.
 
@@ -105,7 +106,7 @@ jobs:
         run: ./gradlew createReleaseDistributable --stacktrace
       - name: Create zip
         run: |
-          Compress-Archive -Path "composeApp/build/compose/binaries/main-release/app/Kai/*" -DestinationPath "Brox-Kai-${{ needs.bump.outputs.version }}-Windows-x64.zip"
+          Compress-Archive -Path "composeApp/build/compose/binaries/main-release/app/Kai/*" -DestinationPath "Brox-Kai-2.0-v${{ needs.bump.outputs.version }}-Windows-x64.zip"
       - name: Upload MSI Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -134,15 +135,16 @@ jobs:
       - name: Rename assets to Brox Kai branding
         run: |
           set -euo pipefail
+          # "Brox Kai 2.0" is the fixed brand name; only the version (2.0.x) changes per release
           VERSION="${{ needs.bump.outputs.version }}"
           cd dist
-          mv androidApp-foss-release*.apk "Brox-Kai-${VERSION}-Android.apk"
-          mv *.msi "Brox-Kai-${VERSION}-Windows-x64.msi"
+          mv androidApp-foss-release*.apk "Brox-Kai-2.0-v${VERSION}-Android.apk"
+          mv *.msi "Brox-Kai-2.0-v${VERSION}-Windows-x64.msi"
           ls -la
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          name: Brox Kai 2.0 - v${{ needs.bump.outputs.version }}
+          name: Brox Kai 2.0 v${{ needs.bump.outputs.version }}
           tag_name: v${{ needs.bump.outputs.version }}
           generate_release_notes: true
           files: |
