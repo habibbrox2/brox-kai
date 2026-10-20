@@ -9,11 +9,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import com.inspiredandroid.kai.ui.chat.ChatSpacing
 
 /**
  * Consistent section heading for settings groups (Phase 1 of Plan 2).
+ *
+ * Marked as a semantic heading (Phase 5) so screen readers and accessibility
+ * tooling can announce the section structure.
  */
 @Composable
 fun SettingsSectionHeader(
@@ -36,6 +40,7 @@ fun SettingsSectionHeader(
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.semantics { heading() },
             )
             if (subtitle != null) {
                 Text(

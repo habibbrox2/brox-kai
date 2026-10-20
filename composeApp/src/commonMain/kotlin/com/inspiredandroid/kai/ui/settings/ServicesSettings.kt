@@ -1107,7 +1107,7 @@ private fun LocalModelCard(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Delete,
-                            contentDescription = null,
+                            contentDescription = "Delete downloaded model",
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
