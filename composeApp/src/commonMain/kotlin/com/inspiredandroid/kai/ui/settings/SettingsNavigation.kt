@@ -52,11 +52,9 @@ fun SettingsNavRail(
                     Text(
                         text = when (tab) {
                             SettingsTab.General -> "General"
-                            SettingsTab.Agent -> "Agent"
-                            SettingsTab.Services -> "Services"
-                            SettingsTab.Integrations -> "Integrations"
-                            SettingsTab.Tools -> "Tools"
-                            SettingsTab.Sandbox -> "Sandbox"
+                            SettingsTab.Model -> "Model & API Key"
+                            SettingsTab.Data -> "Data Control"
+                            SettingsTab.Account -> "Account & Plan"
                         },
                         style = MaterialTheme.typography.labelSmall,
                         fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,

@@ -461,9 +461,9 @@ class SettingsViewModelTest {
 
         viewModel.state.test {
             val initialState = awaitItem()
-            viewModel.actions.onSelectTab(SettingsTab.Tools)
+            viewModel.actions.onSelectTab(SettingsTab.General)
             val updated = awaitItem()
-            assertEquals(SettingsTab.Tools, updated.currentTab)
+            assertEquals(SettingsTab.General, updated.currentTab)
             cancelAndIgnoreRemainingEvents()
         }
     }

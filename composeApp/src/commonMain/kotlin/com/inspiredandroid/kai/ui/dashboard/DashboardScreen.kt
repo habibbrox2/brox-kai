@@ -271,7 +271,7 @@ private fun ReadinessCard(
                     )
                     if (service.isSharedKey) {
                         Spacer(modifier = Modifier.weight(1f))
-                        TextButton(onClick = { onOpenSettings(SettingsTab.Services) }) {
+                        TextButton(onClick = { onOpenSettings(SettingsTab.Model) }) {
                             Text("Set up a service")
                         }
                     } else {
@@ -367,7 +367,7 @@ private fun DashboardActionGrid(
             isPrimary = false,
             isEnabled = true,
             disabledNote = null,
-            onClick = { onOpenSettings(SettingsTab.Tools) },
+            onClick = { onOpenSettings(SettingsTab.General) },
         ),
     )
     Column(

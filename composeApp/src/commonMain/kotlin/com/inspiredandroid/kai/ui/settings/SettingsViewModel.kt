@@ -203,6 +203,7 @@ class SettingsViewModel(
         onPrepareExport = ::onPrepareExport,
         onImportSettings = ::onImportSettings,
         onUndoDelete = ::onUndoDelete,
+        onClearAllConversations = ::onClearAllConversations,
     )
 
     private val _state = MutableStateFlow(buildFullState())
@@ -1093,6 +1094,14 @@ class SettingsViewModel(
         pendingDeleteJob?.cancel()
         pendingDeleteJob = null
         _state.update { it.copy(pendingDeletion = null) }
+    }
+
+    private fun onClearAllConversations() {
+        viewModelScope.launch {
+            for (c in dataRepository.savedConversations.value.toList()) {
+                dataRepository.deleteConversation(c.id)
+            }
+        }
     }
 
     override fun onCleared() {
