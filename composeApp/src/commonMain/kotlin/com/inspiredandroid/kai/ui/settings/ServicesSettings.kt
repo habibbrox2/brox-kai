@@ -45,6 +45,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -939,14 +940,22 @@ private fun ConfiguredServiceCardContent(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                // Drag handle
+                // Drag handle with a 48dp hit area (Plan 5, Phase 4); the glyph
+                // itself stays 24dp so the header weight does not change.
                 if (dragHandleModifier != null) {
-                    Icon(
-                        imageVector = Icons.Rounded.DragIndicator,
-                        contentDescription = stringResource(Res.string.settings_reorder_content_description),
-                        modifier = dragHandleModifier.handCursor(),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                    Box(
+                        modifier = dragHandleModifier
+                            .minimumInteractiveComponentSize()
+                            .handCursor(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.DragIndicator,
+                            contentDescription = stringResource(Res.string.settings_reorder_content_description),
+                            modifier = Modifier.size(24.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                     Spacer(Modifier.width(8.dp))
                 }
 

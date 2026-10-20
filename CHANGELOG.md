@@ -1,3 +1,19 @@
+## Brox Kai v2.0 — Services & Sponsors UI Upgrade (Plan 5)
+
+### Added
+
+- Compact Services overview card: configured-service count with attention/checking/connected status badge; empty state when nothing is configured.
+- Grouped add-service sheet (Hosted providers / On-device / Custom endpoints) with a setup-requirement summary on every provider row.
+- `SupportProfile` model + mapper: Brox Kai owner profile first (stable id, repository identity, local branded avatar), then current and past sponsors with the previous deduplication.
+- `SupportSection` with `OwnerProfileCard`, `SponsorGrid`, and width-tiered collapse (2/4/6 tiles at 600/900dp) plus a `Show all sponsors` / `Collapse sponsors` toggle that announces the hidden count.
+- `SupportLinks` configuration block owning every support-area URL.
+- Drag handle now meets the 48dp touch-target minimum around its 24dp glyph.
+
+### Changed
+
+- Service card headers: color-only connection dot replaced with a text status badge covering every connection state; expand/reorder behavior unchanged.
+- Sponsor area rebuilt: owner card always first (never hidden by the collapsed limit), grid above the sponsorship/partnership CTAs, animated expand/collapse that preserves toggle focus, no redundant toggle for short lists, link cards carry accessible names and stay informational without a destination.
+
 ## Brox Kai v2.0 — Tools & Sandbox Workspace UI Upgrade (Plan 4)
 
 ### Added

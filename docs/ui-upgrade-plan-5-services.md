@@ -158,3 +158,34 @@ data class SupportProfile(
 - Profile image, wording, and public destination must be approved before release. Use a branded fallback asset until those values are available.
 - A large remote sponsor list can make reflow expensive. Render only the collapsed subset until expanded and keep card content lightweight.
 - External links are user-visible destinations. Keep them in configuration and do not hardcode unverified personal URLs in the composable.
+
+## Progress status
+
+All four phases are implemented, each compiled against the desktop target and committed separately.
+
+### Phase 1 — Service hierarchy (done)
+
+- Compact `ServicesOverview` card at the top of the Services tab: configured count plus a status badge (`N needs attention` / `Checking connections` / `All connected`); a dedicated empty state replaces the blank list when nothing is configured.
+- Configured-service card headers show provider name, selected model, and now a **text** connection-status badge instead of the color-only dot — covering every `ConnectionStatus` (Not checked, Checking, Connected, Invalid API key, Quota exhausted, Rate limited, Connection failed, Network blocked, Error).
+- API keys and advanced fields stay inside the existing expanded detail area; expand/reorder behavior untouched.
+
+### Phase 2 — Add-service flow (done)
+
+- The add-service sheet groups providers into **Hosted providers**, **On-device**, and **Custom endpoints** (headers hidden for empty groups), keeping first/last row corner rounding across groups.
+- Each row shows a setup requirement summary derived from `Service` metadata: runs on this device / custom endpoint / API key from \<portal\> / key required / optional / none.
+- Action pipeline and validation unchanged — presentation and guidance only.
+
+### Phase 3 — Sponsor profile and grid (done)
+
+- `SupportProfile` presentation model and `buildSupportProfiles` mapper: owner profile first (stable id `brox-kai-owner`, repository identity `habibbrox2`, local branded `logo` avatar — no network dependency), then current sponsors, then past (deduplicated as before). The GitHub sponsors API contract is unchanged and fetching stays in `SettingsViewModel`.
+- `SponsorList` replaced by `SupportSection` + `OwnerProfileCard` + `SponsorGrid`: responsive collapse at 600/900dp shows 2/4/6 tiles, `Show all sponsors` / `Collapse sponsors` toggle with the hidden count in its accessibility description, short `animateContentSize` transition that keeps focus on the toggle. Lists at or below the limit render fully with **no** redundant toggle (acceptance criteria).
+- Expanded view keeps the current/past distinction with section labels; the owner card is never hidden by the limit.
+- Cards without a destination URL would render informational (no tap affordance); link actions carry accessible names; all support-area URLs are centralized in the `SupportLinks` configuration block (owner profile, sponsor base, become-sponsor, partnerships — the latter two keep their existing upstream destinations).
+- Sponsorship and partnership calls to action now sit **below** the grid.
+
+### Phase 4 — Polish and accessibility (done, with notes)
+
+- Accessible names: service status badges (`Status: …`), drag handles (existing reorder description), owner/sponsor links (action + destination in the description), disclosure control (hidden count).
+- Drag handle gains a 48dp minimum touch target around its 24dp glyph (`minimumInteractiveComponentSize`); cards and toggles are clickable/focusable through their existing Material components.
+- Validation performed by review: missing avatars fall back to the branded logo (owner) or a neutral initial (sponsors), an empty feed still renders the owner card first, one-card and threshold-crossing lists behave per the toggle rules above.
+- Deferred / out of scope: platform-specific reduced-motion detection (`animateContentSize` uses the default short duration), automated screenshot validation of every validation case, and persistent collapse-preference storage (state resets with the screen, per plan).
