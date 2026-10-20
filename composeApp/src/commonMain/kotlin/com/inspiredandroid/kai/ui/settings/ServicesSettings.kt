@@ -411,58 +411,34 @@ internal fun ServicesContent(uiState: SettingsUiState, actions: SettingsActions)
             Box {
                 Column(modifier = Modifier.verticalScroll(addServiceScrollState).padding(16.dp)) {
                     val services = uiState.availableServicesToAdd
-                    services.forEachIndexed { index, service ->
-                        val isFirst = index == 0
-                        val isLast = index == services.lastIndex
-                        val itemShape = RoundedCornerShape(
-                            topStart = if (isFirst) 12.dp else 0.dp,
-                            topEnd = if (isFirst) 12.dp else 0.dp,
-                            bottomStart = if (isLast) 12.dp else 0.dp,
-                            bottomEnd = if (isLast) 12.dp else 0.dp,
-                        )
-                        val isSpecial = service.isOnDevice || service is Service.OpenAICompatible || service is Service.AtlasCloud
-                        Surface(
-                            onClick = {
-                                actions.onAddService(service)
-                                showAddServiceSheet = false
-                            },
-                            modifier = Modifier.fillMaxWidth().handCursor(),
-                            shape = itemShape,
-                            color = MaterialTheme.colorScheme.surfaceContainer,
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(36.dp)
-                                        .then(
-                                            if (isSpecial) {
-                                                Modifier.background(
-                                                    color = MaterialTheme.colorScheme.surfaceContainerHighest,
-                                                    shape = RoundedCornerShape(8.dp),
-                                                )
-                                            } else {
-                                                Modifier
-                                            },
-                                        ),
-                                    contentAlignment = Alignment.Center,
-                                ) {
-                                    Icon(
-                                        imageVector = vectorResource(service.icon),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(20.dp),
-                                        tint = MaterialTheme.colorScheme.onBackground,
-                                    )
-                                }
-                                Spacer(Modifier.width(12.dp))
-                                Text(
-                                    text = service.displayName,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onBackground,
-                                )
-                            }
+                    // Grouped discovery (Plan 5, Phase 2): hosted providers, then
+                    // on-device, then custom endpoints — each entry summarizing
+                    // what setup it needs before it is added.
+                    val hosted = services.filter {
+                        !it.isOnDevice && it !is Service.OpenAICompatible
+                    }
+                    val onDevice = services.filter { it.isOnDevice }
+                    val custom = services.filter { it is Service.OpenAICompatible }
+                    val totalItems = services.size
+                    var itemCounter = 0
+                    listOf(
+                        "Hosted providers" to hosted,
+                        "On-device" to onDevice,
+                        "Custom endpoints" to custom,
+                    ).forEach { (title, group) ->
+                        if (group.isEmpty()) return@forEach
+                        ProviderGroupHeader(title)
+                        group.forEach { service ->
+                            val index = itemCounter++
+                            ProviderRowItem(
+                                service = service,
+                                isFirst = index == 0,
+                                isLast = index == totalItems - 1,
+                                onClick = {
+                                    actions.onAddService(service)
+                                    showAddServiceSheet = false
+                                },
+                            )
                         }
                     }
                     Spacer(Modifier.height(16.dp))
@@ -470,6 +446,91 @@ internal fun ServicesContent(uiState: SettingsUiState, actions: SettingsActions)
                 VerticalScrollbarForScroll(
                     scrollState = addServiceScrollState,
                     modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
+                )
+            }
+        }
+    }
+}
+
+/** Short setup requirement summary shown under each provider name (Plan 5, Phase 2). */
+private fun setupRequirement(service: Service): String = when {
+    service.isOnDevice -> "Runs on this device · downloads models"
+    service is Service.OpenAICompatible -> "Custom endpoint · base URL and API key"
+    service.requiresApiKey && service.apiKeyUrlDisplay != null -> "API key from ${service.apiKeyUrlDisplay}"
+    service.requiresApiKey -> "API key required"
+    service.supportsOptionalApiKey -> "API key optional"
+    else -> "No API key required"
+}
+
+@Composable
+private fun ProviderGroupHeader(title: String) {
+    Text(
+        text = title,
+        style = MaterialTheme.typography.labelLarge,
+        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 6.dp),
+    )
+}
+
+@Composable
+private fun ProviderRowItem(
+    service: Service,
+    isFirst: Boolean,
+    isLast: Boolean,
+    onClick: () -> Unit,
+) {
+    val itemShape = RoundedCornerShape(
+        topStart = if (isFirst) 12.dp else 0.dp,
+        topEnd = if (isFirst) 12.dp else 0.dp,
+        bottomStart = if (isLast) 12.dp else 0.dp,
+        bottomEnd = if (isLast) 12.dp else 0.dp,
+    )
+    val isSpecial = service.isOnDevice || service is Service.OpenAICompatible || service is Service.AtlasCloud
+    Surface(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth().handCursor(),
+        shape = itemShape,
+        color = MaterialTheme.colorScheme.surfaceContainer,
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(36.dp)
+                    .then(
+                        if (isSpecial) {
+                            Modifier.background(
+                                color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                                shape = RoundedCornerShape(8.dp),
+                            )
+                        } else {
+                            Modifier
+                        },
+                    ),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    imageVector = vectorResource(service.icon),
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp),
+                    tint = MaterialTheme.colorScheme.onBackground,
+                )
+            }
+            Spacer(Modifier.width(12.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = service.displayName,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+                Text(
+                    // Requirement summary so nobody adds a service and only then
+                    // discovers it needs a key or a base URL (Plan 5, Phase 2).
+                    text = setupRequirement(service),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
