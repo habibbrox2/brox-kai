@@ -111,7 +111,8 @@ private fun AppContent(
     darkColorScheme: ColorScheme,
     textToSpeech: TextToSpeechInstance?,
     onAppOpens: ((Int) -> Unit)?,
-) {    val appSettings = koinInject<AppSettings>()
+) {
+    val appSettings = koinInject<AppSettings>()
 
     // Track app opens after Koin is initialized
     onAppOpens?.let { callback ->
