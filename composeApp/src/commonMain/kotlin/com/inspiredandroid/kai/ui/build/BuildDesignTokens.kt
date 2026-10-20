@@ -91,6 +91,42 @@ object BuildSurfaces {
 }
 
 /**
+ * Centralized width policy for the Build workspace (Plan 3, Phase 6).
+ *
+ * One breakpoint table shared by the hub (projects/setup) and workspace
+ * surfaces so compact, medium, and expanded layouts never disagree.
+ */
+enum class BuildWorkspaceTier {
+    /** Phone/narrow window: everything stacked, full-bleed. */
+    Compact,
+
+    /** Medium window: full-bleed but roomier rows. */
+    Medium,
+
+    /** Wide desktop: hub content centers with a readable max width. */
+    Expanded,
+}
+
+/** Breakpoints in width — mirrors the chat/settings adaptive policy (600/840 style). */
+fun buildWorkspaceTier(width: Dp): BuildWorkspaceTier = when {
+    width < 600.dp -> BuildWorkspaceTier.Compact
+    width < 1000.dp -> BuildWorkspaceTier.Medium
+    else -> BuildWorkspaceTier.Expanded
+}
+
+/**
+ * Max width for the hub surfaces (projects, setup) on each tier. Compact and
+ * Medium stay full-bleed; Expanded centers so project rows don't stretch into
+ * unreadable line lengths on desktop.
+ */
+val BuildWorkspaceTier.contentMaxWidth: Dp
+    get() = when (this) {
+        BuildWorkspaceTier.Compact -> Dp.Unbounded
+        BuildWorkspaceTier.Medium -> Dp.Unbounded
+        BuildWorkspaceTier.Expanded -> 960.dp
+    }
+
+/**
  * Human label for an install step, used by the setup surface and progress blocks.
  */
 fun BuildStep.label(): String = when (this) {

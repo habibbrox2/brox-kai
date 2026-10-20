@@ -523,46 +523,74 @@ private fun EditorBody(
             )
         }
 
-        is EditorState.Loaded -> Column(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp, vertical = 8.dp),
-        ) {
-            if (editor.readOnly) {
-                Text(
-                    stringResource(Res.string.sandbox_files_editor_read_only),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp),
-                )
-            }
-            OutlinedTextField(
-                value = editor.current,
-                onValueChange = onChange,
-                readOnly = editor.readOnly,
-                modifier = Modifier.fillMaxWidth().weight(1f),
-                textStyle = TextStyle(fontFamily = FontFamily.Monospace),
-                shape = RoundedCornerShape(8.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                ),
-            )
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
-                horizontalArrangement = Arrangement.End,
+        is EditorState.Loaded -> {
+            // Find/Replace is scoped to this buffer; the panel only ever reports
+            // matches and hands replacements back through onChange, so Save and
+            // dirty tracking keep owning persistence (Plan 3, Phase 5).
+            var findOpen by remember(editor.original) { mutableStateOf(false) }
+            var replacement by remember(editor.original) { mutableStateOf("") }
+            Column(
+                modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp, vertical = 8.dp),
             ) {
-                TextButton(
-                    onClick = { onOpenExternal(editor.path) },
-                    modifier = Modifier.handCursor(),
-                ) {
-                    Text(stringResource(Res.string.sandbox_files_editor_open_externally))
+                if (editor.readOnly) {
+                    Text(
+                        stringResource(Res.string.sandbox_files_editor_read_only),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp),
+                    )
                 }
-                if (!editor.readOnly) {
+                if (findOpen && !editor.readOnly) {
+                    FindReplacePanel(
+                        text = editor.current,
+                        replacement = replacement,
+                        onReplacementChange = { replacement = it },
+                        onReplaceAll = { query, newValue ->
+                            if (query.isNotEmpty()) {
+                                onChange(editor.current.replace(query, newValue))
+                            }
+                        },
+                        onClose = { findOpen = false },
+                    )
+                }
+                OutlinedTextField(
+                    value = editor.current,
+                    onValueChange = onChange,
+                    readOnly = editor.readOnly,
+                    modifier = Modifier.fillMaxWidth().weight(1f),
+                    textStyle = TextStyle(fontFamily = FontFamily.Monospace),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    ),
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
+                    horizontalArrangement = Arrangement.End,
+                ) {
+                    if (!editor.readOnly) {
+                        TextButton(
+                            onClick = { findOpen = !findOpen },
+                            modifier = Modifier.handCursor(),
+                        ) {
+                            Text(if (findOpen) "Hide find" else "Find / Replace")
+                        }
+                    }
                     TextButton(
-                        onClick = onSave,
-                        enabled = editor.dirty,
+                        onClick = { onOpenExternal(editor.path) },
                         modifier = Modifier.handCursor(),
                     ) {
-                        Text(stringResource(Res.string.sandbox_files_editor_save))
+                        Text(stringResource(Res.string.sandbox_files_editor_open_externally))
+                    }
+                    if (!editor.readOnly) {
+                        TextButton(
+                            onClick = onSave,
+                            enabled = editor.dirty,
+                            modifier = Modifier.handCursor(),
+                        ) {
+                            Text(stringResource(Res.string.sandbox_files_editor_save))
+                        }
                     }
                 }
             }
