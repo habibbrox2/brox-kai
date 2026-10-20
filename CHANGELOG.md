@@ -9,6 +9,20 @@
 
 ---
 
+## Brox Kai v2.0 — Home Dashboard UI Upgrade (Plan 6)
+
+### Added
+- Dashboard launch route (`Dashboard`) with 3-tab navigation (Dashboard/Chat/Settings) and typed `Settings(tab)` / `Build(project)` destinations
+- `ui/dashboard/` — `DashboardModels.kt` (read-only aggregation + `buildDashboardUiState`, `DESIGN_STARTER_PROMPT`) and `DashboardScreen.kt` (header, readiness, responsive primary action grid 1/2/4 columns, recent conversations/projects with resume + View all)
+- Dashboard cards: Chat (primary), Kai Build (Android-only, honest disabled note), Design (opens chat with guided design prefill), Tools (Settings/Tools)
+- `ChatViewModel.startDesignChat` + `loadConversation` made public for dashboard resume; `TopBar` gets mobile Home button; `SettingsScreen`/`KaiBuildScreen` accept initial tab/project
+
+### Changed
+- App start destination moved to Dashboard; Chat/Settings navigation anchors to Dashboard
+- `Home` route preserved as chat workspace (reachable from Dashboard/Chat tab)
+
+---
+
 ## Brox Kai v2.0 - Services & Sponsors UI Upgrade (Plan 5)
 
 ### Added

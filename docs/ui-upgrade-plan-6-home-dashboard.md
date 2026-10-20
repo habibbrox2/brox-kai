@@ -153,6 +153,16 @@ HomeDashboardScreen
 - Unsupported capabilities are represented truthfully and never lead to a dead end.
 - Compact and desktop layouts preserve clear hierarchy, accessibility, and low visual clutter.
 
+## Progress status
+
+- [x] Phase 1 — Foundation and routes (Dashboard route + Build route, DashboardUiState + mapper, capability flags)
+- [x] Phase 2 — Dashboard shell (header, readiness card, primary action grid responsive, Chat/Settings/Build gating)
+- [x] Phase 3 — Recent work (conversations and projects, resume, View all)
+- [x] Phase 4 — Design and tools pathways (Design prefill contract, Tools/Services via Settings tabs, unavailable capabilities honest)
+- [x] Phase 5 — Accessibility and validation (basic semantics on cards; screenshot cases to be validated on device)
+
+---
+
 ## Risks and controls
 
 - Aggregating feature state can create startup delay. Render the action grid immediately and independently load recent-work summaries.
