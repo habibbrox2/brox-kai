@@ -32,7 +32,7 @@ internal fun CodeFenceBlock(
     language: String?,
     code: String,
     modifier: Modifier = Modifier,
-    onOpenInEditor: ((String) -> Unit)? = null,
+    onOpenInEditor: ((String, String?) -> Unit)? = null,
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val highlightColors = remember(colorScheme) { codeHighlightColors(colorScheme) }
@@ -60,7 +60,7 @@ internal fun CodeFenceBlock(
                 Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                     if (onOpenInEditor != null) {
                         IconButton(
-                            onClick = { onOpenInEditor(code) },
+                            onClick = { onOpenInEditor(code, language) },
                             modifier = Modifier.size(32.dp),
                         ) {
                             Icon(

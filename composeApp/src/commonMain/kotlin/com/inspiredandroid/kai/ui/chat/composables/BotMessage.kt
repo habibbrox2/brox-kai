@@ -80,6 +80,7 @@ internal fun BotMessage(
     frozen: FrozenSubmission? = null,
     onResubmit: ((event: String, data: Map<String, String>) -> Unit)? = null,
     reasoningSegments: ImmutableList<String> = persistentListOf(),
+    onOpenInEditor: ((String, String?) -> Unit)? = null,
 ) {
     val document = remember(message) { parseMarkdown(message) }
     var isEditing by remember(frozen) { mutableStateOf(false) }
@@ -118,6 +119,7 @@ internal fun BotMessage(
                         frozen = effectiveFrozen,
                         modifier = Modifier.fillMaxWidth()
                             .padding(start = 16.dp, top = answerTopPadding, end = 16.dp, bottom = 8.dp),
+                        onOpenInEditor = onOpenInEditor,
                     )
                 }
             }
