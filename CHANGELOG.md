@@ -1,3 +1,15 @@
+## Brox Kai v2.0 — Desktop Auto-Updater (GitHub Release Check)
+
+### Added
+- Desktop auto-update check: on startup the desktop app queries GitHub Releases (`habibbrox2/brox-kai-2.0`, throttled to one check per 4 hours) and shows an "Update Available" dialog with release notes and a Download & Install button when the latest `v2.0.*` release is newer than the running version
+- New common updater module (`composeApp/src/*/kotlin/com/inspiredandroid/kai/updater/`): all release-checking logic is platform-independent; platform differences are isolated behind two expect/actual functions — `httpGet` (desktop/android use `java.net.HttpURLConnection`, wasmJs/iOS use ktor) and `currentPlatformKey` (JVM derives Windows / macOS x64+arm64 / Linux from `os.name`+`os.arch`; web and iOS report `none`)
+- Release-asset picker keys on the platform key: `.msi` for Windows, `.dmg` (aarch64-aware) for macOS, `.deb`/`.AppImage`/`.tar.gz` (aarch64-aware) for Linux
+
+### Fixed
+- The earlier commonMain interface + platform `actual object` split did not compile (redeclaration + supertype loop); replaced with a single common `AutoUpdater` object and federated expect/actual function implementations
+
+---
+
 ## Brox Kai v2.0 - Premium Chat UI + Code Editor (Plan 7)
 
 ### Added
