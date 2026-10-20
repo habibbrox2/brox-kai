@@ -1,0 +1,38 @@
+name: Build APK
+
+# On-demand Foss APK build via the Actions tab (Run workflow).
+# Separate from release.yml so it can run without tag pushes or signing secrets.
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  apk:
+    name: Generate Foss APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Set execution flag for gradlew
+        run: chmod +x gradlew
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          packages: platform-tools
+      - name: Install Android Build Tools
+        run: sdkmanager "build-tools;36.0.0"
+      - name: Build Foss APK
+        run: bash ./gradlew :androidApp:assembleFossRelease --stacktrace
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: brox-kai-foss-apk
+          path: androidApp/build/outputs/apk/foss/release/*.apk
