@@ -1,14 +1,17 @@
 package com.inspiredandroid.kai.ui.build
 
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
@@ -205,46 +208,61 @@ internal fun KaiBuildScreenContent(
                     )
                 }
             } else {
-                KaiBuildTopBar(
-                    title = stringResource(Res.string.kai_build_title),
-                    onExit = onExit,
-                    actions = {
-                        if (state.build.isReady) {
-                            IconButton(
-                                onClick = { showCreateProject = true },
-                                modifier = Modifier.handCursor(),
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Add,
-                                    contentDescription = stringResource(
-                                        Res.string.kai_build_new_project_content_description,
-                                    ),
-                                )
-                            }
-                        }
-                    },
-                )
+                // Centralized width policy (Plan 3, Phase 6): the hub centers with a
+                // readable max width on expanded windows and stays full-bleed below.
+                BoxWithConstraints(
+                    modifier = Modifier.fillMaxWidth().weight(1f),
+                ) {
+                    val tier = buildWorkspaceTier(maxWidth)
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.TopCenter)
+                            .widthIn(max = tier.contentMaxWidth)
+                            .fillMaxWidth()
+                            .fillMaxHeight(),
+                    ) {
+                        KaiBuildTopBar(
+                            title = stringResource(Res.string.kai_build_title),
+                            onExit = onExit,
+                            actions = {
+                                if (state.build.isReady) {
+                                    IconButton(
+                                        onClick = { showCreateProject = true },
+                                        modifier = Modifier.handCursor(),
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Add,
+                                            contentDescription = stringResource(
+                                                Res.string.kai_build_new_project_content_description,
+                                            ),
+                                        )
+                                    }
+                                }
+                            },
+                        )
 
-                if (state.build.isReady) {
-                    BuildProjectsContent(
-                        state = state.build,
-                        launchAgentId = state.launchAgentId,
-                        installedAgents = installedAgents,
-                        onSelectLaunchAgent = actions.setLaunchAgent,
-                        onOpenProject = actions.openProject,
-                        onDeleteProject = actions.deleteProject,
-                        onRenameProject = actions.renameProject,
-                        onInstallAgent = actions.installAgent,
-                        onUninstall = actions.uninstall,
-                    )
-                } else {
-                    BuildSetupContent(
-                        state = state.build,
-                        selectedAgents = state.selectedAgents,
-                        onToggleAgent = actions.toggleAgent,
-                        onInstall = actions.install,
-                        onCancel = actions.cancel,
-                    )
+                        if (state.build.isReady) {
+                            BuildProjectsContent(
+                                state = state.build,
+                                launchAgentId = state.launchAgentId,
+                                installedAgents = installedAgents,
+                                onSelectLaunchAgent = actions.setLaunchAgent,
+                                onOpenProject = actions.openProject,
+                                onDeleteProject = actions.deleteProject,
+                                onRenameProject = actions.renameProject,
+                                onInstallAgent = actions.installAgent,
+                                onUninstall = actions.uninstall,
+                            )
+                        } else {
+                            BuildSetupContent(
+                                state = state.build,
+                                selectedAgents = state.selectedAgents,
+                                onToggleAgent = actions.toggleAgent,
+                                onInstall = actions.install,
+                                onCancel = actions.cancel,
+                            )
+                        }
+                    }
                 }
             }
         }

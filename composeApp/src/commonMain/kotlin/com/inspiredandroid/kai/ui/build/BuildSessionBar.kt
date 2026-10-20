@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -30,6 +31,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.inspiredandroid.kai.build.BuildAgent
@@ -85,7 +91,9 @@ internal fun BuildSessionBar(
             color = MaterialTheme.colorScheme.onSurface,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.padding(end = 8.dp),
+            // Cap the header so a long project name can't squeeze the session tabs
+            // out of the strip on narrow windows (Plan 3, Phase 6).
+            modifier = Modifier.padding(end = 8.dp).widthIn(max = 180.dp),
         )
 
         Row(
@@ -175,6 +183,9 @@ private fun SessionTab(
         selected = selected,
         onSelect = onSelect,
         contentColor = contentColor,
+        // Running/idle is only carried by color for sighted users; make it audible
+        // (Plan 3, Phase 6).
+        description = if (session.busy) "$label, running" else "$label, idle",
     ) {
         IconButton(onClick = onClose, modifier = Modifier.size(28.dp).handCursor()) {
             Icon(
@@ -200,11 +211,23 @@ private fun TabPill(
     } else {
         MaterialTheme.colorScheme.onSurfaceVariant
     },
+    description: String? = null,
     trailing: @Composable (() -> Unit)? = null,
 ) {
     val shape = RoundedCornerShape(50)
+    // `selected` the parameter shadows the semantics property of the same name,
+    // so capture it first and assign through `this.selected`.
+    val isSelected = selected
     Surface(
-        modifier = Modifier.clip(shape).clickable(onClick = onSelect).handCursor(),
+        modifier = Modifier
+            .clip(shape)
+            .clickable(onClick = onSelect)
+            .handCursor()
+            .semantics {
+                role = Role.Tab
+                this.selected = isSelected
+                if (description != null) contentDescription = description
+            },
         shape = shape,
         color = if (selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.2f) else Color.Transparent,
     ) {

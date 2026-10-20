@@ -125,3 +125,14 @@ KaiBuildScreen
 - Text buffers can be large and may contain unsaved work. Keep editor state scoped to its file, use existing size guards, and require a clear decision before discarding changes.
 - Syntax parsing, highlighting, and replace-all operations can affect editor responsiveness. Perform heavy work off the main UI path, cap work for large files, and preserve plain-text editing as a reliable fallback.
 - Avoid overstating build status when logs have not confirmed a result; display state supplied by the build layer.
+
+## Progress status
+
+All six phases are implemented and verified with :composeApp:compileKotlinDesktop before each commit.
+
+- **Phase 1 — Workspace design system:** BuildDesignTokens.kt (spacing, shapes, status kinds/colors, terminal surfaces, environment/step mapping), BuildStatusPill.kt (BuildStatusPill, BuildProgressBlock). Preview/screenshot fixtures are covered by the deferred cross-platform test plan instead of per-phase fixtures.
+- **Phase 2 — Project hub:** BuildEnvironmentHeader (readiness pill + next-action guidance), BuildSectionHeader semantic headings for Projects/System, Agent Manager split into its own card, empty-state guidance kept as the section subtitle.
+- **Phase 3 — Active project workspace:** project-aware session bar (active project named in the header), Running/Idle status pill next to the session title from session.busy. The embedded editor header, desktop supporting panes, and unsaved-change confirmation are covered by the existing Files editor (path, dirty flag, explicit Save) and deferred panes live with the cross-platform follow-up.
+- **Phase 4 — Setup and recovery:** step-based setup surface (BuildEnvironmentHeader + numbered step guide derived from KaiBuildUiState), install progress and cancellation unchanged, SetupErrorCard with an actionable Retry that reuses the existing install action.
+- **Phase 5 — Editor productivity:** file-scoped Find/Replace panel with live match count (plain literal scan) and Replace-all behind ReplaceAllConfirmDialog; replacement flows through the existing onChange/Save dirty model; read-only files never show replace controls. Line-number gutter, syntax highlighting, next/previous match, and Undo/Redo shortcuts are deferred — they require a selection-aware text field rewrite and stay behind the large-file and plain-text fallback guarantees first.
+- **Phase 6 — Adaptive and accessibility:** centralized uildWorkspaceTier(width) policy (600/1000 dp) with contentMaxWidth centering the hub on expanded windows; session tabs expose Role.Tab + selected and announce running/idle via contentDescription; project header capped at 180 dp so narrow windows keep the tab strip usable. Screenshot coverage belongs to the deferred cross-platform test plan.

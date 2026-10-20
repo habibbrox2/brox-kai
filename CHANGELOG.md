@@ -1,3 +1,37 @@
+## Brox Kai v2.0 — Kai Build Workspace UI Upgrade (Plan 3)
+
+### Added
+
+- `BuildDesignTokens`: Build-specific spacing, shapes, status kinds/colors, terminal surfaces, environment/step status mapping.
+- Reusable `BuildStatusPill` and `BuildProgressBlock` components for session tabs, headers, and setup progress.
+- Project hub environment readiness header with next-action guidance and semantic section headings.
+- Dedicated Agent Manager card, split from the system info card.
+- Step-based setup surface (Choose agents → Install → Verify) derived from `KaiBuildUiState`, with an actionable Retry on failure.
+- File-scoped Find/Replace panel with live match count and Replace-all confirmation (flows through the existing save/dirty model).
+- Centralized `buildWorkspaceTier(width)` policy: hub content centers on expanded windows, full-bleed on compact/medium.
+
+### Changed
+
+- Session bar is project-aware: names the active project and shows a Running/Idle status pill next to the session title.
+- Session tabs expose `Role.Tab`, selection state, and announce running/idle to screen readers.
+- Project title capped at 180 dp so narrow windows keep the session strip usable.
+- Setup title/description folded into the environment header and step guide.
+
+## Brox Kai v2.0 — Settings UI Upgrade (Plan 2)
+
+### Added
+
+- `SettingsDesignTokens` and `SettingsSectionHeader` with semantic heading semantics.
+- `SettingsNavigation` rail + `SettingsDetailPane` extraction; rail + detail pane on expanded (≥840dp), horizontal selector on compact.
+- Overview card atop General tab: `SettingsStatusRow`, `SettingsKeyValueRow`, `SettingsOverview` (sandbox install status).
+- `SettingsConfirmDialog` (destructive confirmations) and `SettingsStatusBanner` (Info/Progress/Warning/Error) for skills and MCP errors.
+
+### Changed
+
+- `SettingsScreenContent` restructured with `BoxWithConstraints`; `BottomInfo` made internal.
+- MCP server removal now confirms first; skill install/browse failures surface as banners instead of bare text.
+- Delete-downloaded-model icon button gained a content description.
+
 ## Brox Kai v2.0 — Chat UI Upgrade (Phase 1 & 2) + Follow-up Suggestions
 
 ### Added

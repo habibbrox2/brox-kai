@@ -121,8 +121,10 @@ fun buildWorkspaceTier(width: Dp): BuildWorkspaceTier = when {
  */
 val BuildWorkspaceTier.contentMaxWidth: Dp
     get() = when (this) {
-        BuildWorkspaceTier.Compact -> Dp.Unbounded
-        BuildWorkspaceTier.Medium -> Dp.Unbounded
+        // Dp.Unbounded does not exist on every target; the platform-agnostic
+        // infinity value keeps this common code compiling on wasm too.
+        BuildWorkspaceTier.Compact -> Dp(Float.POSITIVE_INFINITY)
+        BuildWorkspaceTier.Medium -> Dp(Float.POSITIVE_INFINITY)
         BuildWorkspaceTier.Expanded -> 960.dp
     }
 
