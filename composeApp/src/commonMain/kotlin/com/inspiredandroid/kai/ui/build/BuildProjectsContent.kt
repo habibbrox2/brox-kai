@@ -117,6 +117,10 @@ internal fun BuildProjectsContent(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+        item {
+            BuildEnvironmentHeader(state = state)
+        }
+
         if (installedAgents.isNotEmpty()) {
             item {
                 Row(
@@ -152,11 +156,14 @@ internal fun BuildProjectsContent(
 
         if (state.projects.isEmpty()) {
             item {
-                Text(
-                    text = stringResource(Res.string.kai_build_projects_empty),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                BuildSectionHeader(
+                    title = "Projects",
+                    subtitle = stringResource(Res.string.kai_build_projects_empty),
                 )
+            }
+        } else {
+            item {
+                BuildSectionHeader(title = "Projects")
             }
         }
 
@@ -217,10 +224,17 @@ internal fun BuildProjectsContent(
         item {
             BuildSystemCard(
                 info = state.systemInfo,
-                missingAgents = missingAgents,
-                onInstallAgent = onInstallAgent,
                 onUninstall = { showUninstall = true },
             )
+        }
+
+        if (missingAgents.isNotEmpty()) {
+            item {
+                BuildAgentManagerCard(
+                    missingAgents = missingAgents,
+                    onInstallAgent = onInstallAgent,
+                )
+            }
         }
     }
 
@@ -417,20 +431,14 @@ private fun DeleteProjectDialog(
     )
 }
 
-/** What the Linux install is and what it costs, plus the two things you can do to it. */
+/** What the Linux install is and what it costs, plus the uninstall action. */
 @Composable
 private fun BuildSystemCard(
     info: BuildSystemInfo?,
-    missingAgents: List<BuildAgent>,
-    onInstallAgent: (String) -> Unit,
     onUninstall: () -> Unit,
 ) {
     SettingsCard(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            text = stringResource(Res.string.kai_build_system_title),
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
+        BuildSectionHeader(title = stringResource(Res.string.kai_build_system_title))
         if (info != null) {
             Text(
                 text = "${info.distribution} · ${info.architecture}",
@@ -459,29 +467,6 @@ private fun BuildSystemCard(
             )
         }
 
-        if (missingAgents.isNotEmpty()) {
-            Spacer(Modifier.height(12.dp))
-            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-            Spacer(Modifier.height(12.dp))
-            Text(
-                text = stringResource(Res.string.kai_build_projects_add_agent),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Spacer(Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                missingAgents.forEach { agent ->
-                    KaiChip(onClick = { onInstallAgent(agent.id) }) {
-                        Text(text = agent.title, style = MaterialTheme.typography.labelMedium)
-                    }
-                }
-            }
-        }
-
         Spacer(Modifier.height(4.dp))
         TextButton(
             onClick = onUninstall,
@@ -491,6 +476,37 @@ private fun BuildSystemCard(
                 text = stringResource(Res.string.kai_build_uninstall),
                 color = MaterialTheme.colorScheme.error,
             )
+        }
+    }
+}
+
+/**
+ * Explicit Agent Manager card (Plan 3, Phase 2): the agents you can install are
+ * their own surface rather than an afterthought below the system facts, so it is
+ * clear Build can grow beyond a plain shell.
+ */
+@Composable
+private fun BuildAgentManagerCard(
+    missingAgents: List<BuildAgent>,
+    onInstallAgent: (String) -> Unit,
+) {
+    if (missingAgents.isEmpty()) return
+    SettingsCard(modifier = Modifier.fillMaxWidth()) {
+        BuildSectionHeader(
+            title = "Agents",
+            subtitle = "Install an agent to open projects with it instead of a plain shell.",
+        )
+        Spacer(Modifier.height(4.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            missingAgents.forEach { agent ->
+                KaiChip(onClick = { onInstallAgent(agent.id) }) {
+                    Text(text = agent.title, style = MaterialTheme.typography.labelMedium)
+                }
+            }
         }
     }
 }
