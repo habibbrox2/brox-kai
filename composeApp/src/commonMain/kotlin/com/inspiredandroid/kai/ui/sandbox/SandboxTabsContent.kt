@@ -33,6 +33,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.inspiredandroid.kai.SandboxController
 import com.inspiredandroid.kai.TerminalLine
+import com.inspiredandroid.kai.linux.LinuxDistro
+import com.inspiredandroid.kai.ui.components.OperationalStatus
+import com.inspiredandroid.kai.ui.components.StatusBadge
 import com.inspiredandroid.kai.ui.handCursor
 import com.inspiredandroid.kai.ui.settings.SandboxUiState
 import com.inspiredandroid.kai.ui.settings.SettingsCard
@@ -43,6 +46,8 @@ import kai.composeapp.generated.resources.sandbox_session_chip_session
 import kai.composeapp.generated.resources.sandbox_session_chip_temporary
 import kai.composeapp.generated.resources.settings_sandbox_cancel
 import kai.composeapp.generated.resources.settings_sandbox_description
+import kai.composeapp.generated.resources.settings_sandbox_distro_alpine_detail
+import kai.composeapp.generated.resources.settings_sandbox_distro_debian_detail
 import kai.composeapp.generated.resources.settings_sandbox_install
 import kai.composeapp.generated.resources.settings_sandbox_subtab_files
 import kai.composeapp.generated.resources.settings_sandbox_subtab_packages
@@ -115,16 +120,57 @@ internal fun SandboxTabsContent(
     } else {
         Column(modifier = modifier.fillMaxWidth()) {
             SettingsCard {
-                Text(
-                    text = "Alpine Linux",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onBackground,
-                )
+                // Readiness flow (Plan 4, Phase 3): which environment, what state
+                // it is in, what setup costs, progress, and an explicit retry —
+                // the error is never the only thing on screen.
+                val (badgeLabel, badgeStatus) = when {
+                    sandboxState.hasError -> "Failed" to OperationalStatus.Error
+
+                    sandboxState.isWorking || sandboxState.sandboxProgress != null ->
+                        "Installing" to OperationalStatus.Installing
+
+                    else -> "Needs setup" to OperationalStatus.NeedsSetup
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        // Distro comes from state — a hard-coded name goes stale the
+                        // moment the user picks the other distribution.
+                        text = sandboxState.distro.displayName,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.weight(1f),
+                    )
+                    StatusBadge(label = badgeLabel, status = badgeStatus)
+                }
 
                 Spacer(Modifier.height(4.dp))
 
                 Text(
                     text = stringResource(Res.string.settings_sandbox_description),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+
+                Spacer(Modifier.height(6.dp))
+
+                // Storage expectation from the distro's own copy, then the session
+                // expectation, so "what am I signing up for" is answered up front.
+                Text(
+                    text = when (sandboxState.distro) {
+                        LinuxDistro.DEBIAN ->
+                            stringResource(Res.string.settings_sandbox_distro_debian_detail)
+
+                        LinuxDistro.ALPINE ->
+                            stringResource(Res.string.settings_sandbox_distro_alpine_detail)
+                    },
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Text(
+                    text = "Files, packages, and terminal sessions live inside the environment and are kept between launches.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -145,7 +191,15 @@ internal fun SandboxTabsContent(
                 if (!sandboxState.isWorking) {
                     Spacer(Modifier.height(8.dp))
                     Button(onClick = onSetupSandbox, modifier = Modifier.handCursor()) {
-                        Text(stringResource(Res.string.settings_sandbox_install))
+                        // A failed attempt must offer a way out, not repeat the
+                        // original invitation verbatim (Plan 4, Phase 3).
+                        Text(
+                            if (sandboxState.hasError) {
+                                "Retry setup"
+                            } else {
+                                stringResource(Res.string.settings_sandbox_install)
+                            },
+                        )
                     }
                 }
             }
