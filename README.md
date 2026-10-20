@@ -12,7 +12,7 @@
 
 Runs on **Android, iOS, Windows, Mac, Linux, and Web**.
 
-**[Website](https://kai9000.com)** - **[Documentation](https://kai9000.com/docs/)** - **[Source](https://github.com/habibbrox2/brox-kai)** - **[Releases](https://github.com/habibbrox2/brox-kai/releases)**
+**[Website](https://kai9000.com)** - **[Documentation](https://kai9000.com/docs/)** - **[Source](https://github.com/habibbrox2/brox-kai-2.0)** - **[Releases](https://github.com/habibbrox2/brox-kai-2.0/releases)**
 
 </div>
 
@@ -41,7 +41,7 @@ Brox Kai v2.0 is a security-hardened fork of [Kai 9000](https://github.com/Simon
 ## Installation
 
 ### Downloads
-Download the latest release build from [GitHub Releases](https://github.com/habibbrox2/brox-kai/releases/tag/v2.0.0). The release tag is technical metadata; the product name remains Brox Kai v2.0:
+Download the latest release build from [GitHub Releases](https://github.com/habibbrox2/brox-kai-2.0/releases/tag/v2.0.0). The release tag is technical metadata; the product name remains Brox Kai v2.0:
 - **Android APK (Foss):** `Brox-Kai-2.0-Android.apk`
 - **Windows (x64):** `Brox-Kai-2.0-Windows-x64.msi` / `Brox-Kai-2.0-Windows-x64.zip`
 
