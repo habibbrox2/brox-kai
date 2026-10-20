@@ -42,6 +42,9 @@ import androidx.compose.ui.unit.dp
 import com.inspiredandroid.kai.skills.RegistrySkillEntry
 import com.inspiredandroid.kai.skills.SkillManifest
 import com.inspiredandroid.kai.ui.KaiOutlinedTextField
+import com.inspiredandroid.kai.ui.components.CollectionEmptyState
+import com.inspiredandroid.kai.ui.components.OperationalStatus
+import com.inspiredandroid.kai.ui.components.StatusBadge
 import com.inspiredandroid.kai.ui.components.VerticalScrollbarForScroll
 import com.inspiredandroid.kai.ui.handCursor
 import com.inspiredandroid.kai.ui.kaiAdaptiveCardBorder
@@ -102,11 +105,16 @@ internal fun SkillsSection(
 
         if (!isSandboxInstalled) {
             // Skills live in the Linux sandbox, so it must be installed first.
-            Text(
-                text = stringResource(Res.string.settings_skills_needs_sandbox),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            // Standardized prerequisite badge instead of prose alone (Plan 4, Phase 1).
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = stringResource(Res.string.settings_skills_needs_sandbox),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.weight(1f),
+                )
+                StatusBadge(label = "Needs setup", status = OperationalStatus.NeedsSetup)
+            }
             Spacer(Modifier.height(8.dp))
             OutlinedButton(
                 onClick = onNavigateToSandbox,
@@ -116,10 +124,8 @@ internal fun SkillsSection(
             }
         } else {
             if (skills.isEmpty()) {
-                Text(
-                    text = stringResource(Res.string.settings_skills_none),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                CollectionEmptyState(
+                    message = stringResource(Res.string.settings_skills_none),
                 )
             } else {
                 for (skill in skills) {

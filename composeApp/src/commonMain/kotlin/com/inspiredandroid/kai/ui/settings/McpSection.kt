@@ -47,6 +47,9 @@ import com.inspiredandroid.kai.mcp.PopularMcpServer
 import com.inspiredandroid.kai.mcp.authorizationHeaderValue
 import com.inspiredandroid.kai.mcp.popularMcpServers
 import com.inspiredandroid.kai.ui.KaiOutlinedTextField
+import com.inspiredandroid.kai.ui.components.CollectionEmptyState
+import com.inspiredandroid.kai.ui.components.OperationalStatus
+import com.inspiredandroid.kai.ui.components.StatusBadge
 import com.inspiredandroid.kai.ui.components.VerticalScrollbarForScroll
 import com.inspiredandroid.kai.ui.handCursor
 import com.inspiredandroid.kai.ui.kaiAdaptiveCardBorder
@@ -104,6 +107,14 @@ internal fun McpServersSection(
         )
 
         Spacer(Modifier.height(12.dp))
+
+        if (mcpServers.isEmpty()) {
+            // Dedicated empty state instead of a blank list (Plan 4, Phase 1).
+            CollectionEmptyState(
+                message = "No MCP servers connected yet. Add one below, or pick a popular server to get started.",
+            )
+            Spacer(Modifier.height(8.dp))
+        }
 
         for (server in mcpServers) {
             McpServerCard(
@@ -167,19 +178,30 @@ private fun McpServerCard(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                // Status dot
-                val statusColor = when (server.connectionStatus) {
-                    McpConnectionStatus.Connected -> StatusColorConnected
-                    McpConnectionStatus.Connecting -> StatusColorChecking
-                    McpConnectionStatus.Error -> StatusColorError
-                    McpConnectionStatus.Unknown -> StatusColorUnknown
+                // Status badge: text + color, standardized across tools/skills/sandbox
+                // (Plan 4, Phase 1). Disabled is its own state, not an error.
+                val status = when {
+                    !server.isEnabled -> OperationalStatus.Disabled
+                    server.connectionStatus == McpConnectionStatus.Connected -> OperationalStatus.Connected
+                    server.connectionStatus == McpConnectionStatus.Connecting -> OperationalStatus.Connecting
+                    server.connectionStatus == McpConnectionStatus.Error -> OperationalStatus.Error
+                    else -> OperationalStatus.Ready
                 }
-                Box(
-                    modifier = Modifier
-                        .size(10.dp)
-                        .clip(CircleShape)
-                        .background(statusColor),
-                )
+                val statusLabel = when {
+                    !server.isEnabled -> "Disabled"
+
+                    server.connectionStatus == McpConnectionStatus.Connected ->
+                        stringResource(Res.string.settings_mcp_status_connected)
+
+                    server.connectionStatus == McpConnectionStatus.Connecting ->
+                        stringResource(Res.string.settings_mcp_status_connecting)
+
+                    server.connectionStatus == McpConnectionStatus.Error ->
+                        stringResource(Res.string.settings_mcp_status_error)
+
+                    else -> "Not checked"
+                }
+                StatusBadge(label = statusLabel, status = status)
                 Spacer(Modifier.width(12.dp))
 
                 Column(modifier = Modifier.weight(1f)) {

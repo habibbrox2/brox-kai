@@ -26,6 +26,7 @@ import com.inspiredandroid.kai.mcp.PopularMcpServer
 import com.inspiredandroid.kai.network.tools.ToolInfo
 import com.inspiredandroid.kai.skills.RegistrySkillEntry
 import com.inspiredandroid.kai.skills.SkillManifest
+import com.inspiredandroid.kai.ui.components.CollectionEmptyState
 import com.inspiredandroid.kai.ui.handCursor
 import com.inspiredandroid.kai.ui.kaiAdaptiveCardBorder
 import com.inspiredandroid.kai.ui.kaiAdaptiveCardColors
@@ -108,10 +109,8 @@ internal fun ToolsContent(
         Spacer(Modifier.height(16.dp))
 
         if (tools.isEmpty()) {
-            Text(
-                text = stringResource(Res.string.settings_tools_none_available),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            CollectionEmptyState(
+                message = stringResource(Res.string.settings_tools_none_available),
             )
         } else {
             BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
