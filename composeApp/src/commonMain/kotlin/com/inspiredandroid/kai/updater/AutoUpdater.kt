@@ -93,7 +93,7 @@ object AutoUpdater {
                 try {
                     val latest = fetchLatestRelease()
                     if (latest != null && isNewer(latest.tag_name)) {
-                        val asset = pickAssetForCurrentPlatform(latest.assets)
+                        val asset = pickAssetFor(latest.assets)
                         if (asset != null) {
                             onStateChange(
                                 UpdateState.UpdateAvailable(
@@ -132,9 +132,9 @@ object AutoUpdater {
         return releases.firstOrNull { !it.draft && !it.prerelease && it.tag_name.startsWith(TAG_PREFIX) }
     }
 
-    private fun isNewer(remoteTag: String): Boolean {
+    internal fun isNewer(remoteTag: String, localVersion: String = Version.appVersion): Boolean {
         val remote = remoteTag.removePrefix("v").split(".").map { it.toIntOrNull() ?: 0 }
-        val local = Version.appVersion.split(".").map { it.toIntOrNull() ?: 0 }
+        val local = localVersion.split(".").map { it.toIntOrNull() ?: 0 }
         for (i in 0..max(remote.lastIndex, local.lastIndex)) {
             val r = remote.getOrElse(i) { 0 }
             val l = local.getOrElse(i) { 0 }
@@ -143,28 +143,26 @@ object AutoUpdater {
         return false
     }
 
-    private fun pickAssetForCurrentPlatform(assets: List<ReleaseAsset>): ReleaseAsset? {
-        val key = currentPlatformKey()
-        val isArm64 = key.endsWith("arm64")
+    /**
+     * Picks the release asset matching the given platform key.
+     * ARM64 variants (`*-aarch64.*`) are preferred/tried-against separately and
+     * never win for a non-ARM64 platform, with an ARM64 asset kept as a last
+     * fallback for ARM64 hosts only.
+     */
+    internal fun pickAssetFor(assets: List<ReleaseAsset>, platformKey: String = currentPlatformKey()): ReleaseAsset? {
+        val isArm64 = platformKey.endsWith("arm64")
+        val arm64Assets = assets.filter { it.name.endsWith("-aarch64.deb") || it.name.endsWith("-aarch64.AppImage") || it.name.endsWith("-aarch64.tar.gz") || it.name.endsWith("-aarch64.dmg") }
+        val plainAssets = assets - arm64Assets.toSet()
         return when {
-            key.startsWith("windows") -> assets.firstOrNull { it.name.endsWith(".msi") }
-            key.startsWith("macos") -> if (isArm64) {
-                assets.firstOrNull { it.name.endsWith("-aarch64.dmg") }
+            platformKey.startsWith("windows") -> plainAssets.firstOrNull { it.name.endsWith(".msi") }
+            platformKey.startsWith("macos") ->
+                (if (isArm64) arm64Assets.firstOrNull { it.name.endsWith("-aarch64.dmg") } else plainAssets.firstOrNull { it.name.endsWith(".dmg") })
+            platformKey.startsWith("linux") -> if (isArm64) {
+                arm64Assets.firstOrNull { it.name.endsWith("-aarch64.deb") }
+                    ?: arm64Assets.firstOrNull { it.name.endsWith("-aarch64.AppImage") }
+                    ?: arm64Assets.firstOrNull { it.name.endsWith("-aarch64.tar.gz") }
             } else {
-                assets.firstOrNull { it.name.endsWith(".dmg") }
-            }
-            key.startsWith("linux") -> if (isArm64) {
-                assets.firstOrNull {
-                    it.name.endsWith("-aarch64.deb") ||
-                        it.name.endsWith("-aarch64.AppImage") ||
-                        it.name.endsWith("-aarch64.tar.gz")
-                }
-            } else {
-                assets.firstOrNull {
-                    it.name.endsWith(".deb") ||
-                        it.name.endsWith(".AppImage") ||
-                        it.name.endsWith(".tar.gz")
-                }
+                plainAssets.firstOrNull { it.name.endsWith(".deb") || it.name.endsWith(".AppImage") || it.name.endsWith(".tar.gz") }
             }
             else -> null
         }

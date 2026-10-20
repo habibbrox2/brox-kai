@@ -32,6 +32,7 @@ import com.inspiredandroid.kai.tools.CommonTools
 import com.inspiredandroid.kai.ui.chat.History
 import com.inspiredandroid.kai.ui.settings.SettingsModel
 import io.github.vinceglb.filekit.PlatformFile
+import kotlin.time.Clock
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -269,6 +270,20 @@ class FakeDataRepository : DataRepository {
             chatHistory.value = emptyList()
         }
         savedConversations.update { it.filter { c -> c.id != id } }
+    }
+
+    override fun renameConversation(id: String, title: String) {
+        savedConversations.update { conversations ->
+            conversations.map { if (it.id == id) it.copy(title = title) else it }
+        }
+    }
+
+    override fun togglePinConversation(id: String) {
+        savedConversations.update { conversations ->
+            conversations.map {
+                if (it.id == id) it.copy(isPinned = !it.isPinned, pinnedAt = if (it.isPinned) 0L else Clock.System.now().toEpochMilliseconds()) else it
+            }
+        }
     }
 
     override fun regenerate() {
