@@ -1135,7 +1135,7 @@
   <a href="#phase-1-chat-first-shell" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Phase 1 — Chat-first shell
+        Phase 1 — Chat-first shell ✅
       
     </span>
   </a>
@@ -1146,7 +1146,7 @@
   <a href="#phase-2-empty-state" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Phase 2 — Empty state
+        Phase 2 — Empty state ✅
       
     </span>
   </a>
@@ -1157,7 +1157,7 @@
   <a href="#phase-3-conversation-view" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Phase 3 — Conversation view
+        Phase 3 — Conversation view ✅
       
     </span>
   </a>
@@ -1168,7 +1168,7 @@
   <a href="#phase-4-history-management" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Phase 4 — History management
+        Phase 4 — History management ✅
       
     </span>
   </a>
@@ -1179,7 +1179,7 @@
   <a href="#phase-5-settings-4-tabs" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Phase 5 — Settings 4 tabs
+        Phase 5 — Settings 4 tabs ✅
       
     </span>
   </a>
@@ -1190,7 +1190,7 @@
   <a href="#phase-6-input-toasts" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Phase 6 — Input &amp; toasts
+        Phase 6 — Input &amp; toasts ✅
       
     </span>
   </a>
@@ -1201,7 +1201,7 @@
   <a href="#phase-7-code-editor" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Phase 7 — Code editor
+        Phase 7 — Code editor ✅
       
     </span>
   </a>
@@ -1209,10 +1209,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#phase-8-docs" class="md-nav__link">
+  <a href="#phase-8-docs-this-file-changelogmd" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Phase 8 — Docs
+        Phase 8 — Docs ✅ (this file + CHANGELOG.md)
       
     </span>
   </a>
@@ -1311,123 +1311,123 @@ keeping every behavior (providers, tools, sandbox, heartbeat, settings) intact.<
 <h2 id="phase-plan">Phase plan</h2>
 <h3 id="phase-1-chat-first-shell-default-route-sidebar-navigation">Phase 1 — Chat-first shell: default route + sidebar navigation</h3>
 <ul>
-<li>[ ] <code>App.kt</code>: <code>startDestination = Home</code> (Chat) on every platform; Dashboard
+<li>[x] <code>App.kt</code>: <code>startDestination = Home</code> (Chat) on every platform; Dashboard
       becomes an ordinary pushed destination.</li>
-<li>[ ] Remove the 3-tab segmented navigation bar (dashboard/chat/settings) from
+<li>[x] Remove the 3-tab segmented navigation bar (dashboard/chat/settings) from
       <code>App.kt</code>/<code>TopBar</code> — the sidebar replaces it; <code>navigationTabBar</code> params pass
       <code>null</code>.</li>
-<li>[ ] New <code>ui/sidebar/AppSidebar.kt</code> (presentation-only, reused by drawer + rail):<ul>
+<li>[x] New <code>ui/sidebar/AppSidebar.kt</code> (presentation-only, reused by drawer + rail):<ul>
 <li><strong>Top</strong>: New Chat button (prominent, ➕) + search field (<code>KaiSearchField</code>).</li>
 <li><strong>Middle</strong>: conversation list (Phase 4 adds grouping/search/rename/pin).</li>
 <li><strong>Bottom</strong>: brand/profile row (owner identity, local avatar), Dashboard
     link, Interactive UI entry (Android), Settings gear.</li>
 </ul>
 </li>
-<li>[ ] <code>ChatModeScreen</code>/<code>ChatShell</code>: on expanded windows the sidebar is the
+<li>[x] <code>ChatModeScreen</code>/<code>ChatShell</code>: on expanded windows the sidebar is the
       permanent left rail (replacing <code>ConversationRail</code>); on compact windows it
       is a <code>ModalNavigationDrawer</code> opened by a hamburger toggle in the <code>TopBar</code>.</li>
-<li>[ ] <code>TopBar</code> redesign: <strong>left</strong> = drawer toggle (compact) / brand (expanded),
+<li>[x] <code>TopBar</code> redesign: <strong>left</strong> = drawer toggle (compact) / brand (expanded),
       <strong>center</strong> = model selector pill (service icon + name + chevron, opens the
       existing selector popup), <strong>right</strong> = quick actions (speech toggle,
       Settings gear); legacy icon clutter removed.</li>
-<li>[ ] Sidebar navigation callbacks wired in <code>App.kt</code> (Dashboard, Settings,
+<li>[x] Sidebar navigation callbacks wired in <code>App.kt</code> (Dashboard, Settings,
       Interactive mode, Kai Build on Android).</li>
-<li>[ ] Compile: desktop + wasm green.</li>
+<li>[x] Compile: desktop + wasm green.</li>
 </ul>
 <h3 id="phase-2-empty-state-redesign-welcome-screen">Phase 2 — Empty state redesign (welcome screen)</h3>
 <ul>
-<li>[ ] Remove <code>Start Interactive UI</code> and <code>Open Kai Build</code> buttons from
+<li>[x] Remove <code>Start Interactive UI</code> and <code>Open Kai Build</code> buttons from
       <code>EmptyState</code> entirely.</li>
-<li>[ ] Minimal small logo (reduced <code>LogoAnimation</code>) + light heading
+<li>[x] Minimal small logo (reduced <code>LogoAnimation</code>) + light heading
       "How can I help you today?".</li>
-<li>[ ] Quick cards Write / Code / Research / Build as a <strong>2×2 grid</strong>, each with
+<li>[x] Quick cards Write / Code / Research / Build as a <strong>2×2 grid</strong>, each with
       title + subtext ("Code — Write &amp; debug code"), subtle border and
       hover/touch glow accent (<code>animatedGradientBorder</code>).</li>
-<li>[ ] Privacy note kept, compact.</li>
-<li>[ ] Compile: desktop + wasm green.</li>
+<li>[x] Privacy note kept, compact.</li>
+<li>[x] Compile: desktop + wasm green.</li>
 </ul>
 <h3 id="phase-3-conversation-view-bubbles-response-action-bar">Phase 3 — Conversation view: bubbles + response action bar</h3>
 <ul>
-<li>[ ] User message: right-aligned bubble with light background.</li>
-<li>[ ] Assistant response: full-width container, custom typography, scroll.</li>
-<li>[ ] Response action bar under every assistant message: <strong>Copy, Thumbs
+<li>[x] User message: right-aligned bubble with light background.</li>
+<li>[x] Assistant response: full-width container, custom typography, scroll.</li>
+<li>[x] Response action bar under every assistant message: <strong>Copy, Thumbs
       Up/Down, Regenerate, Read Aloud</strong> (extends <code>MessageActionRow</code>; feedback is
       local-only UI state — no backend).</li>
-<li>[ ] Code blocks: keep syntax highlighting; header shows language tag +
+<li>[x] Code blocks: keep syntax highlighting; header shows language tag +
       "Copy Code" button + <strong>Open in editor</strong> (Phase 7 hook).</li>
-<li>[ ] Compile: desktop + wasm green.</li>
+<li>[x] Compile: desktop + wasm green.</li>
 </ul>
 <h3 id="phase-4-chat-history-management">Phase 4 — Chat history management</h3>
 <ul>
-<li>[ ] Time-based grouping: <strong>Today / Yesterday / Previous 7 Days / Previous
+<li>[x] Time-based grouping: <strong>Today / Yesterday / Previous 7 Days / Previous
       30 Days</strong> (shared by sidebar list and history sheet).</li>
-<li>[ ] Item actions on hover (desktop) / long-press (mobile): <strong>Rename</strong> (title
+<li>[x] Item actions on hover (desktop) / long-press (mobile): <strong>Rename</strong> (title
       edit dialog → new <code>renameConversation</code> action), <strong>Pin</strong> (new
       <code>isPinned</code>/<code>pinnedAt</code> fields on <code>Conversation</code>, pinned group on top),
       <strong>Delete</strong> (existing undo flow).</li>
-<li>[ ] Inline <strong>search bar</strong> above the history list filtering titles live.</li>
-<li>[ ] Data layer: <code>Conversation</code> serialization fields (defaulted → backward
+<li>[x] Inline <strong>search bar</strong> above the history list filtering titles live.</li>
+<li>[x] Data layer: <code>Conversation</code> serialization fields (defaulted → backward
       compatible), <code>ConversationStorage</code>, repository + viewmodel actions.</li>
-<li>[ ] Compile: desktop + wasm green.</li>
+<li>[x] Compile: desktop + wasm green.</li>
 </ul>
 <h3 id="phase-5-settings-restructure-to-4-tabs">Phase 5 — Settings restructure to 4 tabs</h3>
 <ul>
-<li>[ ] <code>SettingsTab</code> → <code>General, Model, Data, Account</code> (serializable; dashboard
+<li>[x] <code>SettingsTab</code> → <code>General, Model, Data, Account</code> (serializable; dashboard
       deep links remapped).</li>
-<li>[ ] <strong>General</strong>: theme, language, auto-scroll + folded sub-sections for the
+<li>[x] <strong>General</strong>: theme, language, auto-scroll + folded sub-sections for the
       existing Agent / Tools / Sandbox / Integrations content (section headers,
       nothing removed).</li>
-<li>[ ] <strong>Model &amp; API Key</strong>: existing Services content (keys, models, temperature,
+<li>[x] <strong>Model &amp; API Key</strong>: existing Services content (keys, models, temperature,
       token limits, custom endpoints).</li>
-<li>[ ] <strong>Data Control</strong>: chat history save on/off, Export Chat Data, Clear All
+<li>[x] <strong>Data Control</strong>: chat history save on/off, Export Chat Data, Clear All
       Conversations.</li>
-<li>[ ] <strong>Account &amp; Plan</strong>: owner profile card (reuse <code>SupportProfile</code>),
+<li>[x] <strong>Account &amp; Plan</strong>: owner profile card (reuse <code>SupportProfile</code>),
       system status / app version / plan status.</li>
-<li>[ ] Rail + strip labels, detail pane routing, dashboard deep links updated.</li>
-<li>[ ] Compile: desktop + wasm green.</li>
+<li>[x] Rail + strip labels, detail pane routing, dashboard deep links updated.</li>
+<li>[x] Compile: desktop + wasm green.</li>
 </ul>
 <h3 id="phase-6-input-bar-error-toasts">Phase 6 — Input bar + error toasts</h3>
 <ul>
-<li>[ ] Composer: fixed bottom, attach (+) left, send (↑) right with active
+<li>[x] Composer: fixed bottom, attach (+) left, send (↑) right with active
       highlight while typing (verify + polish), stop state preserved.</li>
-<li>[ ] Voice <strong>input</strong> (speech-to-text): only if a cross-platform STT path
+<li>[x] Voice <strong>input</strong> (speech-to-text): only if a cross-platform STT path
       already exists; otherwise the mic slot is omitted (no fake buttons) and
       the existing speech-output toggle stays in the header.</li>
-<li>[ ] Errors: replace centered <code>ErrorMessage</code> blocks with a <strong>top-right toast /
+<li>[x] Errors: replace centered <code>ErrorMessage</code> blocks with a <strong>top-right toast /
       alert badge</strong> overlay (auto-dismiss, retry action) above the input bar;
       snackbar host kept for transient messages.</li>
-<li>[ ] Compile: desktop + wasm green.</li>
+<li>[x] Compile: desktop + wasm green.</li>
 </ul>
 <h3 id="phase-7-code-editor-workspace-unified-chat-first">Phase 7 — Code editor workspace (unified, chat-first)</h3>
 <ul>
-<li>[ ] New <code>editor</code> package: <code>CodeEditorScreen</code> + workspace state (in-memory
+<li>[x] New <code>editor</code> package: <code>CodeEditorScreen</code> + workspace state (in-memory
       file store seeded from AI code blocks via "Open in editor", plus sandbox
       project files where available).</li>
-<li>[ ] Layout: file tree (left), tabbed editor (center, monospace editable with
+<li>[x] Layout: file tree (left), tabbed editor (center, monospace editable with
       highlight preview), terminal tab (bottom/right — Android sandbox shell /
       desktop shell where available).</li>
-<li>[ ] Opening behavior: mobile = full-screen route with back-to-chat; desktop
+<li>[x] Opening behavior: mobile = full-screen route with back-to-chat; desktop
       expanded = split pane beside the chat (editor as the <code>ChatShell</code>
       side-panel slot), compact desktop = full-screen like mobile.</li>
-<li>[ ] Save/reload, dirty indicators, copy-all; behavior stays local (no
+<li>[x] Save/reload, dirty indicators, copy-all; behavior stays local (no
       filesystem writes outside the sandbox/workspace).</li>
-<li>[ ] Compile: desktop + wasm green.</li>
+<li>[x] Compile: desktop + wasm green.</li>
 </ul>
 <h3 id="phase-8-docs-changelog-verification">Phase 8 — Docs, changelog, verification</h3>
 <ul>
-<li>[ ] Progress status section below all checked.</li>
-<li>[ ] CHANGELOG entry for Plan 7.</li>
-<li>[ ] Final desktop + wasm compile; commit per phase; push.</li>
+<li>[x] Progress status section below all checked.</li>
+<li>[x] CHANGELOG entry for Plan 7.</li>
+<li>[x] Final desktop + wasm compile; commit per phase; push.</li>
 </ul>
 <h2 id="progress-status">Progress status</h2>
-<h3 id="phase-1-chat-first-shell">Phase 1 — Chat-first shell</h3>
-<h3 id="phase-2-empty-state">Phase 2 — Empty state</h3>
-<h3 id="phase-3-conversation-view">Phase 3 — Conversation view</h3>
-<h3 id="phase-4-history-management">Phase 4 — History management</h3>
-<h3 id="phase-5-settings-4-tabs">Phase 5 — Settings 4 tabs</h3>
-<h3 id="phase-6-input-toasts">Phase 6 — Input &amp; toasts</h3>
-<h3 id="phase-7-code-editor">Phase 7 — Code editor</h3>
-<h3 id="phase-8-docs">Phase 8 — Docs</h3>
+<h3 id="phase-1-chat-first-shell">Phase 1 — Chat-first shell ✅</h3>
+<h3 id="phase-2-empty-state">Phase 2 — Empty state ✅</h3>
+<h3 id="phase-3-conversation-view">Phase 3 — Conversation view ✅</h3>
+<h3 id="phase-4-history-management">Phase 4 — History management ✅</h3>
+<h3 id="phase-5-settings-4-tabs">Phase 5 — Settings 4 tabs ✅</h3>
+<h3 id="phase-6-input-toasts">Phase 6 — Input &amp; toasts ✅</h3>
+<h3 id="phase-7-code-editor">Phase 7 — Code editor ✅</h3>
+<h3 id="phase-8-docs-this-file-changelogmd">Phase 8 — Docs ✅ (this file + CHANGELOG.md)</h3>
 
 
 
