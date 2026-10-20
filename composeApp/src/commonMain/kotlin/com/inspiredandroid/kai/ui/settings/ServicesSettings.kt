@@ -62,6 +62,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withLink
@@ -78,7 +79,10 @@ import com.inspiredandroid.kai.inference.calculateDevicePerformance
 import com.inspiredandroid.kai.inference.estimateGpuMemoryMb
 import com.inspiredandroid.kai.network.dtos.SponsorsResponseDto
 import com.inspiredandroid.kai.ui.KaiClearableTextField
+import com.inspiredandroid.kai.ui.components.CollectionEmptyState
 import com.inspiredandroid.kai.ui.components.KaiSlider
+import com.inspiredandroid.kai.ui.components.OperationalStatus
+import com.inspiredandroid.kai.ui.components.StatusBadge
 import com.inspiredandroid.kai.ui.components.VerticalScrollbarForScroll
 import com.inspiredandroid.kai.ui.handCursor
 import com.inspiredandroid.kai.ui.icons.DragIndicator
@@ -320,6 +324,19 @@ internal fun ServicesContent(uiState: SettingsUiState, actions: SettingsActions)
 
     // Configured services list
     val entries = uiState.configuredServices
+
+    // Compact Services overview (Plan 5, Phase 1): configured count and any
+    // service requiring attention, readable before any card is opened.
+    if (entries.isEmpty()) {
+        CollectionEmptyState(
+            message = "No services configured yet. Add one below to pick a provider, model, and key.",
+        )
+        Spacer(Modifier.height(12.dp))
+    } else {
+        ServicesOverview(entries)
+        Spacer(Modifier.height(12.dp))
+    }
+
     ReorderableColumn(
         list = entries,
         onSettle = { fromIndex, toIndex ->
@@ -459,6 +476,70 @@ internal fun ServicesContent(uiState: SettingsUiState, actions: SettingsActions)
     }
 }
 
+/** True when a connection status represents a failure worth surfacing. */
+private fun ConnectionStatus.needsAttention(): Boolean = when (this) {
+    ConnectionStatus.Connected,
+    ConnectionStatus.Checking,
+    ConnectionStatus.Unknown,
+    -> false
+
+    else -> true
+}
+
+/**
+ * Compact Services overview (Plan 5, Phase 1): how many services are configured
+ * and whether any of them needs attention, visible without opening a card.
+ */
+@Composable
+private fun ServicesOverview(entries: ImmutableList<ConfiguredServiceEntry>) {
+    val attention = entries.count { it.connectionStatus.needsAttention() }
+    val checking = entries.count { it.connectionStatus == ConnectionStatus.Checking }
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = kaiAdaptiveCardColors(),
+        border = kaiAdaptiveCardBorder(),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = entries.size.toString(),
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+            Spacer(Modifier.width(12.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = if (entries.size == 1) "Configured service" else "Configured services",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Spacer(Modifier.height(2.dp))
+                StatusBadge(
+                    label = when {
+                        attention > 0 -> if (attention == 1) {
+                            "1 needs attention"
+                        } else {
+                            "$attention need attention"
+                        }
+
+                        checking > 0 -> "Checking connections"
+
+                        else -> "All connected"
+                    },
+                    status = when {
+                        attention > 0 -> OperationalStatus.Error
+                        checking > 0 -> OperationalStatus.Connecting
+                        else -> OperationalStatus.Connected
+                    },
+                )
+            }
+        }
+    }
+}
+
 @Composable
 private fun ConfiguredServiceCardContent(
     entry: ConfiguredServiceEntry,
@@ -524,19 +605,20 @@ private fun ConfiguredServiceCardContent(
                     Spacer(Modifier.width(8.dp))
                 }
 
-                // Connection status dot
-                val dotColor = when (entry.connectionStatus) {
-                    ConnectionStatus.Connected -> StatusColorConnected
-                    ConnectionStatus.Checking -> StatusColorChecking
-                    ConnectionStatus.Unknown -> StatusColorUnknown
-                    else -> StatusColorError
+                // Connection status badge (Plan 5, Phase 1): text alongside the
+                // icon — color alone cannot carry status.
+                val (statusLabel, statusKind) = when (entry.connectionStatus) {
+                    ConnectionStatus.Unknown -> "Not checked" to OperationalStatus.Disabled
+                    ConnectionStatus.Checking -> "Checking" to OperationalStatus.Connecting
+                    ConnectionStatus.Connected -> "Connected" to OperationalStatus.Connected
+                    ConnectionStatus.ErrorInvalidKey -> "Invalid API key" to OperationalStatus.Error
+                    ConnectionStatus.ErrorQuotaExhausted -> "Quota exhausted" to OperationalStatus.NeedsSetup
+                    ConnectionStatus.ErrorRateLimited -> "Rate limited" to OperationalStatus.Error
+                    ConnectionStatus.ErrorConnectionFailed -> "Connection failed" to OperationalStatus.Error
+                    ConnectionStatus.ErrorLocalNetworkDenied -> "Network blocked" to OperationalStatus.Error
+                    ConnectionStatus.Error -> "Error" to OperationalStatus.Error
                 }
-                Box(
-                    modifier = Modifier
-                        .size(10.dp)
-                        .clip(CircleShape)
-                        .background(dotColor),
-                )
+                StatusBadge(label = statusLabel, status = statusKind)
 
                 Spacer(Modifier.width(12.dp))
 
