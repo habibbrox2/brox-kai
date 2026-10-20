@@ -1174,6 +1174,67 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#progress-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Progress status
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Progress status">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-service-hierarchy-done" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 1 — Service hierarchy (done)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-add-service-flow-done" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2 — Add-service flow (done)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-sponsor-profile-and-grid-done" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 3 — Sponsor profile and grid (done)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-4-polish-and-accessibility-done-with-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 4 — Polish and accessibility (done, with notes)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1358,6 +1419,35 @@
 <li>Profile image, wording, and public destination must be approved before release. Use a branded fallback asset until those values are available.</li>
 <li>A large remote sponsor list can make reflow expensive. Render only the collapsed subset until expanded and keep card content lightweight.</li>
 <li>External links are user-visible destinations. Keep them in configuration and do not hardcode unverified personal URLs in the composable.</li>
+</ul>
+<h2 id="progress-status">Progress status</h2>
+<p>All four phases are implemented, each compiled against the desktop target and committed separately.</p>
+<h3 id="phase-1-service-hierarchy-done">Phase 1 — Service hierarchy (done)</h3>
+<ul>
+<li>Compact <code>ServicesOverview</code> card at the top of the Services tab: configured count plus a status badge (<code>N needs attention</code> / <code>Checking connections</code> / <code>All connected</code>); a dedicated empty state replaces the blank list when nothing is configured.</li>
+<li>Configured-service card headers show provider name, selected model, and now a <strong>text</strong> connection-status badge instead of the color-only dot — covering every <code>ConnectionStatus</code> (Not checked, Checking, Connected, Invalid API key, Quota exhausted, Rate limited, Connection failed, Network blocked, Error).</li>
+<li>API keys and advanced fields stay inside the existing expanded detail area; expand/reorder behavior untouched.</li>
+</ul>
+<h3 id="phase-2-add-service-flow-done">Phase 2 — Add-service flow (done)</h3>
+<ul>
+<li>The add-service sheet groups providers into <strong>Hosted providers</strong>, <strong>On-device</strong>, and <strong>Custom endpoints</strong> (headers hidden for empty groups), keeping first/last row corner rounding across groups.</li>
+<li>Each row shows a setup requirement summary derived from <code>Service</code> metadata: runs on this device / custom endpoint / API key from \&lt;portal&gt; / key required / optional / none.</li>
+<li>Action pipeline and validation unchanged — presentation and guidance only.</li>
+</ul>
+<h3 id="phase-3-sponsor-profile-and-grid-done">Phase 3 — Sponsor profile and grid (done)</h3>
+<ul>
+<li><code>SupportProfile</code> presentation model and <code>buildSupportProfiles</code> mapper: owner profile first (stable id <code>brox-kai-owner</code>, repository identity <code>habibbrox2</code>, local branded <code>logo</code> avatar — no network dependency), then current sponsors, then past (deduplicated as before). The GitHub sponsors API contract is unchanged and fetching stays in <code>SettingsViewModel</code>.</li>
+<li><code>SponsorList</code> replaced by <code>SupportSection</code> + <code>OwnerProfileCard</code> + <code>SponsorGrid</code>: responsive collapse at 600/900dp shows 2/4/6 tiles, <code>Show all sponsors</code> / <code>Collapse sponsors</code> toggle with the hidden count in its accessibility description, short <code>animateContentSize</code> transition that keeps focus on the toggle. Lists at or below the limit render fully with <strong>no</strong> redundant toggle (acceptance criteria).</li>
+<li>Expanded view keeps the current/past distinction with section labels; the owner card is never hidden by the limit.</li>
+<li>Cards without a destination URL would render informational (no tap affordance); link actions carry accessible names; all support-area URLs are centralized in the <code>SupportLinks</code> configuration block (owner profile, sponsor base, become-sponsor, partnerships — the latter two keep their existing upstream destinations).</li>
+<li>Sponsorship and partnership calls to action now sit <strong>below</strong> the grid.</li>
+</ul>
+<h3 id="phase-4-polish-and-accessibility-done-with-notes">Phase 4 — Polish and accessibility (done, with notes)</h3>
+<ul>
+<li>Accessible names: service status badges (<code>Status: …</code>), drag handles (existing reorder description), owner/sponsor links (action + destination in the description), disclosure control (hidden count).</li>
+<li>Drag handle gains a 48dp minimum touch target around its 24dp glyph (<code>minimumInteractiveComponentSize</code>); cards and toggles are clickable/focusable through their existing Material components.</li>
+<li>Validation performed by review: missing avatars fall back to the branded logo (owner) or a neutral initial (sponsors), an empty feed still renders the owner card first, one-card and threshold-crossing lists behave per the toggle rules above.</li>
+<li>Deferred / out of scope: platform-specific reduced-motion detection (<code>animateContentSize</code> uses the default short duration), automated screenshot validation of every validation case, and persistent collapse-preference storage (state resets with the screen, per plan).</li>
 </ul>
 
 

@@ -1141,6 +1141,78 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#progress-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Progress status
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Progress status">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-shared-operational-components-done" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 1 — Shared operational components (done)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-tools-management-page-done" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2 — Tools management page (done)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-sandbox-setup-done" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 3 — Sandbox setup (done)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-4-sandbox-workspace-done" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 4 — Sandbox workspace (done)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-5-accessibility-safety-and-validation-done-with-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 5 — Accessibility, safety, and validation (done, with notes)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1266,6 +1338,39 @@ SandboxWorkspace
 <li>MCP and skill installation may be asynchronous. Every mutation must render a durable in-progress or error state from the view model.</li>
 <li>Sandbox availability is platform-dependent. Keep capability flags in state and avoid platform checks inside shared cards.</li>
 <li>Terminal performance and focus can regress if nested scroll or gesture handlers are added carelessly; keep the terminal pane isolated from surrounding scroll containers.</li>
+</ul>
+<h2 id="progress-status">Progress status</h2>
+<p>All five phases are implemented, each compiled against the desktop target and committed separately.</p>
+<h3 id="phase-1-shared-operational-components-done">Phase 1 — Shared operational components (done)</h3>
+<ul>
+<li>New <code>ui/components/OperationalComponents.kt</code>: <code>OperationalStatus</code> vocabulary (Connected / Connecting / Disabled / Installing / NeedsSetup / Error / Active / Ready), a shared status color ramp, <code>StatusBadge</code> (dot + text so status never rides on color alone), <code>CapabilityCountCard</code>, and <code>CollectionEmptyState</code>.</li>
+<li>MCP server cards show a text status badge (including <code>Disabled</code> and <code>Not checked</code>, not just the four connection colors) and a dedicated empty state.</li>
+<li>Skills show a <code>Needs setup</code> badge on the sandbox prerequisite plus an empty-state card; native tools use the empty-state card too.</li>
+</ul>
+<h3 id="phase-2-tools-management-page-done">Phase 2 — Tools management page (done)</h3>
+<ul>
+<li>Tools Overview header: count cards for enabled native tools (<code>X / Y</code>), connected MCP servers (<code>X / Y</code>), and installed skills, each with an attention/needs-setup status badge. Responsive 3/2/1-column layout.</li>
+<li>Native tools gain a search/filter field when the collection has 8+ items; localized display names are resolved first so localized names match. No-match shows a dedicated empty state.</li>
+<li>Popular servers remain a separate discovery area (inside the add-server dialog, never mixed with active connections). Skills keep the installed/discoverable split with progress and error banners from Plan 2.</li>
+</ul>
+<h3 id="phase-3-sandbox-setup-done">Phase 3 — Sandbox setup (done)</h3>
+<ul>
+<li>The setup card is a readiness flow: distribution name comes from state (fixing a stale hard-coded "Alpine Linux"), a Needs setup / Installing / Failed status badge, the distro's own storage-expectation copy, a session-persistence line, progress with cancel, and an error that is never the only content on screen.</li>
+<li>After a failure the primary action becomes "Retry setup" instead of repeating the original invitation.</li>
+<li>Skills already link to the sandbox setup flow via the Phase 1 prerequisite badge + button.</li>
+</ul>
+<h3 id="phase-4-sandbox-workspace-done">Phase 4 — Sandbox workspace (done)</h3>
+<ul>
+<li>Common workspace header (semantic <code>heading()</code> + <code>Ready</code> status badge) shared by Terminal, Files, and Packages.</li>
+<li>Subtab selector: previously every tab was primary-colored, making the active tab invisible; now only the selected tab is primary + semibold, with <code>Role.Tab</code> and <code>selected</code> semantics.</li>
+<li>Session chips get <code>Role.Tab</code>/<code>selected</code> semantics and a larger (8dp vertical) touch target.</li>
+<li>Session selection stays above the terminal on all sizes (existing model); each pane keeps its own scroll container.</li>
+</ul>
+<h3 id="phase-5-accessibility-safety-and-validation-done-with-notes">Phase 5 — Accessibility, safety, and validation (done, with notes)</h3>
+<ul>
+<li>Skill uninstall now requires explicit confirmation via <code>SettingsConfirmDialog</code>, matching file delete and package uninstall (which already confirmed). MCP server removal and service deletion keep their Plan 2 confirmations.</li>
+<li>Stateful controls in the workspace carry accessible names/state: tab selectors and session chips expose <code>Role.Tab</code> + selected; file/package action icons have either a content description or are decorative next to labeled text.</li>
+<li>Deferred / out of scope: a per-session close action (the session view model has no close operation — adding one changes behavior, not just UI), screenshot automation, and a full keyboard-navigation audit pass. These stay open as follow-ups.</li>
 </ul>
 
 
