@@ -2,10 +2,13 @@
 
 package com.inspiredandroid.kai.ui.settings
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
@@ -44,6 +47,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -59,6 +63,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -67,6 +73,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.inspiredandroid.kai.data.Service
@@ -115,6 +122,7 @@ import kai.composeapp.generated.resources.litert_performance_ok
 import kai.composeapp.generated.resources.litert_performance_poor
 import kai.composeapp.generated.resources.litert_recommended
 import kai.composeapp.generated.resources.litert_tool_support
+import kai.composeapp.generated.resources.logo
 import kai.composeapp.generated.resources.settings_add_service
 import kai.composeapp.generated.resources.settings_api_key_label
 import kai.composeapp.generated.resources.settings_api_key_optional_label
@@ -208,10 +216,21 @@ internal fun FreeSettings(
 
             Spacer(Modifier.height(12.dp))
 
+            // Support area (Plan 5, Phase 3): the Brox Kai owner profile comes
+            // first in both collapsed and expanded states, then a responsive
+            // expand/collapse sponsor grid. Sponsorship and partnership calls
+            // to action stay below the grid with configuration-owned links.
+            SupportSection(
+                currentSponsors = currentSponsors,
+                pastSponsors = pastSponsors,
+            )
+
+            Spacer(Modifier.height(12.dp))
+
             val uriHandler = LocalUriHandler.current
             Button(
                 onClick = {
-                    uriHandler.openUri("https://github.com/sponsors/SimonSchubert")
+                    uriHandler.openUri(SupportLinks.BECOME_SPONSOR)
                 },
                 Modifier
                     .align(CenterHorizontally)
@@ -220,22 +239,6 @@ internal fun FreeSettings(
                 Icon(Icons.Default.Favorite, contentDescription = null)
                 Spacer(Modifier.width(8.dp))
                 Text(stringResource(Res.string.settings_become_sponsor))
-            }
-
-            val allSponsors = remember(currentSponsors, pastSponsors) {
-                val activeUsernames = currentSponsors.map { it.username }.toSet()
-                (currentSponsors + pastSponsors.filter { it.username !in activeUsernames })
-                    .toImmutableList()
-            }
-
-            if (allSponsors.isNotEmpty()) {
-                Spacer(Modifier.height(16.dp))
-                HorizontalDivider(thickness = 0.5.dp)
-                Spacer(Modifier.height(16.dp))
-                SponsorList(
-                    title = stringResource(Res.string.settings_sponsors),
-                    sponsors = allSponsors,
-                )
             }
 
             Spacer(Modifier.height(16.dp))
@@ -256,7 +259,7 @@ internal fun FreeSettings(
 
             TextButton(
                 onClick = {
-                    uriHandler.openUri("https://schubert-simon.de")
+                    uriHandler.openUri(SupportLinks.PARTNERSHIPS)
                 },
                 Modifier
                     .handCursor(),
@@ -267,18 +270,233 @@ internal fun FreeSettings(
     }
 }
 
-@Composable
-private fun SponsorList(
-    title: String,
-    sponsors: ImmutableList<SponsorsResponseDto.Sponsor>,
-) {
-    val uriHandler = LocalUriHandler.current
-    Text(
-        text = title,
-        style = MaterialTheme.typography.labelLarge,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
+/**
+ * Every external destination for the support area lives in one configuration
+ * block so the composables never inline unverified URLs (Plan 5: links owned
+ * by configuration).
+ */
+private object SupportLinks {
+    /** Repository owner — the Brox Kai maintainer profile. */
+    const val OWNER_PROFILE = "https://github.com/habibbrox2"
+
+    /** Base for remote sponsor profiles, as before. */
+    const val SPONSOR_PROFILE_BASE = "https://github.com/"
+
+    /** Existing upstream sponsorship CTA, unchanged. */
+    const val BECOME_SPONSOR = "https://github.com/sponsors/SimonSchubert"
+
+    /** Existing partnership contact, unchanged. */
+    const val PARTNERSHIPS = "https://schubert-simon.de"
+}
+
+/**
+ * One entry in the support area (Plan 5, Phase 3).
+ *
+ * The owner profile is synthesized from the repository identity and always
+ * renders first; remote sponsors keep the current/past distinction from the
+ * GitHub feed.
+ */
+@Immutable
+internal data class SupportProfile(
+    val id: String,
+    val name: String,
+    val subtitle: String?,
+    val avatarUrl: String?,
+    val destinationUrl: String?,
+    val isOwnerProfile: Boolean,
+    val isCurrentSponsor: Boolean,
+)
+
+/**
+ * Owner profile first, then current sponsors, then past sponsors. Past entries
+ * that are also current are dropped, mirroring the previously merged list.
+ */
+internal fun buildSupportProfiles(
+    current: ImmutableList<SponsorsResponseDto.Sponsor>,
+    past: ImmutableList<SponsorsResponseDto.Sponsor>,
+): List<SupportProfile> {
+    val owner = SupportProfile(
+        id = "brox-kai-owner",
+        name = "Brox Kai",
+        subtitle = "habibbrox2 · project maintainer",
+        avatarUrl = null,
+        destinationUrl = SupportLinks.OWNER_PROFILE,
+        isOwnerProfile = true,
+        isCurrentSponsor = false,
     )
-    Spacer(Modifier.height(8.dp))
+    val seen = mutableSetOf(owner.id)
+    val sponsors = buildList {
+        current.forEach { sponsor ->
+            if (seen.add(sponsor.username)) {
+                add(
+                    SupportProfile(
+                        id = sponsor.username,
+                        name = sponsor.username,
+                        subtitle = null,
+                        avatarUrl = sponsor.avatar,
+                        destinationUrl = "${SupportLinks.SPONSOR_PROFILE_BASE}${sponsor.username}",
+                        isOwnerProfile = false,
+                        isCurrentSponsor = true,
+                    ),
+                )
+            }
+        }
+        past.forEach { sponsor ->
+            if (seen.add(sponsor.username)) {
+                add(
+                    SupportProfile(
+                        id = sponsor.username,
+                        name = sponsor.username,
+                        subtitle = null,
+                        avatarUrl = sponsor.avatar,
+                        destinationUrl = "${SupportLinks.SPONSOR_PROFILE_BASE}${sponsor.username}",
+                        isOwnerProfile = false,
+                        isCurrentSponsor = false,
+                    ),
+                )
+            }
+        }
+    }
+    return listOf(owner) + sponsors
+}
+
+/**
+ * The Brox Kai support profile (Plan 5, Phase 3). It uses the local branded
+ * logo so it renders identically offline and links to the repository owner.
+ */
+@Composable
+private fun OwnerProfileCard(profile: SupportProfile) {
+    val uriHandler = LocalUriHandler.current
+    val destination = profile.destinationUrl
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .then(
+                // A card with no approved link stays informational and must not
+                // look tappable (Plan 5, Phase 3).
+                if (destination != null) {
+                    Modifier
+                        .handCursor()
+                        .clickable { uriHandler.openUri(destination) }
+                        .semantics {
+                            contentDescription =
+                                "Open ${profile.name} profile, ${destination.removePrefix("https://")}"
+                        }
+                } else {
+                    Modifier
+                },
+            ),
+        colors = kaiAdaptiveCardColors(),
+        border = kaiAdaptiveCardBorder(),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surfaceContainerHighest),
+                contentAlignment = Alignment.Center,
+            ) {
+                // Local branded avatar — no network dependency (Plan 5, Phase 3).
+                Image(
+                    imageVector = vectorResource(Res.drawable.logo),
+                    contentDescription = null,
+                    modifier = Modifier.size(30.dp),
+                )
+            }
+            Spacer(Modifier.width(12.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = profile.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+                profile.subtitle?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+            Text(
+                text = SupportLinks.OWNER_PROFILE.removePrefix("https://"),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+    }
+}
+
+@Composable
+private fun SponsorTile(profile: SupportProfile, tileWidth: Dp) {
+    val uriHandler = LocalUriHandler.current
+    val destination = profile.destinationUrl
+    Column(
+        horizontalAlignment = CenterHorizontally,
+        modifier = Modifier
+            .width(tileWidth)
+            .clip(RoundedCornerShape(8.dp))
+            .then(
+                if (destination != null) {
+                    Modifier
+                        .clickable { uriHandler.openUri(destination) }
+                        .handCursor()
+                        .semantics {
+                            // Link action is part of the name so screen readers
+                            // announce where the tap goes (Plan 5, Phase 4).
+                            contentDescription = "Open ${profile.name} on GitHub"
+                        }
+                } else {
+                    Modifier
+                },
+            )
+            .padding(4.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.surfaceContainerHighest),
+            contentAlignment = Alignment.Center,
+        ) {
+            if (profile.avatarUrl != null) {
+                coil3.compose.AsyncImage(
+                    model = profile.avatarUrl,
+                    contentDescription = profile.name,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop,
+                )
+            } else {
+                // Neutral initial when no avatar image exists (Plan 5, Phase 3).
+                Text(
+                    text = profile.name.take(1).uppercase(),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            }
+        }
+        Spacer(Modifier.height(4.dp))
+        Text(
+            text = profile.name,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Center,
+        )
+    }
+}
+
+@Composable
+private fun SponsorGrid(profiles: List<SupportProfile>) {
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -286,33 +504,99 @@ private fun SponsorList(
         // The tile width is sized for the username at the default font scale; without
         // scaling it, names are cut to three characters at the largest one.
         val tileWidth = 72.dp * LocalDensity.current.fontScale
-        sponsors.forEach { sponsor ->
-            Column(
-                horizontalAlignment = CenterHorizontally,
-                modifier = Modifier
-                    .width(tileWidth)
-                    .clip(RoundedCornerShape(8.dp))
-                    .clickable { uriHandler.openUri("https://github.com/${sponsor.username}") }
-                    .handCursor()
-                    .padding(4.dp),
-            ) {
-                coil3.compose.AsyncImage(
-                    model = sponsor.avatar,
-                    contentDescription = sponsor.username,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop,
-                )
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    text = sponsor.username,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Center,
-                )
+        profiles.forEach { profile -> SponsorTile(profile = profile, tileWidth = tileWidth) }
+    }
+}
+
+/**
+ * Support area (Plan 5, Phase 3): the owner profile card renders first in both
+ * collapsed and expanded states; the sponsor grid collapses by width — 2 tiles
+ * on compact, 4 on medium, 6 on desktop — and past sponsors only appear when
+ * expanded. The toggle announces how many profiles are hidden.
+ */
+@Composable
+private fun SupportSection(
+    currentSponsors: ImmutableList<SponsorsResponseDto.Sponsor>,
+    pastSponsors: ImmutableList<SponsorsResponseDto.Sponsor>,
+) {
+    val profiles = remember(currentSponsors, pastSponsors) {
+        buildSupportProfiles(currentSponsors, pastSponsors)
+    }
+    val owner = profiles.first { it.isOwnerProfile }
+    val current = profiles.filter { !it.isOwnerProfile && it.isCurrentSponsor }
+    val past = profiles.filter { !it.isOwnerProfile && !it.isCurrentSponsor }
+    var expanded by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            // Short transition for expand/collapse; keeps focus on the toggle
+            // because the button node never leaves composition.
+            .animateContentSize(),
+    ) {
+        OwnerProfileCard(profile = owner)
+
+        if (current.isNotEmpty() || past.isNotEmpty()) {
+            Spacer(Modifier.height(12.dp))
+            BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+                val tileLimit = when {
+                    maxWidth >= 900.dp -> 6
+                    maxWidth >= 600.dp -> 4
+                    else -> 2
+                }
+                val totalSponsors = current.size + past.size
+                // Lists at or below the width limit render fully with no
+                // redundant toggle; longer lists collapse to the limit and
+                // reveal past sponsors only when expanded (Plan 5, acceptance).
+                val needsToggle = totalSponsors > tileLimit
+                val collapsedProfiles = (current + past).take(tileLimit)
+                val hiddenSponsorCount = if (expanded || !needsToggle) {
+                    0
+                } else {
+                    totalSponsors - collapsedProfiles.size
+                }
+                Column {
+                    val mainProfiles = if (expanded) current else collapsedProfiles
+                    if (mainProfiles.isNotEmpty()) {
+                        Text(
+                            text = stringResource(Res.string.settings_sponsors),
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        SponsorGrid(profiles = mainProfiles)
+                    }
+                    if (expanded && past.isNotEmpty()) {
+                        Spacer(Modifier.height(12.dp))
+                        Text(
+                            text = "Past sponsors",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        SponsorGrid(profiles = past)
+                    }
+                    if (needsToggle || expanded) {
+                        Spacer(Modifier.height(4.dp))
+                        TextButton(
+                            onClick = { expanded = !expanded },
+                            modifier = Modifier
+                                .handCursor()
+                                .semantics {
+                                    // The hidden count is part of the label so
+                                    // screen-reader users know the size of the
+                                    // list they are expanding into.
+                                    contentDescription = if (expanded) {
+                                        "Collapse sponsors"
+                                    } else {
+                                        "Show all sponsors, $hiddenSponsorCount hidden"
+                                    }
+                                },
+                        ) {
+                            Text(if (expanded) "Collapse sponsors" else "Show all sponsors")
+                        }
+                    }
+                }
             }
         }
     }
