@@ -1,8 +1,8 @@
 # Appearance
 
-**Last verified:** 2026-10-02
+**Last verified:** 2026-10-21
 
-Kai has a four-way theme picker — **System**, **Light**, **Dark**, and **OLED** — exposed in Settings on every platform. The default is System, which follows the operating system's dark/light preference. The other three force a specific theme regardless of system state. Dark uses a soft dark background (`#121212`) with slightly lighter surfaces (`#1E1E1E`); OLED flattens the background and the lowest surface tier to pure black (`#000000`) for users who want to save power on OLED panels.
+Kai has a five-way theme picker — **System**, **Light**, **Dark**, **OLED** and **Midnight** — exposed in Settings on every platform as a row of switch buttons, one per theme, so the choice is visible at a glance and takes a single tap. The default is System, which follows the operating system's dark/light preference. The other four force a specific theme regardless of system state. Dark uses a soft dark background (`#121212`) with slightly lighter surfaces (`#1E1E1E`); OLED flattens the background and the lowest surface tier to pure black (`#000000`) for users who want to save power on OLED panels; Midnight is a deep-navy dark theme (background `#06152E`, surfaces `#0E2A4D`) that keeps the cyan brand accent without going pitch black.
 
 Cards, dialogs, bottom sheets, and menus stay visually lifted in either dark variant because only the lowest surface tiers are affected; container tiers keep their default Material 3 elevation.
 
@@ -12,9 +12,10 @@ Cards, dialogs, bottom sheets, and menus stay visually lifted in either dark var
 - **Light**: forces the Material 3 light scheme.
 - **Dark**: forces the Material 3 dark scheme. `background` renders `#121212` and `surface` renders `#1E1E1E`. `surfaceContainer*` tiers use their default Material 3 dark values so elevated components remain visible. `onBackground` / `onSurface` stay white.
 - **OLED**: forces dark + pure-black override. `background`, `surface`, and `surfaceContainerLowest` render pure black. The elevated `surfaceContainer*` tiers are unchanged so cards and menus stay visible against black.
+- **Midnight**: forces the brand-navy dark scheme. `background` renders `#06152E` and `surface` renders `#0E2A4D`, with the same cyan accent as the dark theme. It is not the OLED variant, so the adaptive card style stays filled rather than outlined.
 - **Material You (Android 12+)**: the full wallpaper-derived light/dark schemes replace Kai's built-in palettes, so on these devices Dark uses the dynamic dark background and surfaces rather than `#121212` / `#1E1E1E`. When OLED is selected, the black override is layered on top of the dynamic dark scheme so accents and buttons continue to track the wallpaper. Older Android versions and all other platforms use Kai's built-in purple-accented palettes.
-- **System bars (Android)**: status and navigation bars are transparent (edge-to-edge); their icon style follows the resolved theme — Dark and OLED always get light icons, Light always gets dark icons, System follows the OS.
-- **Reactivity**: changing the theme picker recomposes the theme immediately without an app restart.
+- **System bars (Android)**: status and navigation bars are transparent (edge-to-edge); their icon style follows the resolved theme — Dark, OLED and Midnight always get light icons, Light always gets dark icons, System follows the OS.
+- **Reactivity**: changing the theme recomposes the theme immediately without an app restart.
 
 The picker exists on every platform because system theme detection is unreliable on some desktop window systems (notably Linux/Wayland), so users there need an explicit override.
 
@@ -28,10 +29,10 @@ Many cards (settings list items, service/MCP/skill/tool cards, the heartbeat and
 
 | File | Purpose |
 |------|---------|
-| `composeApp/.../ui/Theme.kt` | `DarkColorScheme` / `LightColorScheme` constants; `withBlackBackground()` extension that flattens a dark scheme to pure black; adaptive card colors/border/surface helpers that switch to outlined-transparent in OLED |
+| `composeApp/.../ui/Theme.kt` | `DarkColorScheme` / `LightColorScheme` / `MidnightColorScheme` constants; `withBlackBackground()` extension that flattens a dark scheme to pure black; adaptive card colors/border/surface helpers that switch to outlined-transparent in OLED |
 | `composeApp/.../data/AppSettings.kt` | `ThemeMode` enum; `themeModeFlow` / `getThemeMode()` / `setThemeMode()` — the persistent setting, with one-time migration from the legacy OLED boolean |
-| `composeApp/.../App.kt` | Shared `AppContent` — observes `themeModeFlow`, picks `lightColorScheme` / `darkColorScheme` / `darkColorScheme.withBlackBackground()` based on the selected mode |
-| `composeApp/.../ui/settings/GeneralSettings.kt` | Theme mode dropdown in the General tab |
+| `composeApp/.../App.kt` | Shared `AppContent` — observes `themeModeFlow`, picks `lightColorScheme` / `darkColorScheme` / `darkColorScheme.withBlackBackground()` / `MidnightColorScheme` based on the selected mode |
+| `composeApp/.../ui/settings/GeneralSettings.kt` | Theme mode switch buttons in the General tab |
 | `androidApp/.../MainActivity.kt` | Android entry — supplies dynamic-color light/dark schemes; the resolved `isDarkTheme` (from `themeMode` + system) drives the system-bar icon style |
 | `androidApp/.../res/values-night/styles.xml` | Pre-Compose window background set to `#FF121212` to match the default dark frame |
 | `composeApp/.../iosMain/.../MainViewController.kt` | iOS entry — uses common `App` defaults |

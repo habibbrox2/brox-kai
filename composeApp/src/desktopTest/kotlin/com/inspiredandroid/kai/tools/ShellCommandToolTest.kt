@@ -3,6 +3,7 @@ package com.inspiredandroid.kai.tools
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
+import org.junit.Assume.assumeTrue
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -21,7 +22,7 @@ class ShellCommandToolTest {
 
     @Test
     fun `plain command returns output and exit code`() = runBlocking {
-        if (isWindows) return@runBlocking
+        assumeTrue("Windows has no POSIX shell", !isWindows)
         val result = ShellCommandTool.execute(mapOf("command" to "echo out")) as Map<*, *>
 
         assertEquals(0, result["exit_code"])
@@ -31,7 +32,7 @@ class ShellCommandToolTest {
 
     @Test
     fun `cancelling a running command kills it`() = runBlocking {
-        if (isWindows) return@runBlocking
+        assumeTrue("Windows has no POSIX shell", !isWindows)
         // Odd duration so the process scan below cannot collide with an
         // unrelated `sleep` running elsewhere on the machine.
         val elapsed = measureTime {

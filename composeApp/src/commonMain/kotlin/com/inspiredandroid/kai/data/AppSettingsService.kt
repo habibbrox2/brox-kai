@@ -2,6 +2,7 @@ package com.inspiredandroid.kai.data
 
 import com.inspiredandroid.kai.data.AppSettings.Companion.KEY_CONFIGURED_SERVICES
 import com.inspiredandroid.kai.data.AppSettings.Companion.KEY_CURRENT_SERVICE_ID
+import com.inspiredandroid.kai.data.AppSettings.Companion.KEY_DEFAULT_SERVICES_SEEDED
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -139,4 +140,35 @@ fun AppSettings.generateInstanceId(serviceId: String): String {
     var counter = 2
     while ("${serviceId}_$counter" in existingIds) counter++
     return "${serviceId}_$counter"
+}
+
+/**
+ * The providers every install starts with.
+ *
+ * Both serve free models without an API key — Kilo's gateway rotates free models and OpenCode
+ * Zen ships free "stealth" models — so a fresh install can chat before the user configures
+ * anything. Kilo comes first: it is the widest free catalogue of the two.
+ */
+private val DEFAULT_SERVICE_INSTANCES = listOf(
+    ServiceInstance(instanceId = Service.Kilo.id, serviceId = Service.Kilo.id),
+    ServiceInstance(instanceId = Service.OpenCode.id, serviceId = Service.OpenCode.id),
+)
+
+/**
+ * Seeds the default providers on a bare install so chatting works without any setup.
+ *
+ * Runs once per install (guarded by [KEY_DEFAULT_SERVICES_SEEDED]). An
+ * install that already has services keeps exactly what it has — the defaults are a starting
+ * point, not something that overrides the user's own setup.
+ */
+fun AppSettings.seedDefaultServicesIfNeeded() {
+    if (settings.getBoolean(KEY_DEFAULT_SERVICES_SEEDED, false)) return
+    settings.putBoolean(KEY_DEFAULT_SERVICES_SEEDED, true)
+
+    if (getConfiguredServiceInstances().isNotEmpty()) return
+
+    setConfiguredServiceInstances(DEFAULT_SERVICE_INSTANCES)
+    // Preselect each provider's free model, so the very first message already has one.
+    setInstanceModelId(Service.Kilo.id, Service.Kilo.defaultModel.orEmpty())
+    setInstanceModelId(Service.OpenCode.id, Service.OpenCode.defaultModel.orEmpty())
 }

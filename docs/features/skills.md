@@ -1,6 +1,6 @@
 # Skills
 
-**Last verified:** 2026-10-02
+**Last verified:** 2026-10-21
 
 Kai supports installable **skills**: reusable instruction bundles, modeled on Anthropic's [SKILL.md](https://github.com/anthropics/skills) format (now an open standard at [agentskills.io](https://agentskills.io)). A skill packages a name, a description, a body of instructions, and optional bundled files.
 
@@ -76,5 +76,5 @@ While the user is typing the first token of a message and it starts with `/`, a 
 | `composeApp/src/commonMain/.../ui/settings/SkillsSection.kt` | Skill cards, sandbox-install prompt, and add-skill bottom sheet (GitHub + marketplace browse) |
 | `composeApp/src/commonMain/.../ui/settings/SettingsViewModel.kt` | Skill install/uninstall and browse UI state |
 | `composeApp/src/commonMain/.../ui/settings/ToolsSettings.kt` | Places the Skills section in the Tools tab, shown only when the sandbox is available (Android) |
-| `composeApp/src/commonMain/.../ui/settings/SettingsScreen.kt` | Passes the Android/sandbox-installed state from the sandbox view model to the Tools tab |
+| `composeApp/src/commonMain/.../ui/settings/SettingsDetailPane.kt` | Routes the Tools tab to its content and passes the Android/sandbox-installed state from the sandbox view model |
 | `composeApp/src/commonMain/composeResources/files/skills/create-skill/SKILL.md` | Built-in `create-skill` skill |

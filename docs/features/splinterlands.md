@@ -1,6 +1,6 @@
 # Splinterlands Auto-Battle
 
-**Last verified:** 2026-10-02
+**Last verified:** 2026-10-21
 
 ## Overview
 

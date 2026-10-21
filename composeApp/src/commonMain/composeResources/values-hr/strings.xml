@@ -234,6 +234,7 @@
     <string name="interactive_welcome_title">Potpuno sam operativan.</string>
     <string name="interactive_welcome_subtitle">Recite mi što želite učiniti.</string>
     <string name="interactive_back_content_description">Natrag</string>
+    <string name="interactive_mode_content_description">Uključi/isključi interaktivni UI</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">Izađi iz interaktivnog načina</string>
     <string name="interactive_ui_parsing_failed">Raščlamba korisničkog sučelja nije uspjela, pokušavam ponovo…</string>
@@ -388,11 +389,12 @@
     <string name="bot_message_thinking_label">Razmišljanje</string>
     <string name="bot_message_thinking_expand_content_description">Proširi ili sažmi razmišljanje</string>
     <string name="settings_theme">Tema</string>
-    <string name="settings_theme_description">Odaberite između zadane sustava, svijetle, tamne ili potpuno crne OLED.</string>
+    <string name="settings_theme_description">Odaberite između zadane sustava, svijetle, tamne, potpuno crne OLED ili Midnight.</string>
     <string name="settings_theme_system">Sustav</string>
     <string name="settings_theme_light">Svijetla</string>
     <string name="settings_theme_dark">Tamna</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">Loš zahtjev</string>
     <string name="error_content_moderation">Moderacija sadržaja</string>
     <string name="error_provider_error">Pružatelj modela vratio je pogrešku</string>

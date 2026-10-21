@@ -201,6 +201,46 @@ internal fun ToolsContent(
 }
 
 /**
+ * The Tools tab: everything that widens what the agent can do — native tools, MCP servers and
+ * skills. The state and action plumbing lives here so the tab itself stays a one-liner in the
+ * settings detail pane.
+ */
+@Composable
+internal fun ToolsTabContent(
+    uiState: SettingsUiState,
+    actions: SettingsActions,
+    sandboxState: SandboxUiState,
+) {
+    ToolsContent(
+        tools = uiState.tools,
+        onToggleTool = actions.onToggleTool,
+        mcpServers = uiState.mcpServers,
+        onAddMcpServer = actions.onAddMcpServer,
+        onRemoveMcpServer = actions.onRemoveMcpServer,
+        onToggleMcpServer = actions.onToggleMcpServer,
+        onRefreshMcpServer = actions.onRefreshMcpServer,
+        showAddMcpServerDialog = uiState.showAddMcpServerDialog,
+        onShowAddMcpServerDialog = actions.onShowAddMcpServerDialog,
+        onAddPopularMcpServer = actions.onAddPopularMcpServer,
+        skills = uiState.skills,
+        onUninstallSkill = actions.onUninstallSkill,
+        showAddSkillDialog = uiState.showAddSkillDialog,
+        onShowAddSkillDialog = actions.onShowAddSkillDialog,
+        onInstallGitHubSkill = actions.onInstallGitHubSkill,
+        onInstallBrowsedSkill = actions.onInstallBrowsedSkill,
+        isInstallingSkill = uiState.isInstallingSkill,
+        skillInstallError = uiState.skillInstallError,
+        browsableSkills = uiState.browsableSkills,
+        isBrowsingSkills = uiState.isBrowsingSkills,
+        browseSkillsFailed = uiState.browseSkillsFailed,
+        // Skills run inside the sandbox, so they only exist where the sandbox does.
+        showSkills = sandboxState.showSandbox,
+        isSandboxInstalled = sandboxState.sandboxInstalled,
+        onNavigateToSandbox = { actions.onSelectTab(SettingsTab.Sandbox) },
+    )
+}
+
+/**
  * Capability summary for the Tools page (Plan 4, Phase 2): count cards for
  * enabled native tools, connected MCP servers, and installed skills, each with
  * a status badge when something needs attention.

@@ -234,6 +234,7 @@
     <string name="interactive_welcome_title">Jam plotësisht operacional.</string>
     <string name="interactive_welcome_subtitle">Më tregoni çfarë dëshironi të bëni.</string>
     <string name="interactive_back_content_description">Prapa</string>
+    <string name="interactive_mode_content_description">Ndërro ndërfaqen interaktiv</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">Dil nga mënyra ndërvepruese</string>
     <string name="interactive_ui_parsing_failed">Analizimi i UI dështoi, po provohet përsëri…</string>
@@ -388,11 +389,12 @@
     <string name="bot_message_thinking_label">Të menduarit</string>
     <string name="bot_message_thinking_expand_content_description">Zgjero ose mbledh të menduarit</string>
     <string name="settings_theme">Tema</string>
-    <string name="settings_theme_description">Zgjidh ndërmjet të parazgjedhurës së sistemit, e ndritshme, e errët ose e zezë e pastër OLED.</string>
+    <string name="settings_theme_description">Zgjidh ndërmjet të parazgjedhurës së sistemit, e ndritshme, e errët, e zezë e pastër OLED ose Midnight.</string>
     <string name="settings_theme_system">Sistemi</string>
     <string name="settings_theme_light">E ndritshme</string>
     <string name="settings_theme_dark">E errët</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">Kërkesë e pavlefshme</string>
     <string name="error_content_moderation">Moderim i përmbajtjes</string>
     <string name="error_provider_error">Ofruesi i modelit ktheu një gabim</string>

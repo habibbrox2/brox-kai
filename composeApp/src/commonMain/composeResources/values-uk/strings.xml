@@ -235,6 +235,7 @@
     <string name="interactive_welcome_title">Я повністю працездатний.</string>
     <string name="interactive_welcome_subtitle">Скажіть мені, що ви хочете зробити.</string>
     <string name="interactive_back_content_description">Назад</string>
+    <string name="interactive_mode_content_description">Перемкнути інтерактивний інтерфейс</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">Вийти з інтерактивного режиму</string>
     <string name="interactive_ui_parsing_failed">Не вдалося розібрати UI, повторна спроба…</string>
@@ -389,11 +390,12 @@
     <string name="bot_message_thinking_label">Мислення</string>
     <string name="bot_message_thinking_expand_content_description">Розгорнути або згорнути мислення</string>
     <string name="settings_theme">Тема</string>
-    <string name="settings_theme_description">Виберіть між системною за замовчуванням, світлою, темною або чисто чорною OLED.</string>
+    <string name="settings_theme_description">Виберіть між системною за замовчуванням, світлою, темною, чисто чорною OLED або Midnight.</string>
     <string name="settings_theme_system">Системна</string>
     <string name="settings_theme_light">Світла</string>
     <string name="settings_theme_dark">Темна</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">Некоректний запит</string>
     <string name="error_content_moderation">Модерація контенту</string>
     <string name="error_provider_error">Постачальник моделі повернув помилку</string>

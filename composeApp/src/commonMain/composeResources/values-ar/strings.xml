@@ -235,6 +235,7 @@
     <string name="interactive_welcome_title">أنا جاهز للعمل بالكامل.</string>
     <string name="interactive_welcome_subtitle">أخبرني بما تريد فعله.</string>
     <string name="interactive_back_content_description">رجوع</string>
+    <string name="interactive_mode_content_description">تبديل واجهة المستخدم التفاعلية</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">الخروج من الوضع التفاعلي</string>
     <string name="interactive_ui_parsing_failed">فشل تحليل واجهة المستخدم، جارٍ إعادة المحاولة…</string>
@@ -390,11 +391,12 @@
     <string name="bot_message_thinking_label">يفكر</string>
     <string name="bot_message_thinking_expand_content_description">توسيع أو طي التفكير</string>
     <string name="settings_theme">السمة</string>
-    <string name="settings_theme_description">اختر بين افتراضي النظام أو الفاتح أو الداكن أو OLED أسود نقي.</string>
+    <string name="settings_theme_description">اختر بين افتراضي النظام أو الفاتح أو الداكن أو OLED أسود نقي أو Midnight.</string>
     <string name="settings_theme_system">النظام</string>
     <string name="settings_theme_light">فاتح</string>
     <string name="settings_theme_dark">داكن</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">طلب غير صالح</string>
     <string name="error_content_moderation">تعديل المحتوى</string>
     <string name="error_provider_error">أعاد مزود النموذج خطأً</string>

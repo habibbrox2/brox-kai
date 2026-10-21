@@ -239,4 +239,53 @@ class AppSettingsTest {
         assertTrue(instances.any { it.serviceId == Service.OpenAI.id })
         assertTrue(instances.any { it.serviceId == Service.Gemini.id })
     }
+
+    // region Default provider seeding
+
+    @Test
+    fun `a bare install starts with the keyless free providers and their free models selected`() {
+        val appSettings = AppSettings(MapSettings())
+
+        appSettings.seedDefaultServicesIfNeeded()
+
+        val instances = appSettings.getConfiguredServiceInstances()
+        assertEquals(listOf(Service.Kilo.id, Service.OpenCode.id), instances.map { it.serviceId })
+        // Both serve free models without a key, so chatting works before any setup.
+        assertFalse(Service.Kilo.requiresApiKey)
+        assertFalse(Service.OpenCode.requiresApiKey)
+        // The free model of each provider is pre-selected.
+        assertEquals("kilo-auto/free", appSettings.getInstanceModelId(Service.Kilo.id))
+        assertEquals("big-pickle", appSettings.getInstanceModelId(Service.OpenCode.id))
+    }
+
+    @Test
+    fun `seeding keeps the services an install already has`() {
+        val appSettings = AppSettings(MapSettings())
+        appSettings.setConfiguredServiceInstances(listOf(ServiceInstance(Service.OpenAI.id, Service.OpenAI.id)))
+
+        appSettings.seedDefaultServicesIfNeeded()
+
+        val instances = appSettings.getConfiguredServiceInstances()
+        assertEquals(1, instances.size)
+        assertEquals(Service.OpenAI.id, instances.first().serviceId)
+    }
+
+    @Test
+    fun `seeding runs once so a deleted default provider stays deleted`() {
+        val appSettings = AppSettings(MapSettings())
+
+        appSettings.seedDefaultServicesIfNeeded()
+        assertEquals(2, appSettings.getConfiguredServiceInstances().size)
+
+        appSettings.setConfiguredServiceInstances(
+            listOf(ServiceInstance(Service.OpenCode.id, Service.OpenCode.id)),
+        )
+        appSettings.seedDefaultServicesIfNeeded()
+
+        val instances = appSettings.getConfiguredServiceInstances()
+        assertEquals(1, instances.size)
+        assertEquals(Service.OpenCode.id, instances.first().serviceId)
+    }
+
+    // endregion
 }

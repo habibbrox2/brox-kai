@@ -235,6 +235,7 @@ Om något behöver uppmärksamhet (föråldrade minnen, förfallna uppgifter, an
     <string name="interactive_welcome_title">Jag är fullt operativ.</string>
     <string name="interactive_welcome_subtitle">Berätta vad du vill göra.</string>
     <string name="interactive_back_content_description">Tillbaka</string>
+    <string name="interactive_mode_content_description">Växla interaktivt gränssnitt</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">Lämna interaktivt läge</string>
     <string name="interactive_ui_parsing_failed">UI-analys misslyckades, försöker igen…</string>
@@ -389,11 +390,12 @@ Om något behöver uppmärksamhet (föråldrade minnen, förfallna uppgifter, an
     <string name="bot_message_thinking_label">Tänker</string>
     <string name="bot_message_thinking_expand_content_description">Expandera eller fäll ihop tänkandet</string>
     <string name="settings_theme">Tema</string>
-    <string name="settings_theme_description">Välj mellan systemstandard, ljust, mörkt eller helsvart OLED.</string>
+    <string name="settings_theme_description">Välj mellan systemstandard, ljust, mörkt, helsvart OLED eller Midnight.</string>
     <string name="settings_theme_system">System</string>
     <string name="settings_theme_light">Ljust</string>
     <string name="settings_theme_dark">Mörkt</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">Felaktig förfrågan</string>
     <string name="error_content_moderation">Innehållsmoderering</string>
     <string name="error_provider_error">Modelleverantören returnerade ett fel</string>

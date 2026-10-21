@@ -234,6 +234,7 @@
     <string name="interactive_welcome_title">Tôi hoàn toàn sẵn sàng hoạt động.</string>
     <string name="interactive_welcome_subtitle">Hãy cho tôi biết bạn muốn làm gì.</string>
     <string name="interactive_back_content_description">Quay lại</string>
+    <string name="interactive_mode_content_description">Bật/tắt giao diện tương tác</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">Thoát chế độ tương tác</string>
     <string name="interactive_ui_parsing_failed">Phân tích UI thất bại, đang thử lại…</string>
@@ -388,11 +389,12 @@
     <string name="bot_message_thinking_label">Suy nghĩ</string>
     <string name="bot_message_thinking_expand_content_description">Mở rộng hoặc thu gọn suy nghĩ</string>
     <string name="settings_theme">Chủ đề</string>
-    <string name="settings_theme_description">Chọn giữa mặc định hệ thống, sáng, tối hoặc OLED đen thuần.</string>
+    <string name="settings_theme_description">Chọn giữa mặc định hệ thống, sáng, tối, OLED đen thuần hoặc Midnight.</string>
     <string name="settings_theme_system">Hệ thống</string>
     <string name="settings_theme_light">Sáng</string>
     <string name="settings_theme_dark">Tối</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">Yêu cầu không hợp lệ</string>
     <string name="error_content_moderation">Kiểm duyệt nội dung</string>
     <string name="error_provider_error">Nhà cung cấp mô hình đã trả về lỗi</string>

@@ -90,7 +90,9 @@ fun AppSidebar(
     onTogglePinConversation: (String) -> Unit,
     onNavigateToDashboard: (() -> Unit)?,
     onNavigateToSettings: () -> Unit,
-    onEnterInteractiveMode: (() -> Unit)?,
+    /** Interactive UI mode is on: the link below reads as an active toggle. */
+    isInteractiveMode: Boolean = false,
+    onToggleInteractiveMode: (() -> Unit)?,
     onOpenKaiBuild: (() -> Unit)?,
     modifier: Modifier = Modifier,
 ) {
@@ -180,8 +182,13 @@ fun AppSidebar(
         onNavigateToDashboard?.let {
             SidebarLink(icon = Icons.Default.Dashboard, label = "Dashboard", onClick = it)
         }
-        onEnterInteractiveMode?.let {
-            SidebarLink(icon = Icons.Default.Widgets, label = "Interactive UI", onClick = it)
+        onToggleInteractiveMode?.let { toggle ->
+            SidebarLink(
+                icon = Icons.Default.Widgets,
+                label = "Interactive UI",
+                onClick = toggle,
+                isActive = isInteractiveMode,
+            )
         }
         onOpenKaiBuild?.let {
             SidebarLink(icon = Icons.Default.Terminal, label = "Kai Build", onClick = it)
@@ -358,11 +365,16 @@ private fun SidebarLink(
     icon: ImageVector,
     label: String,
     onClick: () -> Unit,
+    isActive: Boolean = false,
 ) {
     Surface(
         onClick = onClick,
         shape = ChatShapes.quickStartCard,
-        color = androidx.compose.ui.graphics.Color.Transparent,
+        color = if (isActive) {
+            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.35f)
+        } else {
+            androidx.compose.ui.graphics.Color.Transparent
+        },
         modifier = Modifier.fillMaxWidth().handCursor(),
     ) {
         Row(
@@ -373,13 +385,21 @@ private fun SidebarLink(
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                tint = if (isActive) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
                 modifier = Modifier.size(18.dp),
             )
             Text(
                 text = label,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = if (isActive) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onSurface
+                },
             )
         }
     }

@@ -1,6 +1,6 @@
 # Chat & Conversations
 
-**Last verified:** 2026-10-02
+**Last verified:** 2026-10-21
 
 Kai's chat system manages the message history, conversation persistence, file attachments, and speech output. Conversations are service-independent — switching providers does not affect which conversation is loaded or restored. Multiple conversations are persisted and browsable via a history sheet.
 
@@ -118,9 +118,10 @@ Multiple files can be attached to a single prompt. Each file is added one at a t
 
 ## UI Elements
 
-- **Top bar**: Chat History (only when other saved conversations exist), New Chat (only when the current chat has messages), a Sandbox toggle (Android only; it flashes briefly while a shell command runs), TTS toggle, Settings (on mobile; on non-mobile, Settings is in the navigation tab bar)
+- **Top bar**: a model pill in the middle showing the active service and the model it is running; tapping it opens the model list and the service list, so the model can be changed without leaving the chat. Alongside it: an interactive-UI toggle (the widgets icon — tinted while the mode is on) with a back action next to it that removes the last exchange, a Sandbox toggle (Android only; it flashes briefly while a shell command runs), TTS toggle, Settings (on mobile; on non-mobile, Settings is in the navigation tab bar)
 - **Scroll to bottom**: a small floating action button (down arrow) appears when the user has scrolled up past the latest messages; tapping it animates back to the bottom
 - **Messages**: user (right-aligned, with optional image preview), assistant (Markdown-rendered + action buttons), tool executing (spinner), loading indicator, error with retry (or free-provider suggestions panel when Free is rate-limited with no services configured). When the fallback chain answered with an alternate service rather than the user's selected one, a small "Answered by …" label is shown under the assistant message naming the service that produced the response
+- **Interactive UI**: a mode of this same chat, not a separate screen. With it on, the AI answers with a kai-ui screen that renders inline in the conversation and its buttons and forms work like any other message. See [dynamic-ui.md](dynamic-ui.md)
 - **Input**: text field, send/stop button, attachment button, file chip
 - **Empty state**: animated logo + welcome message
 - **Drag-and-drop**: supported for file attachments
@@ -140,7 +141,7 @@ Multiple files can be attached to a single prompt. Each file is added one at a t
 | `composeApp/src/commonMain/.../ui/chat/ChatScreen.kt` | Chat UI composables, history sheet and heartbeat banner wiring |
 | `composeApp/src/commonMain/.../ui/chat/composables/ChatHistorySheet.kt` | Bottom sheet listing saved conversations |
 | `composeApp/src/commonMain/.../ui/chat/composables/HeartbeatBanner.kt` | Dismissable banner for heartbeat notifications |
-| `composeApp/src/commonMain/.../ui/chat/composables/TopBar.kt` | Top bar with history, new chat, sandbox, TTS, and settings icons |
+| `composeApp/src/commonMain/.../ui/chat/composables/TopBar.kt` | Top bar with the model pill, the interactive-UI toggle and back action, sandbox, TTS, and settings icons |
 | `composeApp/src/commonMain/.../ui/chat/composables/FreeProviderSuggestionsPanel.kt` | Free rate-limit upsell panel with provider chips |
 | `composeApp/src/commonMain/.../data/FreeProviderSuggestions.kt` | Providers offered in the Free rate-limit upsell panel |
 | `composeApp/src/commonMain/.../ui/chat/composables/QuestionInput.kt` | Text input with send/stop button |

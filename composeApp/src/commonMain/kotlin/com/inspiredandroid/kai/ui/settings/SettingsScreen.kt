@@ -236,7 +236,13 @@ fun SettingsScreenContent(
     Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).navigationBarsPadding().statusBarsPadding().imePadding()) {
         BoxWithConstraints(Modifier.fillMaxSize()) {
             val expanded = maxWidth >= 840.dp
-            val visibleTabs = remember { SettingsTab.entries.toImmutableList() }
+            // The sandbox tab only exists where the sandbox does; on every other
+            // platform it would open on an empty page.
+            val visibleTabs = remember(sandboxState.showSandbox) {
+                SettingsTab.entries
+                    .filter { it != SettingsTab.Sandbox || sandboxState.showSandbox }
+                    .toImmutableList()
+            }
             if (expanded) {
                 Row(Modifier.fillMaxSize()) {
                     SettingsNavRail(
@@ -386,7 +392,11 @@ private fun SettingsTabSelector(
                     Text(
                         text = when (tab) {
                             SettingsTab.General -> stringResource(Res.string.settings_tab_general)
-                            SettingsTab.Model -> stringResource(Res.string.settings_tab_services)
+                            SettingsTab.Agent -> stringResource(Res.string.settings_tab_agent)
+                            SettingsTab.Services -> stringResource(Res.string.settings_tab_services)
+                            SettingsTab.Tools -> stringResource(Res.string.settings_tab_tools)
+                            SettingsTab.Integrations -> stringResource(Res.string.settings_tab_integrations)
+                            SettingsTab.Sandbox -> stringResource(Res.string.settings_tab_sandbox)
                             SettingsTab.Data -> "Data Control"
                             SettingsTab.Account -> "Account & Plan"
                         },

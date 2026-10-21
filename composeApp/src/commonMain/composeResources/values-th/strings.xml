@@ -234,6 +234,7 @@
     <string name="interactive_welcome_title">ฉันพร้อมทำงานอย่างเต็มที่</string>
     <string name="interactive_welcome_subtitle">บอกฉันว่าคุณต้องการทำอะไร</string>
     <string name="interactive_back_content_description">ย้อนกลับ</string>
+    <string name="interactive_mode_content_description">สลับ UI แบบโต้ตอบ</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">ออกจากโหมดอินเทอร์แอคทีฟ</string>
     <string name="interactive_ui_parsing_failed">วิเคราะห์ UI ล้มเหลว กำลังลองใหม่…</string>
@@ -388,11 +389,12 @@
     <string name="bot_message_thinking_label">กำลังคิด</string>
     <string name="bot_message_thinking_expand_content_description">ขยายหรือยุบการคิด</string>
     <string name="settings_theme">ธีม</string>
-    <string name="settings_theme_description">เลือกระหว่างค่าเริ่มต้นของระบบ สว่าง มืด หรือ OLED ดำสนิท</string>
+    <string name="settings_theme_description">เลือกระหว่างค่าเริ่มต้นของระบบ สว่าง มืด OLED ดำสนิท หรือ Midnight</string>
     <string name="settings_theme_system">ระบบ</string>
     <string name="settings_theme_light">สว่าง</string>
     <string name="settings_theme_dark">มืด</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">คำขอไม่ถูกต้อง</string>
     <string name="error_content_moderation">การกลั่นกรองเนื้อหา</string>
     <string name="error_provider_error">ผู้ให้บริการโมเดลส่งคืนข้อผิดพลาด</string>

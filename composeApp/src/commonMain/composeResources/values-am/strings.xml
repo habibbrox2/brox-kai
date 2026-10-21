@@ -235,6 +235,7 @@
     <string name="interactive_welcome_title">ሙሉ በሙሉ ስራዬን እየሰራሁ ነው።</string>
     <string name="interactive_welcome_subtitle">ምን ማድረግ እንደሚፈልጉ ይንገሩኝ።</string>
     <string name="interactive_back_content_description">ተመለስ</string>
+    <string name="interactive_mode_content_description">አዝክር በድምጽ UI ሁለት</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">መስተጋብር ሁነታን ውጣ</string>
     <string name="interactive_ui_parsing_failed">UI ትንተና አልተሳካም፣ እንደገና በመሞከር ላይ…</string>
@@ -390,11 +391,12 @@
     <string name="bot_message_thinking_label">ማሰብ</string>
     <string name="bot_message_thinking_expand_content_description">ማሰብን ዘርጋ ወይም አጥፋ</string>
     <string name="settings_theme">ገጽታ</string>
-    <string name="settings_theme_description">በስርዓት ነባሪ፣ ብርሃን፣ ጨለማ ወይም ንጹህ-ጥቁር OLED መካከል ይምረጡ።</string>
+    <string name="settings_theme_description">በስርዓት ነባሪ፣ ብርሃን፣ ጨለማ፣ ንጹህ-ጥቁር OLED ወይም Midnight መካከል ይምረጡ።</string>
     <string name="settings_theme_system">ስርዓት</string>
     <string name="settings_theme_light">ብርሃን</string>
     <string name="settings_theme_dark">ጨለማ</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">ልክ ያልሆነ ጥያቄ</string>
     <string name="error_content_moderation">የይዘት ቁጥጥር</string>
     <string name="error_provider_error">የሞዴሉ አቅራቢ ስህተት መለሰ</string>

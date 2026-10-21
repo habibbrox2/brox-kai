@@ -234,6 +234,7 @@
     <string name="interactive_welcome_title">Ganap akong gumagana.</string>
     <string name="interactive_welcome_subtitle">Sabihin mo sa akin kung ano ang gusto mong gawin.</string>
     <string name="interactive_back_content_description">Bumalik</string>
+    <string name="interactive_mode_content_description">I-toggle ang interactive na UI</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">Lumabas sa interactive mode</string>
     <string name="interactive_ui_parsing_failed">Nabigo ang pag-parse ng UI, sinusubukan muli…</string>
@@ -388,11 +389,12 @@
     <string name="bot_message_thinking_label">Nag-iisip</string>
     <string name="bot_message_thinking_expand_content_description">Palawakin o i-collapse ang pag-iisip</string>
     <string name="settings_theme">Tema</string>
-    <string name="settings_theme_description">Pumili sa pagitan ng default ng system, light, dark, o pure-black OLED.</string>
+    <string name="settings_theme_description">Pumili sa pagitan ng default ng system, light, dark, pure-black OLED, o Midnight.</string>
     <string name="settings_theme_system">System</string>
     <string name="settings_theme_light">Light</string>
     <string name="settings_theme_dark">Dark</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">Masamang kahilingan</string>
     <string name="error_content_moderation">Moderasyon ng nilalaman</string>
     <string name="error_provider_error">Nagbalik ng error ang model provider</string>

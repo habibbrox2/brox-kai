@@ -235,6 +235,7 @@ Jeśli coś wymaga uwagi (przestarzałe wspomnienia, zaległe zadania, dalsze dz
     <string name="interactive_welcome_title">Jestem w pełni sprawny.</string>
     <string name="interactive_welcome_subtitle">Powiedz mi, co chcesz zrobić.</string>
     <string name="interactive_back_content_description">Wstecz</string>
+    <string name="interactive_mode_content_description">Przełącz interaktywny interfejs</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">Wyjdź z trybu interaktywnego</string>
     <string name="interactive_ui_parsing_failed">Analiza UI nie powiodła się, ponawiam próbę…</string>
@@ -389,11 +390,12 @@ Jeśli coś wymaga uwagi (przestarzałe wspomnienia, zaległe zadania, dalsze dz
     <string name="bot_message_thinking_label">Myślenie</string>
     <string name="bot_message_thinking_expand_content_description">Rozwiń lub zwiń myślenie</string>
     <string name="settings_theme">Motyw</string>
-    <string name="settings_theme_description">Wybierz pomiędzy domyślnym systemowym, jasnym, ciemnym lub czysto czarnym OLED.</string>
+    <string name="settings_theme_description">Wybierz pomiędzy domyślnym systemowym, jasnym, ciemnym, czysto czarnym OLED lub Midnight.</string>
     <string name="settings_theme_system">Systemowy</string>
     <string name="settings_theme_light">Jasny</string>
     <string name="settings_theme_dark">Ciemny</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">Nieprawidłowe żądanie</string>
     <string name="error_content_moderation">Moderacja treści</string>
     <string name="error_provider_error">Dostawca modelu zwrócił błąd</string>

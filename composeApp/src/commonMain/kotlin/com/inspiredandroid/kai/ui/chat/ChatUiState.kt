@@ -13,6 +13,7 @@ import com.inspiredandroid.kai.data.UiSubmission
 import com.inspiredandroid.kai.network.UiError
 import com.inspiredandroid.kai.network.dtos.gemini.GeminiChatRequestDto
 import com.inspiredandroid.kai.network.dtos.openaicompatible.OpenAICompatibleChatRequestDto
+import com.inspiredandroid.kai.ui.settings.SettingsModel
 import io.github.vinceglb.filekit.PlatformFile
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -82,6 +83,10 @@ data class ChatUiState(
     val isSpeakingContentId: String = "",
     val files: ImmutableList<PlatformFile> = persistentListOf(),
     val availableServices: ImmutableList<ServiceEntry> = persistentListOf(),
+    /** Models the active service instance can run; the chat picker lists them. */
+    val availableModels: ImmutableList<SettingsModel> = persistentListOf(),
+    /** True while the provider's model list is being fetched for the picker. */
+    val isLoadingModels: Boolean = false,
     val savedConversations: ImmutableList<ConversationSummary> = persistentListOf(),
     val currentConversationId: String? = null,
     val hasUnreadHeartbeat: Boolean = false,

@@ -16,6 +16,10 @@ data class ChatActions(
     val regenerate: () -> Unit,
     val cancel: () -> Unit,
     val selectService: (String) -> Unit,
+    /** Picks a model for the active service instance. */
+    val selectModel: (String) -> Unit,
+    /** Loads the provider's model list for the active service instance. */
+    val loadModels: () -> Unit,
     val loadConversation: (String) -> Unit,
     val deleteConversation: (String) -> Unit,
     val renameConversation: (String, String) -> Unit,
@@ -25,8 +29,9 @@ data class ChatActions(
     val undoDeleteConversation: () -> Unit,
     val submitUiCallback: (event: String, data: Map<String, String>) -> Unit,
     val resubmit: (messageId: String, event: String, data: Map<String, String>) -> Unit,
-    val enterInteractiveMode: () -> Unit,
-    val exitInteractiveMode: () -> Unit,
+    /** Turns the interactive-UI mode on or off for the current chat. */
+    val setInteractiveMode: (Boolean) -> Unit,
+    /** Removes the last exchange — the interactive mode's back action. */
     val goBackInteractiveMode: () -> Unit,
     val sendSmsDraft: (String) -> Unit,
     val discardSmsDraft: (String) -> Unit,

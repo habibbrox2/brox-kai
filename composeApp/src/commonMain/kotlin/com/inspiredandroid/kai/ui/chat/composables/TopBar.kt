@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dns
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Widgets
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -21,13 +22,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.inspiredandroid.kai.BackIcon
 import com.inspiredandroid.kai.data.ServiceEntry
 import com.inspiredandroid.kai.ui.chat.ChatActions
 import com.inspiredandroid.kai.ui.handCursor
+import com.inspiredandroid.kai.ui.settings.SettingsModel
 import kai.composeapp.generated.resources.Res
 import kai.composeapp.generated.resources.ic_settings
 import kai.composeapp.generated.resources.ic_volume_off
 import kai.composeapp.generated.resources.ic_volume_up
+import kai.composeapp.generated.resources.interactive_back_content_description
+import kai.composeapp.generated.resources.interactive_mode_content_description
 import kai.composeapp.generated.resources.sandbox_content_description
 import kai.composeapp.generated.resources.settings_content_description
 import kai.composeapp.generated.resources.toggle_speech_output_content_description
@@ -58,6 +63,13 @@ internal fun TopBar(
     onToggleSandbox: () -> Unit,
     onOpenDrawer: (() -> Unit)? = null,
     services: ImmutableList<ServiceEntry> = persistentListOf(),
+    models: ImmutableList<SettingsModel> = persistentListOf(),
+    isLoadingModels: Boolean = false,
+    /** Interactive UI mode: the model answers with an interactive screen inside this chat. */
+    isInteractiveMode: Boolean = false,
+    onToggleInteractiveMode: (() -> Unit)? = null,
+    /** Removes the last exchange — only offered while interactive mode is on. */
+    onGoBack: (() -> Unit)? = null,
 ) {
     Box(
         modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 56.dp),
@@ -75,17 +87,52 @@ internal fun TopBar(
                     )
                 }
             }
+            // Leading cluster: the interactive-UI toggle lives here so the right cluster
+            // keeps room for the model pill on narrow screens.
+            onToggleInteractiveMode?.let { toggle ->
+                IconToggleButton(
+                    checked = isInteractiveMode,
+                    onCheckedChange = { toggle() },
+                    modifier = Modifier.handCursor(),
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Widgets,
+                        contentDescription = stringResource(Res.string.interactive_mode_content_description),
+                        tint = if (isInteractiveMode) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onBackground
+                        },
+                    )
+                }
+            }
         }
         Box(modifier = Modifier.align(Alignment.Center)) {
             if (services.isNotEmpty()) {
                 ServiceSelector(
                     services = services,
                     onSelectService = actions.selectService,
+                    models = models,
+                    isLoadingModels = isLoadingModels,
+                    onSelectModel = actions.selectModel,
+                    onLoadModels = actions.loadModels,
                     showLabel = true,
                 )
             }
         }
         Row(modifier = Modifier.align(Alignment.CenterEnd)) {
+            onGoBack?.let { goBack ->
+                IconButton(
+                    modifier = Modifier.handCursor(),
+                    onClick = goBack,
+                ) {
+                    Icon(
+                        imageVector = BackIcon,
+                        contentDescription = stringResource(Res.string.interactive_back_content_description),
+                        tint = MaterialTheme.colorScheme.onBackground,
+                    )
+                }
+            }
             if (isSandboxAvailable) {
                 SandboxToggleButton(
                     isSandboxOpen = isSandboxOpen,

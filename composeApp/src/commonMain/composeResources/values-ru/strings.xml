@@ -235,6 +235,7 @@
     <string name="interactive_welcome_title">Я полностью работоспособен.</string>
     <string name="interactive_welcome_subtitle">Скажите, что вы хотите сделать.</string>
     <string name="interactive_back_content_description">Назад</string>
+    <string name="interactive_mode_content_description">Переключить интерактивный интерфейс</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">Выйти из интерактивного режима</string>
     <string name="interactive_ui_parsing_failed">Не удалось разобрать UI, повторная попытка…</string>
@@ -389,11 +390,12 @@
     <string name="bot_message_thinking_label">Размышление</string>
     <string name="bot_message_thinking_expand_content_description">Развернуть или свернуть размышления</string>
     <string name="settings_theme">Тема</string>
-    <string name="settings_theme_description">Выберите системную по умолчанию, светлую, тёмную или чисто чёрную OLED.</string>
+    <string name="settings_theme_description">Выберите системную по умолчанию, светлую, тёмную, чисто чёрную OLED или Midnight.</string>
     <string name="settings_theme_system">Системная</string>
     <string name="settings_theme_light">Светлая</string>
     <string name="settings_theme_dark">Тёмная</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">Некорректный запрос</string>
     <string name="error_content_moderation">Модерация контента</string>
     <string name="error_provider_error">Провайдер модели вернул ошибку</string>

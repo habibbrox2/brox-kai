@@ -235,6 +235,7 @@
     <string name="interactive_welcome_title">完全に稼働中です。</string>
     <string name="interactive_welcome_subtitle">何をしたいか教えてください。</string>
     <string name="interactive_back_content_description">戻る</string>
+    <string name="interactive_mode_content_description">インタラクティブUIを切り替え</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">インタラクティブモードを終了</string>
     <string name="interactive_ui_parsing_failed">UIの解析に失敗しました。再試行中…</string>
@@ -389,11 +390,12 @@
     <string name="bot_message_thinking_label">思考</string>
     <string name="bot_message_thinking_expand_content_description">思考の展開または折りたたみ</string>
     <string name="settings_theme">テーマ</string>
-    <string name="settings_theme_description">システムのデフォルト、ライト、ダーク、または純黒OLEDから選択します。</string>
+    <string name="settings_theme_description">システムのデフォルト、ライト、ダーク、純黒OLED、Midnightから選択します。</string>
     <string name="settings_theme_system">システム</string>
     <string name="settings_theme_light">ライト</string>
     <string name="settings_theme_dark">ダーク</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">不正なリクエスト</string>
     <string name="error_content_moderation">コンテンツモデレーション</string>
     <string name="error_provider_error">モデルプロバイダーがエラーを返しました</string>

@@ -235,6 +235,7 @@ Als iets aandacht nodig heeft (verouderde herinneringen, verlopen taken, gebruik
     <string name="interactive_welcome_title">Ik ben volledig operationeel.</string>
     <string name="interactive_welcome_subtitle">Vertel me wat je wilt doen.</string>
     <string name="interactive_back_content_description">Terug</string>
+    <string name="interactive_mode_content_description">Interactieve UI in-/uitschakelen</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">Interactieve modus verlaten</string>
     <string name="interactive_ui_parsing_failed">UI-analyse mislukt, opnieuw proberen…</string>
@@ -389,11 +390,12 @@ Als iets aandacht nodig heeft (verouderde herinneringen, verlopen taken, gebruik
     <string name="bot_message_thinking_label">Denken</string>
     <string name="bot_message_thinking_expand_content_description">Denken uitvouwen of inklappen</string>
     <string name="settings_theme">Thema</string>
-    <string name="settings_theme_description">Kies tussen systeemstandaard, licht, donker of zuiver zwart OLED.</string>
+    <string name="settings_theme_description">Kies tussen systeemstandaard, licht, donker, zuiver zwart OLED of Midnight.</string>
     <string name="settings_theme_system">Systeem</string>
     <string name="settings_theme_light">Licht</string>
     <string name="settings_theme_dark">Donker</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">Ongeldig verzoek</string>
     <string name="error_content_moderation">Inhoudsmoderatie</string>
     <string name="error_provider_error">De modelleverancier heeft een fout geretourneerd</string>

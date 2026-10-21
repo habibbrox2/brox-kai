@@ -145,6 +145,71 @@ class ChatViewModelExtendedTest {
         }
     }
 
+    // ---- selectModel ----
+
+    @Test
+    fun `the chat exposes the models of the active service`() = runTest {
+        fakeRepository.setConfiguredServices(Service.LongCat)
+        fakeRepository.fakeServiceEntries = listOf(makeServiceEntry("longcat", Service.LongCat))
+
+        val viewModel = createViewModel()
+
+        val models = viewModel.state.value.availableModels
+        assertTrue(models.isNotEmpty())
+        assertEquals(Service.LongCat.defaultModels.map { it.id }, models.map { it.id })
+    }
+
+    @Test
+    fun `selectModel stores the picked model for the active service`() = runTest {
+        fakeRepository.setConfiguredServices(Service.LongCat)
+        fakeRepository.fakeServiceEntries = listOf(makeServiceEntry("longcat", Service.LongCat))
+
+        val viewModel = createViewModel()
+        viewModel.state.test {
+            val initialState = awaitItem()
+            assertTrue(initialState.availableModels.isNotEmpty())
+
+            initialState.actions.selectModel("LongCat-Flash-Thinking")
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            // The state is published through a shared flow, so the update arrives as its own
+            // emission after the service list was rebuilt.
+            var updatedState: ChatUiState
+            do {
+                updatedState = awaitItem()
+            } while (updatedState.availableModels.none { it.isSelected })
+            assertEquals(
+                listOf("LongCat-Flash-Thinking"),
+                updatedState.availableModels.filter { it.isSelected }.map { it.id },
+            )
+            cancelAndIgnoreRemainingEvents()
+        }
+
+        val stored = fakeRepository.getInstanceModels("longcat", Service.LongCat).value
+        assertEquals(
+            listOf("LongCat-Flash-Thinking"),
+            stored.filter { it.isSelected }.map { it.id },
+            "stored=$stored",
+        )
+    }
+
+    @Test
+    fun `selectModel is a no-op when no service is active`() = runTest {
+        val viewModel = createViewModel()
+
+        viewModel.state.test {
+            val initialState = awaitItem()
+            assertTrue(initialState.availableModels.isEmpty())
+
+            initialState.actions.selectModel("some-model")
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            // Nothing to attach the model to: the chat has no configured service.
+            assertTrue(viewModel.state.value.availableModels.isEmpty())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
     // ---- startNewChat ----
 
     @Test
@@ -207,16 +272,16 @@ class ChatViewModelExtendedTest {
         }
     }
 
-    // ---- enter / exit interactive mode ----
+    // ---- interactive mode toggle ----
 
     @Test
-    fun `enterInteractiveMode sets the flag and clears error`() = runTest {
+    fun `setInteractiveMode turns the mode on and clears error`() = runTest {
         val viewModel = createViewModel()
         viewModel.state.test {
             val initialState = awaitItem()
             assertFalse(initialState.isInteractiveMode)
 
-            initialState.actions.enterInteractiveMode()
+            initialState.actions.setInteractiveMode(true)
             testDispatcher.scheduler.advanceUntilIdle()
 
             var interactiveState: ChatUiState
@@ -231,11 +296,11 @@ class ChatViewModelExtendedTest {
     }
 
     @Test
-    fun `exitInteractiveMode clears the flag and stops loading`() = runTest {
+    fun `setInteractiveMode turns the mode off again`() = runTest {
         val viewModel = createViewModel()
         viewModel.state.test {
             val initial = awaitItem()
-            initial.actions.enterInteractiveMode()
+            initial.actions.setInteractiveMode(true)
             testDispatcher.scheduler.advanceUntilIdle()
 
             var interactiveState: ChatUiState
@@ -243,7 +308,7 @@ class ChatViewModelExtendedTest {
                 interactiveState = awaitItem()
             } while (!interactiveState.isInteractiveMode)
 
-            interactiveState.actions.exitInteractiveMode()
+            interactiveState.actions.setInteractiveMode(false)
             testDispatcher.scheduler.advanceUntilIdle()
 
             var exitedState: ChatUiState
@@ -254,6 +319,30 @@ class ChatViewModelExtendedTest {
             assertFalse(exitedState.isLoading)
             assertNull(exitedState.error)
             assertFalse(fakeRepository.isInteractiveModeActive())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `switching the interactive mode keeps the conversation`() = runTest {
+        fakeRepository.chatHistory.value = listOf(
+            History(role = History.Role.USER, content = "Hi"),
+            History(role = History.Role.ASSISTANT, content = "Hello"),
+        )
+        val viewModel = createViewModel()
+
+        viewModel.state.test {
+            val initialState = awaitItem()
+            initialState.actions.setInteractiveMode(true)
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            // One chat interface: the mode changes how the next answer is rendered, it does
+            // not throw the conversation away.
+            var interactiveState: ChatUiState
+            do {
+                interactiveState = awaitItem()
+            } while (!interactiveState.isInteractiveMode)
+            assertEquals(2, interactiveState.history.size)
             cancelAndIgnoreRemainingEvents()
         }
     }

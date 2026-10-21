@@ -234,6 +234,7 @@
     <string name="interactive_welcome_title">Jau sun cumplettamain operativ.</string>
     <string name="interactive_welcome_subtitle">Di a mi tge che ti vuls far.</string>
     <string name="interactive_back_content_description">Enavos</string>
+    <string name="interactive_mode_content_description">Activar l'interfacia interactiva</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">Bandunar il modus interactiv</string>
     <string name="interactive_ui_parsing_failed">L'analisa da l'UI n'è betg reussida, emprova danovamain…</string>
@@ -388,11 +389,12 @@
     <string name="bot_message_thinking_label">Patratga</string>
     <string name="bot_message_thinking_expand_content_description">Expander u plegar il patratgar</string>
     <string name="settings_theme">Tema</string>
-    <string name="settings_theme_description">Tscherna tranter il standard dal sistem, cler, stgir u OLED nair pir.</string>
+    <string name="settings_theme_description">Tscherna tranter il standard dal sistem, cler, stgir, OLED nair pir u Midnight.</string>
     <string name="settings_theme_system">Sistem</string>
     <string name="settings_theme_light">Cler</string>
     <string name="settings_theme_dark">Stgir</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">Dumonda nunvalida</string>
     <string name="error_content_moderation">Moderaziun dal cuntegn</string>
     <string name="error_provider_error">Il purschider dal model ha retornà ina errur</string>

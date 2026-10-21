@@ -15,6 +15,7 @@ import kai.composeapp.generated.resources.ic_service_free_fast
 import kai.composeapp.generated.resources.ic_service_gemini
 import kai.composeapp.generated.resources.ic_service_groqcloud
 import kai.composeapp.generated.resources.ic_service_huggingface
+import kai.composeapp.generated.resources.ic_service_kilo
 import kai.composeapp.generated.resources.ic_service_litert
 import kai.composeapp.generated.resources.ic_service_longcat
 import kai.composeapp.generated.resources.ic_service_minimax
@@ -505,6 +506,39 @@ sealed class Service(
         ),
     )
 
+    data object Kilo : Service(
+        id = "kilo",
+        displayName = "Kilo Gateway",
+        icon = Res.drawable.ic_service_kilo,
+        // The gateway serves its free models without a key; a key only unlocks the paid ones.
+        requiresApiKey = false,
+        supportsOptionalApiKey = true,
+        defaultModel = "kilo-auto/free",
+        settingsKeyPrefix = "kilo",
+        chatUrl = "https://api.kilo.ai/api/gateway/chat/completions",
+        modelsUrl = "https://api.kilo.ai/api/gateway/models",
+        apiKeyUrl = "https://app.kilo.ai",
+        apiKeyUrlDisplay = "app.kilo.ai",
+        // Kilo routes to many providers and speaks the OpenRouter dialect, so the reasoning
+        // text is echoed back the same way OpenRouter expects it.
+        reasoningRequestMode = ReasoningRequestMode.REASONING_CONTENT,
+        defaultModels = listOf(
+            // Free models (no key needed)
+            ModelDefinition(id = "kilo-auto/free", subtitle = "Auto Free · rotates free models"),
+            ModelDefinition(id = "kilo-auto/efficient", subtitle = "Auto Efficient · cheapest that works"),
+            ModelDefinition(id = "minimax/minimax-m3.1-flash:free", subtitle = "MiniMax M3.1 Flash (free)"),
+            ModelDefinition(id = "nvidia/nemotron-3.5-lightning:free", subtitle = "Nemotron 3.5 Lightning (free)"),
+            ModelDefinition(id = "reflection/beam-free", subtitle = "Beam 1.0 (free)"),
+            ModelDefinition(id = "poolside/laguna-s-2.1:free", subtitle = "Laguna S 2.1 (free)"),
+            ModelDefinition(id = "cohere/north-mini-code:free", subtitle = "North Mini Code (free)"),
+            // Paid models
+            ModelDefinition(id = "anthropic/claude-sonnet-5-5", subtitle = "Claude Sonnet 5.5"),
+            ModelDefinition(id = "openai/gpt-6.1-sol", subtitle = "GPT 6.1 Sol"),
+            ModelDefinition(id = "deepseek/deepseek-v4-pro", subtitle = "DeepSeek V4 Pro"),
+            ModelDefinition(id = "qwen/qwen3.8-max", subtitle = "Qwen3.8 Max"),
+        ),
+    )
+
     data object PublicAI : Service(
         id = "publicai",
         displayName = "Public AI",
@@ -599,7 +633,7 @@ sealed class Service(
     )
 
     companion object {
-        val all: List<Service> get() = listOf(Free, AtlasCloud, Gemini, Anthropic, OpenAI, DeepSeek, Mistral, XAI, OpenRouter, Requesty, Groq, Nvidia, Cerebras, OllamaCloud, LongCat, Together, HuggingFace, Venice, Moonshot, Zai, ZaiCodingPlan, Minimax, AiHubMix, DeepInfra, FireworksAI, OpenCode, PublicAI, AIHorde, OneMinAI, Perplexity, OpenAICompatible, LiteRT)
+        val all: List<Service> get() = listOf(Free, AtlasCloud, Gemini, Anthropic, OpenAI, DeepSeek, Mistral, XAI, OpenRouter, Requesty, Groq, Nvidia, Cerebras, OllamaCloud, LongCat, Together, HuggingFace, Venice, Moonshot, Zai, ZaiCodingPlan, Minimax, AiHubMix, DeepInfra, FireworksAI, OpenCode, Kilo, PublicAI, AIHorde, OneMinAI, Perplexity, OpenAICompatible, LiteRT)
 
         const val DEFAULT_OPENAI_COMPATIBLE_BASE_URL = "http://localhost:11434/v1"
 

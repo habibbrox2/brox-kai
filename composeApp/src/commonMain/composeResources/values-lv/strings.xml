@@ -234,6 +234,7 @@
     <string name="interactive_welcome_title">Esmu pilnībā darbspējīgs.</string>
     <string name="interactive_welcome_subtitle">Pastāstiet man, ko vēlaties darīt.</string>
     <string name="interactive_back_content_description">Atpakaļ</string>
+    <string name="interactive_mode_content_description">Pārslēdz interaktīvo saskarni</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">Iziet no interaktīvā režīma</string>
     <string name="interactive_ui_parsing_failed">UI analīze neizdevās, mēģinu vēlreiz…</string>
@@ -388,11 +389,12 @@
     <string name="bot_message_thinking_label">Domāšana</string>
     <string name="bot_message_thinking_expand_content_description">Izvērst vai sakļaut domāšanu</string>
     <string name="settings_theme">Motīvs</string>
-    <string name="settings_theme_description">Izvēlieties starp sistēmas noklusējumu, gaišu, tumšu vai tīri melnu OLED.</string>
+    <string name="settings_theme_description">Izvēlieties starp sistēmas noklusējumu, gaišu, tumšu, tīri melnu OLED vai Midnight.</string>
     <string name="settings_theme_system">Sistēma</string>
     <string name="settings_theme_light">Gaišs</string>
     <string name="settings_theme_dark">Tumšs</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">Nepareizs pieprasījums</string>
     <string name="error_content_moderation">Satura moderēšana</string>
     <string name="error_provider_error">Modeļa nodrošinātājs atgrieza kļūdu</string>

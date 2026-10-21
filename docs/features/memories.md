@@ -1,6 +1,6 @@
 # Memories
 
-**Last verified:** 2026-10-02
+**Last verified:** 2026-10-21
 
 Kai's memory system allows the AI to learn and retain information across conversations. Memories are stored persistently, injected into every system prompt for context, and can be reinforced over time. Well-established memories can be promoted into permanent behavior (the soul/system prompt); the heartbeat surfaces candidates for promotion.
 

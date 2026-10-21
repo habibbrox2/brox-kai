@@ -234,6 +234,7 @@
     <string name="interactive_welcome_title">Teljesen működőképes vagyok.</string>
     <string name="interactive_welcome_subtitle">Mondd el, mit szeretnél csinálni.</string>
     <string name="interactive_back_content_description">Vissza</string>
+    <string name="interactive_mode_content_description">Interaktív felület váltása</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">Kilépés az interaktív módból</string>
     <string name="interactive_ui_parsing_failed">A felhasználói felület elemzése sikertelen, újrapróbálás…</string>
@@ -388,11 +389,12 @@
     <string name="bot_message_thinking_label">Gondolkodás</string>
     <string name="bot_message_thinking_expand_content_description">Gondolkodás kibontása vagy összecsukása</string>
     <string name="settings_theme">Téma</string>
-    <string name="settings_theme_description">Válassz a rendszer alapértelmezett, világos, sötét vagy tisztán fekete OLED közül.</string>
+    <string name="settings_theme_description">Válassz a rendszer alapértelmezett, világos, sötét, tisztán fekete OLED vagy Midnight közül.</string>
     <string name="settings_theme_system">Rendszer</string>
     <string name="settings_theme_light">Világos</string>
     <string name="settings_theme_dark">Sötét</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">Hibás kérés</string>
     <string name="error_content_moderation">Tartalommoderálás</string>
     <string name="error_provider_error">A modellforgalmazó hibát adott vissza</string>

@@ -234,6 +234,7 @@
     <string name="interactive_welcome_title">Olen täielikult töökorras.</string>
     <string name="interactive_welcome_subtitle">Ütle mulle, mida soovid teha.</string>
     <string name="interactive_back_content_description">Tagasi</string>
+    <string name="interactive_mode_content_description">Lülita interaktiivne kasutajaliides</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">Välju interaktiivsest režiimist</string>
     <string name="interactive_ui_parsing_failed">UI analüüs ebaõnnestus, proovin uuesti…</string>
@@ -389,11 +390,12 @@
     <string name="bot_message_thinking_label">Mõtleb</string>
     <string name="bot_message_thinking_expand_content_description">Laienda või ahenda mõtlemist</string>
     <string name="settings_theme">Teema</string>
-    <string name="settings_theme_description">Vali süsteemi vaikeväärtuse, hele, tume või puhta musta OLED-i vahel.</string>
+    <string name="settings_theme_description">Vali süsteemi vaikeväärtuse, hele, tume, puhta musta OLED-i või Midnight vahel.</string>
     <string name="settings_theme_system">Süsteem</string>
     <string name="settings_theme_light">Hele</string>
     <string name="settings_theme_dark">Tume</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">Vigane päring</string>
     <string name="error_content_moderation">Sisu modereerimine</string>
     <string name="error_provider_error">Mudeli pakkuja tagastas vea</string>

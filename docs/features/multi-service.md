@@ -1,8 +1,8 @@
 # Multi-Service
 
-**Last verified:** 2026-10-02
+**Last verified:** 2026-10-21
 
-Kai supports 31 LLM providers (plus a built-in Free tier). Each provider uses one of three API formats: **OpenAI-compatible** (most services), **Gemini native**, or **Anthropic native** -- plus **LiteRT on-device** for local inference. A handful of OpenAI models additionally require OpenAI's **Responses API**; Kai switches to it per model, transparently. Users can configure multiple service instances, reorder them, and Kai automatically falls back through the chain on failure.
+Kai supports 32 LLM providers (plus a built-in Free tier). Each provider uses one of three API formats: **OpenAI-compatible** (most services), **Gemini native**, or **Anthropic native** -- plus **LiteRT on-device** for local inference. A handful of OpenAI models additionally require OpenAI's **Responses API**; Kai switches to it per model, transparently. Users can configure multiple service instances, reorder them, and Kai automatically falls back through the chain on failure.
 
 ## Concepts
 
@@ -31,6 +31,17 @@ A built-in service that requires no API key. Free is never shown in the service 
 - A last-resort fallback when "Use as fallback" is enabled (default)
 
 When Free is the only path and the user hits Free FAST/EXPERT rate or quota limits, chat shows a free-provider signup panel (Groq, Cerebras, Gemini, OpenRouter, Ollama Cloud) so they can open an API-key page and continue with a personal free tier. See [chat.md](chat.md).
+
+### Default providers on a bare install
+
+A fresh install is not empty. The app seeds two providers that need no API key, so chatting works before the user configures anything:
+
+1. **Kilo Gateway** — its free models are served without a key, and the `kilo-auto/free` router rotates through them.
+2. **OpenCode** — OpenCode Zen's free "stealth" models (`big-pickle` and friends) are served without a key.
+
+Both start with their free model pre-selected, and the built-in Free tier stays the last-resort fallback behind them.
+
+The seeding runs once per install. An install that already has services keeps exactly what it has, and a default provider the user deletes stays deleted — it can be added back from **Settings → Services → Add Service** like any other provider.
 
 ## Fallback Chain
 
@@ -106,6 +117,7 @@ The id is Kai's own random conversation identifier; nothing about the user or th
 | Deep Infra | `deepinfra` | Yes | OpenAI-compatible |
 | Fireworks AI | `fireworksai` | Yes | OpenAI-compatible |
 | OpenCode | `opencode` | Yes | OpenAI-compatible (every request carries an `x-opencode-session` header — see [Session Header](#session-header-opencode)) |
+| Kilo Gateway | `kilo` | No (optional — free models work without a key) | OpenAI-compatible (`https://api.kilo.ai/api/gateway`; one key for every provider, model ids are `vendor/model`, and the free tier — including the `kilo-auto/free` router — needs no key at all) |
 | Public AI | `publicai` | Yes | OpenAI-compatible |
 | AI Horde | `aihorde` | Yes (anonymous key `0000000000` allowed at lowest priority) | OpenAI-compatible (via [oai.aihorde.net](https://oai.aihorde.net/); model list is the set of text models with online volunteer workers — availability and latency vary) |
 | 1min.AI | `1minai` | Yes | OpenAI-compatible (via 1min.AI's `/openai/v1` adapter; text-only, so image attachments are not sent; requests are capped at 200 messages and 100,000 characters including tool definitions) |
@@ -156,6 +168,15 @@ Free-tier membership is a separate curated list (not derived from live pricing A
 
 The chat screen service toggle lists two distinct Free entries — **Free FAST** and **Free EXPERT** — followed by every configured non-Free service (including on-device and models that do not support tools). When this list contains more than one entry, a circular service icon button appears to the right of the chat input, next to the send/stop button. Because the two Free modes alone already count as two entries, the toggle can appear even when no non-Free services are configured. The icon represents the current primary service (each service has its own simplified vector icon). Tapping it opens a dropdown listing those services with their icons, names, and model IDs; the current primary is highlighted with a primary container background. The dropdown is height-capped to the screen and becomes scrollable when the list is long enough to overflow, so every entry stays reachable.
 
+### The model is shown and switchable from the chat
+
+The chat header carries the same control as a pill: the provider icon, the active service's name, and the model it is currently running — so the loaded model is visible without leaving the conversation. Tapping the pill opens one dropdown with two parts:
+
+- **Model** — the models the active service can run, with the loaded one highlighted. The provider's model list is fetched when the picker opens (not on every chat start), so the choices are complete; if the fetch fails, the curated defaults stay selectable.
+- **Services** — the same service list as the compact toggle, with the current primary highlighted.
+
+Picking a model stores it for that service instance, so it applies to the next message and survives a restart — the same choice the Services settings card makes. The pill then shows the new model. Free entries have no model list of their own, so only the service list is shown for them.
+
 In **Interactive UI mode**, the same control is filtered to services whose selected model supports tool use (agentic flows), and on-device services are excluded so the user cannot switch to a model that cannot produce kai-ui.
 
 Selecting a non-Free entry reorders the configured list so the chosen service becomes first (primary). Selecting a Free entry (FAST or EXPERT) instead flips an "is Free primary" flag and records the chosen Free mode — Free can be promoted to primary independently of the configured fallback order, without rearranging the non-Free chain. The fallback chain picks up the new state automatically. The fallback walker also skips any entry whose context window can't fit the current chat history, so very long conversations may transparently move past services that would otherwise be eligible.
@@ -186,6 +207,7 @@ Users manage services through the settings screen:
 | `composeApp/src/commonMain/.../data/FreeProviderSuggestions.kt` | Providers recommended in chat when Free is rate-limited with no services configured |
 | `composeApp/src/commonMain/.../data/ModelTransformations.kt` | Maps provider model DTOs to `SettingsModel`, merges with catalog and free-tier flags |
 | `composeApp/src/commonMain/.../data/AppSettings.kt` | Service instance storage, credential persistence, migration |
+| `composeApp/src/commonMain/.../data/AppSettingsService.kt` | Per-instance settings plus `seedDefaultServicesIfNeeded()` — the one-time seeding of the keyless default providers |
 | `composeApp/src/commonMain/.../data/RemoteDataRepository.kt` | Fallback chain, request orchestration |
 | `composeApp/src/commonMain/.../network/Requests.kt` | HTTP clients for all API formats |
 | `composeApp/src/commonMain/.../data/ModelCapabilities.kt` | Per-model gates: tool support, image support, Responses API routing |
@@ -196,5 +218,5 @@ Users manage services through the settings screen:
 | `composeApp/src/commonMain/.../tools/PermissionController.kt` | Runtime permission requests, including the local network gate for LAN server URLs (Android 17+) |
 | `composeApp/src/commonMain/.../tools/LocalNetworkUrl.kt` | Detects LAN base URLs that need the local network permission |
 | `composeApp/src/commonMain/.../ui/chat/ChatScreen.kt` | Chat screen, renders ServiceSelector |
-| `composeApp/src/commonMain/.../ui/chat/composables/ServiceSelector.kt` | Compact service toggle dropdown |
-| `composeApp/src/commonMain/.../ui/chat/ChatViewModel.kt` | Wires service selection and reordering |
+| `composeApp/src/commonMain/.../ui/chat/composables/ServiceSelector.kt` | Service/model dropdown: the loaded model in the header pill, the model list and the service list in the popup |
+| `composeApp/src/commonMain/.../ui/chat/ChatViewModel.kt` | Wires service selection and reordering, and the chat model list and model choice |

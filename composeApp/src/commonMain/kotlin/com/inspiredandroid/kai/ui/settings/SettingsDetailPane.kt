@@ -49,7 +49,7 @@ fun SettingsDetailPane(
             Spacer(Modifier.height(16.dp))
 
             val maxContentWidth = when (uiState.currentTab) {
-                SettingsTab.Model -> 500.dp
+                SettingsTab.Services -> 500.dp
                 else -> 900.dp
             }
             Column(
@@ -61,37 +61,29 @@ fun SettingsDetailPane(
                         SettingsOverview(uiState = uiState, sandboxInstalled = sandboxState.sandboxInstalled)
                         Spacer(Modifier.height(SettingsSpacing.md))
                         GeneralContent(uiState = uiState, actions = actions)
-                        Spacer(Modifier.height(SettingsSpacing.lg))
-                        // Folded sub-sections (Plan 7): nothing is lost.
+                    }
+
+                    SettingsTab.Agent -> {
                         AgentContent(uiState = uiState, actions = actions)
-                        Spacer(Modifier.height(SettingsSpacing.lg))
-                        ToolsContent(
-                            tools = uiState.tools,
-                            onToggleTool = actions.onToggleTool,
-                            mcpServers = uiState.mcpServers,
-                            onAddMcpServer = actions.onAddMcpServer,
-                            onRemoveMcpServer = actions.onRemoveMcpServer,
-                            onToggleMcpServer = actions.onToggleMcpServer,
-                            onRefreshMcpServer = actions.onRefreshMcpServer,
-                            showAddMcpServerDialog = uiState.showAddMcpServerDialog,
-                            onShowAddMcpServerDialog = actions.onShowAddMcpServerDialog,
-                            onAddPopularMcpServer = actions.onAddPopularMcpServer,
-                            skills = uiState.skills,
-                            onUninstallSkill = actions.onUninstallSkill,
-                            showAddSkillDialog = uiState.showAddSkillDialog,
-                            onShowAddSkillDialog = actions.onShowAddSkillDialog,
-                            onInstallGitHubSkill = actions.onInstallGitHubSkill,
-                            onInstallBrowsedSkill = actions.onInstallBrowsedSkill,
-                            isInstallingSkill = uiState.isInstallingSkill,
-                            skillInstallError = uiState.skillInstallError,
-                            browsableSkills = uiState.browsableSkills,
-                            isBrowsingSkills = uiState.isBrowsingSkills,
-                            browseSkillsFailed = uiState.browseSkillsFailed,
-                            showSkills = sandboxState.showSandbox,
-                            isSandboxInstalled = sandboxState.sandboxInstalled,
-                            onNavigateToSandbox = { actions.onSelectTab(SettingsTab.General) },
+                    }
+
+                    SettingsTab.Services -> {
+                        ServicesContent(uiState = uiState, actions = actions)
+                    }
+
+                    SettingsTab.Tools -> {
+                        ToolsTabContent(
+                            uiState = uiState,
+                            actions = actions,
+                            sandboxState = sandboxState,
                         )
-                        Spacer(Modifier.height(SettingsSpacing.lg))
+                    }
+
+                    SettingsTab.Integrations -> {
+                        IntegrationsContent()
+                    }
+
+                    SettingsTab.Sandbox -> {
                         if (sandboxState.showSandbox) {
                             SandboxSettingsCard(
                                 sandboxState = sandboxState,
@@ -103,13 +95,9 @@ fun SettingsDetailPane(
                                 onInstallPackages = onInstallPackages,
                                 onMigrateHome = onMigrateHome,
                             )
-                            Spacer(Modifier.height(SettingsSpacing.lg))
+                        } else {
+                            SandboxUnavailableContent()
                         }
-                        IntegrationsContent()
-                    }
-
-                    SettingsTab.Model -> {
-                        ServicesContent(uiState = uiState, actions = actions)
                     }
 
                     SettingsTab.Data -> {
@@ -131,6 +119,26 @@ fun SettingsDetailPane(
         VerticalScrollbarForScroll(
             scrollState = settingsScrollState,
             modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
+        )
+    }
+}
+
+@Composable
+private fun SandboxUnavailableContent() {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Text(
+            text = "Linux Sandbox",
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
+        Text(
+            text = "The Linux sandbox is only available on Android devices.",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }

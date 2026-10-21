@@ -234,6 +234,7 @@
     <string name="interactive_welcome_title">من کاملاً آماده به کار هستم.</string>
     <string name="interactive_welcome_subtitle">بگویید چه کاری می‌خواهید انجام دهید.</string>
     <string name="interactive_back_content_description">بازگشت</string>
+    <string name="interactive_mode_content_description">تغییر رابط کاربری تعاملی</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">خروج از حالت تعاملی</string>
     <string name="interactive_ui_parsing_failed">تجزیه رابط کاربری ناموفق بود، تلاش مجدد…</string>
@@ -389,11 +390,12 @@
     <string name="bot_message_thinking_label">در حال فکر کردن</string>
     <string name="bot_message_thinking_expand_content_description">گسترش یا جمع کردن تفکر</string>
     <string name="settings_theme">پوسته</string>
-    <string name="settings_theme_description">بین پیش‌فرض سیستم، روشن، تیره یا سیاه خالص OLED انتخاب کنید.</string>
+    <string name="settings_theme_description">بین پیش‌فرض سیستم، روشن، تیره، سیاه خالص OLED یا Midnight انتخاب کنید.</string>
     <string name="settings_theme_system">سیستم</string>
     <string name="settings_theme_light">روشن</string>
     <string name="settings_theme_dark">تیره</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">درخواست نامعتبر</string>
     <string name="error_content_moderation">نظارت بر محتوا</string>
     <string name="error_provider_error">ارائه‌دهنده مدل خطا برگرداند</string>

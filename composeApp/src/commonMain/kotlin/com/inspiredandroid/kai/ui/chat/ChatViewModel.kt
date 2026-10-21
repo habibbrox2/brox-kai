@@ -65,6 +65,8 @@ class ChatViewModel(
         regenerate = ::regenerate,
         cancel = ::cancel,
         selectService = ::selectService,
+        selectModel = ::selectModel,
+        loadModels = ::loadModels,
         loadConversation = ::loadConversation,
         deleteConversation = ::deleteConversation,
         renameConversation = ::renameConversation,
@@ -74,8 +76,7 @@ class ChatViewModel(
         undoDeleteConversation = ::undoDeleteConversation,
         submitUiCallback = ::submitUiCallback,
         resubmit = ::resubmit,
-        enterInteractiveMode = ::enterInteractiveMode,
-        exitInteractiveMode = ::exitInteractiveMode,
+        setInteractiveMode = ::setInteractiveMode,
         goBackInteractiveMode = ::goBackInteractiveMode,
         sendSmsDraft = ::sendSmsDraft,
         discardSmsDraft = ::discardSmsDraft,
@@ -84,6 +85,10 @@ class ChatViewModel(
     private val freeModeNames: Map<FreeMode, String> = FreeMode.entries.associateWith { "Free ${it.modelId.replaceFirstChar { c -> c.uppercase() }}" }
     private var currentJob: Job? = null
     private var pendingConversationDeleteJob: Job? = null
+
+    /** The instance whose provider model list was already fetched in this session. */
+    @Volatile
+    private var modelsLoadedInstanceId: String? = null
     private val _state = MutableStateFlow(
         ChatUiState(
             actions = actions,
@@ -478,6 +483,75 @@ class ChatViewModel(
             null
         }
         _state.update { it.copy(availableServices = entries, warning = warning, showPrivacyInfo = dataRepository.isUsingSharedKey()) }
+        refreshModelsForPrimary()
+    }
+
+    /**
+     * The service the chat currently talks to. Free modes are pseudo-services without a
+     * model list, so they never carry models.
+     */
+    private fun primaryServiceInstance(): Pair<ServiceEntry, Service>? {
+        val primary = _state.value.availableServices.firstOrNull() ?: return null
+        val service = Service.fromId(primary.serviceId)
+        if (service == Service.Free) return null
+        return primary to service
+    }
+
+    /**
+     * Keeps [ChatUiState.availableModels] in sync with the active instance, so the chat
+     * shows the model that is loaded and can offer the alternatives.
+     */
+    private fun refreshModelsForPrimary() {
+        val primaryWithService = primaryServiceInstance()
+        if (primaryWithService == null) {
+            _state.update { it.copy(availableModels = persistentListOf()) }
+            return
+        }
+        val (primary, service) = primaryWithService
+        val models = dataRepository.getInstanceModels(primary.instanceId, service).value
+        _state.update { it.copy(availableModels = models.toImmutableList()) }
+    }
+
+    /**
+     * Picks another model for the active service instance. The choice is stored per instance,
+     * so it applies to the next message and survives a restart.
+     */
+    private fun selectModel(modelId: String) {
+        val (primary, service) = primaryServiceInstance() ?: return
+        if (modelId.isBlank()) return
+        // A custom model id overrides the list selection, so picking from the list has to
+        // switch that off — otherwise the chat would keep running the custom model.
+        if (dataRepository.getInstanceUseCustomModel(primary.instanceId)) {
+            dataRepository.updateInstanceUseCustomModel(primary.instanceId, false)
+        }
+        dataRepository.updateInstanceSelectedModel(primary.instanceId, service, modelId)
+        // The service entry carries the effective model id, so it has to be rebuilt for the
+        // header to show the new model.
+        updateAvailableServices()
+    }
+
+    /**
+     * Loads the provider's model list for the active instance. The chat asks for it when the
+     * model picker opens, so the list is only fetched when it is actually needed — and only
+     * once per instance, so reopening the picker does not spend a request every time.
+     */
+    private fun loadModels() {
+        val (primary, service) = primaryServiceInstance() ?: return
+        if (modelsLoadedInstanceId == primary.instanceId) {
+            refreshModelsForPrimary()
+            return
+        }
+        viewModelScope.launch(backgroundDispatcher) {
+            _state.update { it.copy(isLoadingModels = true) }
+            try {
+                dataRepository.validateConnection(service, primary.instanceId)
+                modelsLoadedInstanceId = primary.instanceId
+            } catch (_: Exception) {
+                // Keep the list we already have: the curated defaults are still selectable.
+            }
+            _state.update { it.copy(isLoadingModels = false) }
+            refreshModelsForPrimary()
+        }
     }
 
     companion object {
@@ -586,12 +660,10 @@ class ChatViewModel(
         currentJob?.cancel()
         currentJob = null
         dataRepository.startNewChat()
-        dataRepository.setInteractiveMode(false)
         _state.update {
             it.copy(
                 error = null,
                 showFreeProviderSuggestions = false,
-                isInteractiveMode = false,
                 isLoading = false,
                 composerPrefill = composerPrefill,
                 followUpSuggestions = persistentListOf(),
@@ -603,27 +675,19 @@ class ChatViewModel(
         _state.update { it.copy(composerPrefill = null) }
     }
 
-    private fun enterInteractiveMode() {
-        dataRepository.startNewChat()
-        dataRepository.setInteractiveMode(true)
+    /**
+     * Turns the interactive-UI mode on or off for the current chat.
+     *
+     * The mode is a property of the chat, not a separate screen: the conversation keeps its
+     * messages and an interactive answer renders inline with the rest of the timeline. The
+     * stored flag decides which system prompt the next request uses.
+     */
+    private fun setInteractiveMode(enabled: Boolean) {
+        if (_state.value.isInteractiveMode == enabled) return
+        dataRepository.setInteractiveMode(enabled)
         _state.update {
             it.copy(
-                isInteractiveMode = true,
-                error = null,
-                showFreeProviderSuggestions = false,
-            )
-        }
-    }
-
-    private fun exitInteractiveMode() {
-        currentJob?.cancel()
-        currentJob = null
-        dataRepository.startNewChat()
-        dataRepository.setInteractiveMode(false)
-        _state.update {
-            it.copy(
-                isInteractiveMode = false,
-                isLoading = false,
+                isInteractiveMode = enabled,
                 error = null,
                 showFreeProviderSuggestions = false,
             )

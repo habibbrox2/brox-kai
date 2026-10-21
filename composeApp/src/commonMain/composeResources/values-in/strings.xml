@@ -234,6 +234,7 @@
     <string name="interactive_welcome_title">Saya sepenuhnya beroperasi.</string>
     <string name="interactive_welcome_subtitle">Beritahu saya apa yang ingin Anda lakukan.</string>
     <string name="interactive_back_content_description">Kembali</string>
+    <string name="interactive_mode_content_description">Aktifkan/nonaktifkan UI interaktif</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">Keluar dari mode interaktif</string>
     <string name="interactive_ui_parsing_failed">Penguraian UI gagal, mencoba lagi…</string>
@@ -388,11 +389,12 @@
     <string name="bot_message_thinking_label">Berpikir</string>
     <string name="bot_message_thinking_expand_content_description">Perluas atau ciutkan pemikiran</string>
     <string name="settings_theme">Tema</string>
-    <string name="settings_theme_description">Pilih antara default sistem, terang, gelap, atau OLED hitam murni.</string>
+    <string name="settings_theme_description">Pilih antara default sistem, terang, gelap, OLED hitam murni, atau Midnight.</string>
     <string name="settings_theme_system">Sistem</string>
     <string name="settings_theme_light">Terang</string>
     <string name="settings_theme_dark">Gelap</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">Permintaan tidak valid</string>
     <string name="error_content_moderation">Moderasi konten</string>
     <string name="error_provider_error">Penyedia model mengembalikan kesalahan</string>

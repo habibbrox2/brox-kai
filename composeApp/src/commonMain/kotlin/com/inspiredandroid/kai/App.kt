@@ -35,6 +35,7 @@ import com.inspiredandroid.kai.tools.PermissionController
 import com.inspiredandroid.kai.tools.SetupPermissionHandler
 import com.inspiredandroid.kai.ui.DarkColorScheme
 import com.inspiredandroid.kai.ui.LightColorScheme
+import com.inspiredandroid.kai.ui.MidnightColorScheme
 import com.inspiredandroid.kai.ui.Theme
 import com.inspiredandroid.kai.ui.build.KaiBuildScreen
 import com.inspiredandroid.kai.ui.chat.ChatScreen
@@ -170,6 +171,7 @@ private fun AppContent(
         ThemeMode.Light -> lightColorScheme
         ThemeMode.Dark -> darkColorScheme
         ThemeMode.OledBlack -> darkColorScheme.withBlackBackground()
+        ThemeMode.Midnight -> MidnightColorScheme
     }
 
     val sandboxController = koinInject<SandboxController>()

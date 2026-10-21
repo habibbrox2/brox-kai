@@ -1608,7 +1608,7 @@ class RemoteDataRepository(
             createdAt = existingConversation?.createdAt ?: now,
             updatedAt = now,
             title = title,
-            type = existingConversation?.type ?: if (interactiveModeFlag) Conversation.TYPE_INTERACTIVE else Conversation.TYPE_CHAT,
+            type = if (interactiveModeFlag) Conversation.TYPE_INTERACTIVE else Conversation.TYPE_CHAT,
         )
 
         conversationStorage.saveConversation(conversation)

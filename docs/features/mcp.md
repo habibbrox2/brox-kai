@@ -1,6 +1,6 @@
 # MCP Servers
 
-**Last verified:** 2026-10-02
+**Last verified:** 2026-10-21
 
 Kai supports external tool servers via the [Model Context Protocol](https://modelcontextprotocol.io/) (MCP). Users can connect to remote MCP servers using Streamable HTTP transport and use their tools alongside native tools.
 
@@ -92,7 +92,7 @@ Every tool must have a unique name in a request. An MCP tool whose name is alrea
 | `composeApp/src/commonMain/.../mcp/PopularMcpServers.kt` | Curated list of verified MCP endpoints |
 | `docs/knowledge/popular-mcp/` | OKF bundle: selection policy, last probe snapshot, refresh playbook |
 | `composeApp/src/commonMain/.../ui/settings/McpSection.kt` | MCP server card UI, add-server bottom sheet with multi-header editor |
-| `composeApp/src/commonMain/.../ui/settings/SettingsScreen.kt` | Hosts the MCP section inside the Tools tab content |
+| `composeApp/src/commonMain/.../ui/settings/ToolsSettings.kt` | Hosts the MCP section inside the Tools tab content |
 | `composeApp/src/commonMain/.../ui/settings/SettingsViewModel.kt` | MCP connection management and UI state |
 | `composeApp/src/commonMain/.../ui/settings/SettingsUiState.kt` | McpServerUiState, McpConnectionStatus |
 | `composeApp/src/commonMain/.../data/AppSettings.kt` | MCP server config persistence, backup of undecodable JSON |

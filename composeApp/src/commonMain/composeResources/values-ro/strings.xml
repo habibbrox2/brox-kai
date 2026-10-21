@@ -234,6 +234,7 @@
     <string name="interactive_welcome_title">Sunt complet operațional.</string>
     <string name="interactive_welcome_subtitle">Spune-mi ce ai vrea să faci.</string>
     <string name="interactive_back_content_description">Înapoi</string>
+    <string name="interactive_mode_content_description">Comută interfața interactivă</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">Ieșire din modul interactiv</string>
     <string name="interactive_ui_parsing_failed">Analiza UI a eșuat, se încearcă din nou…</string>
@@ -388,11 +389,12 @@
     <string name="bot_message_thinking_label">Gândire</string>
     <string name="bot_message_thinking_expand_content_description">Extinde sau restrânge gândirea</string>
     <string name="settings_theme">Temă</string>
-    <string name="settings_theme_description">Alege între implicit de sistem, luminos, întunecat sau negru pur OLED.</string>
+    <string name="settings_theme_description">Alege între implicit de sistem, luminos, întunecat, negru pur OLED sau Midnight.</string>
     <string name="settings_theme_system">Sistem</string>
     <string name="settings_theme_light">Luminos</string>
     <string name="settings_theme_dark">Întunecat</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">Cerere invalidă</string>
     <string name="error_content_moderation">Moderare conținut</string>
     <string name="error_provider_error">Furnizorul de model a returnat o eroare</string>

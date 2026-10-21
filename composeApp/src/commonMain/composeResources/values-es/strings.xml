@@ -235,6 +235,7 @@ Si algo necesita atención (memorias obsoletas, tareas vencidas, seguimientos de
     <string name="interactive_welcome_title">Estoy completamente operativo.</string>
     <string name="interactive_welcome_subtitle">Dime qué te gustaría hacer.</string>
     <string name="interactive_back_content_description">Atrás</string>
+    <string name="interactive_mode_content_description">Alternar la UI interactiva</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">Salir del modo interactivo</string>
     <string name="interactive_ui_parsing_failed">Error al analizar la UI, reintentando…</string>
@@ -390,11 +391,12 @@ Si algo necesita atención (memorias obsoletas, tareas vencidas, seguimientos de
     <string name="bot_message_thinking_label">Pensando</string>
     <string name="bot_message_thinking_expand_content_description">Expandir o contraer el razonamiento</string>
     <string name="settings_theme">Tema</string>
-    <string name="settings_theme_description">Elige entre predeterminado del sistema, claro, oscuro o negro puro OLED.</string>
+    <string name="settings_theme_description">Elige entre predeterminado del sistema, claro, oscuro, negro puro OLED o Midnight.</string>
     <string name="settings_theme_system">Sistema</string>
     <string name="settings_theme_light">Claro</string>
     <string name="settings_theme_dark">Oscuro</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">Solicitud incorrecta</string>
     <string name="error_content_moderation">Moderación de contenido</string>
     <string name="error_provider_error">El proveedor del modelo devolvió un error</string>

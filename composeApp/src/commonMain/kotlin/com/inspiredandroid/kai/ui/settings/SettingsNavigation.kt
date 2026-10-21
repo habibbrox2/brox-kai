@@ -20,7 +20,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import kai.composeapp.generated.resources.Res
+import kai.composeapp.generated.resources.settings_tab_agent
+import kai.composeapp.generated.resources.settings_tab_general
+import kai.composeapp.generated.resources.settings_tab_integrations
+import kai.composeapp.generated.resources.settings_tab_sandbox
+import kai.composeapp.generated.resources.settings_tab_services
+import kai.composeapp.generated.resources.settings_tab_tools
 import kotlinx.collections.immutable.ImmutableList
+import org.jetbrains.compose.resources.stringResource
 
 /**
  * Vertical navigation rail used on expanded windows (Plan 2, Phase 2). Mirrors
@@ -50,9 +58,15 @@ fun SettingsNavRail(
                 },
                 label = {
                     Text(
+                        // Same strings as the compact tab strip, so the rail is
+                        // translated too and names the same tabs.
                         text = when (tab) {
-                            SettingsTab.General -> "General"
-                            SettingsTab.Model -> "Model & API Key"
+                            SettingsTab.General -> stringResource(Res.string.settings_tab_general)
+                            SettingsTab.Agent -> stringResource(Res.string.settings_tab_agent)
+                            SettingsTab.Services -> stringResource(Res.string.settings_tab_services)
+                            SettingsTab.Tools -> stringResource(Res.string.settings_tab_tools)
+                            SettingsTab.Integrations -> stringResource(Res.string.settings_tab_integrations)
+                            SettingsTab.Sandbox -> stringResource(Res.string.settings_tab_sandbox)
                             SettingsTab.Data -> "Data Control"
                             SettingsTab.Account -> "Account & Plan"
                         },

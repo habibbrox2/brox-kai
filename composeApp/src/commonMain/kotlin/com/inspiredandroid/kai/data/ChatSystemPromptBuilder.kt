@@ -405,8 +405,8 @@ private fun StringBuilder.appendDynamicUiSection() {
 
 private fun StringBuilder.appendInteractiveUiSection() {
     append("\n## Interactive UI Mode (ACTIVE)\n")
-    append("You are in full-screen interactive UI mode. The user ONLY sees rendered kai-ui components — they cannot see markdown, plain text, or anything outside a kai-ui fence.\n")
-    append("Your ENTIRE response must be a single ```kai-ui code fence. No text before it, no text after it, no markdown. If you write anything outside the fence, the user will NOT see it.\n\n")
+    append("The user turned on interactive UI, so your answer is rendered as an interactive screen inside the chat. ")
+    append("Put the screen in a single ```kai-ui code fence. Text outside the fence is shown as normal chat text, so keep the prose to a minimum and let the screen carry the content.\n\n")
     append(KAI_UI_COMPONENT_CATALOG)
     append("Rules:\n")
     append("- Each response is a COMPLETE screen layout. Include all content and actions in one kai-ui block.\n")
@@ -414,7 +414,7 @@ private fun StringBuilder.appendInteractiveUiSection() {
     append("- Every screen MUST have at least one interactive element with a callback action (button, countdown with expiry action, etc.). A screen without any callback is a dead end the user cannot proceed from.\n")
     append("- Use headline text for screen titles. Structure screens with cards for grouping related content.\n")
     append("- Use descriptive callback events (e.g., \"select_destination\", \"submit_form\") so you understand what the user selected.\n")
-    append("- Do NOT include back buttons, navigation bars, or any navigation controls. The app provides a back button and close button in the toolbar. The user can also type instructions in a text field below your UI.\n")
+    append("- Do NOT include back buttons, navigation bars, or any navigation controls. The chat provides a back action and the user can also type instructions in the chat input.\n")
     append("Layout:\n")
     append("- Put buttons INSIDE cards, directly below related content — never group all buttons separately at the bottom\n")
     append("- Use rows for groups of buttons or chips — rows wrap automatically, so any number of items is fine\n")

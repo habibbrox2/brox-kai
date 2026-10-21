@@ -1,3 +1,68 @@
+## Brox Kai v2.0 — One Chat Interface (Interactive UI Merged)
+
+### Added
+- The chat header now carries an **interactive UI toggle** (a widgets icon, tinted while the mode is on), and the sidebar's "Interactive UI" entry doubles as the same toggle with its state shown
+- The back action (remove the last exchange) sits next to the toggle and appears only while interactive mode is on
+
+### Changed
+- Interactive UI is no longer a separate full-screen interface — it is a mode of the one chat. The kai-ui screens render inline in the conversation, so the timeline, the composer and the rest of the chat stay available
+- Switching the mode no longer starts a new chat or clears the conversation; it changes how the next answer is produced and rendered
+- While interactive mode is on, the service picker only lists agentic-capable services and models (as the old interactive screen did)
+- The interactive system prompt now tells the model that its screen renders inside the chat and that text outside the kai-ui fence is shown as ordinary chat text
+- A conversation's type follows the mode, so a chat reopens in the mode it was left in
+
+### Removed
+- The separate Interactive UI screen with its own top bar, welcome screen, collapsed input pill and full-screen kai-ui renderer
+
+---
+
+## Brox Kai v2.0 — Chat Works Out of the Box (Kilo Gateway + OpenCode)
+
+### Added
+- New **Kilo Gateway** provider (`https://api.kilo.ai/api/gateway`) — one OpenAI-compatible endpoint for every provider, with a free tier that needs no API key (`kilo-auto/free` rotates through the free models)
+- A bare install now starts with two keyless providers configured — **Kilo Gateway** and **OpenCode** — with their free models pre-selected, so the first message works without adding any service or provider
+- The built-in Free tier (Free FAST / Free EXPERT) stays the last-resort fallback behind them
+
+### Changed
+- The default provider seeding runs once per install: an install that already has services keeps exactly what it has, and a default provider the user deletes stays deleted (it can be re-added from Settings → Services)
+
+---
+
+## Brox Kai v2.0 — Midnight Theme + Theme Switch Buttons
+
+### Added
+- New **Midnight** theme: a deep-navy dark variant (background `#06152E`, surfaces `#0E2A4D`) that keeps the cyan brand accent without going pitch black — sitting between the neutral Dark theme and the pure-black OLED one
+- The theme picker is now a row of **switch buttons** (System · Light · Dark · OLED · Midnight) instead of a dropdown, so every theme is visible at a glance and switching takes a single tap
+
+### Changed
+- `ThemeMode` gains `Midnight`; the stored preference keeps working, and Android system bars use light icons for it like the other dark themes
+
+---
+
+## Brox Kai v2.0 — Model Picker in the Chat
+
+### Added
+- The chat header shows the model that is loaded: the pill carries the provider icon, the active service and the model it is running
+- Tapping the pill opens the models the active service can run (the loaded one highlighted) above the service list, so the AI model can be switched at any time without leaving the chat
+- The provider's model list is fetched when the picker opens rather than on every chat start; if the fetch fails, the curated defaults stay selectable
+- Picking a model stores it for that service instance — the next message uses it and the choice survives a restart
+
+---
+
+## Brox Kai v2.0 — Settings Split Into Category Tabs
+
+### Added
+- Settings is split per feature category again: the features that were stacked inside the General tab now have their own tab each — **Agent** (soul, memories, scheduled tasks, heartbeat, email, SMS, notifications), **Tools** (native tools, MCP servers, skills), **Integrations** (Splinterlands, integration requests) and **Sandbox** (Linux sandbox)
+- The Sandbox tab appears only where the sandbox exists (Android); other platforms no longer show a tab that would open on an empty page
+- The Tools tab's "install the sandbox first" prompt now opens the Sandbox tab directly
+
+### Changed
+- `SettingsTab` enum: `General, Model, Data, Account` → `General, Agent, Services, Tools, Integrations, Sandbox, Data, Account` (the former `Model` tab is now `Services`, matching its "Model & API Key" content and the already-translated tab strings)
+- General keeps the app-level preferences only: overview, theme, UI scale, dynamic UI, daemon mode, export/import
+- Dashboard deep links follow the new tabs: "Set up a service" opens Services, "Tools" opens Tools
+
+---
+
 ## Brox Kai v2.0 — Desktop Auto-Updater (GitHub Release Check)
 
 ### Added

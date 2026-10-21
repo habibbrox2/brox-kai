@@ -235,6 +235,7 @@
     <string name="interactive_welcome_title">मैं पूरी तरह से काम कर रहा हूँ।</string>
     <string name="interactive_welcome_subtitle">मुझे बताइए आप क्या करना चाहेंगे।</string>
     <string name="interactive_back_content_description">वापस</string>
+    <string name="interactive_mode_content_description">इंटरैक्टिव UI टॉगल करें</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">इंटरैक्टिव मोड से बाहर निकलें</string>
     <string name="interactive_ui_parsing_failed">UI पार्सिंग विफल, पुनः प्रयास हो रहा है…</string>
@@ -389,11 +390,12 @@
     <string name="bot_message_thinking_label">सोच रहा है</string>
     <string name="bot_message_thinking_expand_content_description">सोच विस्तृत करें या संक्षिप्त करें</string>
     <string name="settings_theme">थीम</string>
-    <string name="settings_theme_description">सिस्टम डिफ़ॉल्ट, लाइट, डार्क या प्योर-ब्लैक OLED में से चुनें।</string>
+    <string name="settings_theme_description">सिस्टम डिफ़ॉल्ट, लाइट, डार्क, प्योर-ब्लैक OLED या Midnight में से चुनें।</string>
     <string name="settings_theme_system">सिस्टम</string>
     <string name="settings_theme_light">लाइट</string>
     <string name="settings_theme_dark">डार्क</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">गलत अनुरोध</string>
     <string name="error_content_moderation">सामग्री नियंत्रण</string>
     <string name="error_provider_error">मॉडल प्रदाता ने एक त्रुटि लौटाई</string>

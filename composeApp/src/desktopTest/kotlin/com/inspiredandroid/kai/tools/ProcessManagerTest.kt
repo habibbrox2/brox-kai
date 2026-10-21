@@ -6,6 +6,23 @@ import kotlin.test.assertTrue
 
 class ProcessManagerTest {
 
+    private val isWindows = System.getProperty("os.name").lowercase().contains("win")
+
+    /**
+     * Twenty numbered lines, one per line. The desktop runs commands through `cmd /c` on
+     * Windows and `sh -c` everywhere else, so the command has to be the one that shell knows.
+     */
+    private fun sequenceCommand(): String = if (isWindows) "(for /L %i in (1,1,20) do @echo %i)" else "seq 1 20"
+
+    /**
+     * A command that keeps running for [seconds]. `ping` against the loopback address is the
+     * Windows stand-in for `sleep` — it needs no extra binary and is silenced.
+     */
+    private fun sleepCommand(seconds: Int): String = if (isWindows) "ping -n ${seconds + 1} 127.0.0.1 > nul" else "sleep $seconds"
+
+    /** Prints the value of an environment variable — `%VAR%` on Windows, `$VAR` on POSIX. */
+    private fun echoEnvCommand(name: String): String = if (isWindows) "echo %$name%" else "echo \$$name"
+
     @Test
     fun startBackgroundReturnsSessionId() {
         val pm = ProcessManager()
@@ -39,7 +56,7 @@ class ProcessManagerTest {
     @Test
     fun logWithOffsetAndLimit() {
         val pm = ProcessManager()
-        val result = pm.startBackground("seq 1 20", 10, null, emptyMap())
+        val result = pm.startBackground(sequenceCommand(), 10, null, emptyMap())
         val sessionId = result["session_id"] as String
         Thread.sleep(500)
         val log = pm.log(sessionId, 5, 3)
@@ -47,13 +64,13 @@ class ProcessManagerTest {
         assertEquals(5, log["offset"])
         val lines = (log["stdout"] as String).trim().lines()
         assertEquals(3, lines.size)
-        assertEquals("6", lines[0]) // seq 1 20, offset 5 means line index 5 = "6"
+        assertEquals("6", lines[0]) // 20 numbered lines, offset 5 means line index 5 = "6"
     }
 
     @Test
     fun killTerminatesRunningProcess() {
         val pm = ProcessManager()
-        val result = pm.startBackground("sleep 60", 120, null, emptyMap())
+        val result = pm.startBackground(sleepCommand(5), 120, null, emptyMap())
         val sessionId = result["session_id"] as String
         Thread.sleep(200)
         val killResult = pm.kill(sessionId)
@@ -98,7 +115,7 @@ class ProcessManagerTest {
     @Test
     fun envVariablesArePassedThrough() {
         val pm = ProcessManager()
-        val result = pm.startBackground("echo \$MY_TEST_VAR", 10, null, mapOf("MY_TEST_VAR" to "test_value_123"))
+        val result = pm.startBackground(echoEnvCommand("MY_TEST_VAR"), 10, null, mapOf("MY_TEST_VAR" to "test_value_123"))
         val sessionId = result["session_id"] as String
         Thread.sleep(500)
         val log = pm.log(sessionId, 0, 200)
@@ -108,7 +125,8 @@ class ProcessManagerTest {
     @Test
     fun backgroundProcessTimesOut() {
         val pm = ProcessManager()
-        val result = pm.startBackground("sleep 60", 1, null, emptyMap())
+        // Runs for three seconds, so the one-second timeout has to cut it short.
+        val result = pm.startBackground(sleepCommand(3), 1, null, emptyMap())
         val sessionId = result["session_id"] as String
         Thread.sleep(2000) // wait for 1s timeout + buffer
         val log = pm.log(sessionId, 0, 200)

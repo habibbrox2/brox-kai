@@ -64,6 +64,22 @@ val DarkColorScheme = darkColorScheme(
     onSurface = Color(0xFFFFFFFF),
 )
 
+/**
+ * Midnight: a dark theme built from the brand navy instead of neutral grey.
+ *
+ * [DarkColorScheme] is a plain grey dark theme and [ColorScheme.withBlackBackground] is the
+ * pure-black OLED variant; this one sits between them — deep navy surfaces with the same
+ * cyan accent, for OLED-ish contrast without the pitch black.
+ */
+val MidnightColorScheme = darkColorScheme(
+    primary = broxCyan,
+    onPrimary = Color(0xFF000000),
+    surface = Color(0xFF0E2A4D),
+    background = broxDeepNavy,
+    onBackground = Color(0xFFFFFFFF),
+    onSurface = Color(0xFFFFFFFF),
+)
+
 fun ColorScheme.withBlackBackground(): ColorScheme = copy(
     background = Color.Black,
     surface = Color.Black,

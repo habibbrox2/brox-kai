@@ -234,6 +234,7 @@
     <string name="interactive_welcome_title">હું સંપૂર્ણ રીતે કાર્યરત છું.</string>
     <string name="interactive_welcome_subtitle">મને કહો તમે શું કરવા માગો છો.</string>
     <string name="interactive_back_content_description">પાછળ</string>
+    <string name="interactive_mode_content_description">ઇન્ટરેક્ટિવ UI ટોગલ કરો</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">ઇન્ટરેક્ટિવ મોડમાંથી બહાર નીકળો</string>
     <string name="interactive_ui_parsing_failed">UI પાર્સિંગ નિષ્ફળ, ફરીથી પ્રયાસ કરી રહ્યા છીએ…</string>
@@ -388,11 +389,12 @@
     <string name="bot_message_thinking_label">વિચાર કરી રહ્યું છે</string>
     <string name="bot_message_thinking_expand_content_description">વિચાર વિસ્તારો અથવા સંકોચો</string>
     <string name="settings_theme">થીમ</string>
-    <string name="settings_theme_description">સિસ્ટમ ડિફોલ્ટ, હળવી, ઘેરી અથવા શુદ્ધ-કાળી OLED વચ્ચે પસંદ કરો.</string>
+    <string name="settings_theme_description">સિસ્ટમ ડિફોલ્ટ, હળવી, ઘેરી, શુદ્ધ-કાળી OLED અથવા Midnight વચ્ચે પસંદ કરો.</string>
     <string name="settings_theme_system">સિસ્ટમ</string>
     <string name="settings_theme_light">હળવી</string>
     <string name="settings_theme_dark">ઘેરી</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">ખોટી વિનંતી</string>
     <string name="error_content_moderation">સામગ્રી મોડરેશન</string>
     <string name="error_provider_error">મોડેલ પ્રોવાઇડરે ભૂલ પરત કરી</string>

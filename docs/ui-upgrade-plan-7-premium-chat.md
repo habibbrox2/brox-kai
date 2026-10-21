@@ -160,6 +160,16 @@ Brand rules:
 - [x] CHANGELOG entry for Plan 7.
 - [x] Final desktop + wasm compile; commit per phase; push.
 
+### Phase 9 — Settings split into category tabs
+
+- [x] `SettingsTab` → `General, Agent, Services, Tools, Integrations, Sandbox, Data, Account`
+- [x] **General**: overview, theme, UI scale, dynamic UI, daemon mode, export/import
+- [x] **Agent**: soul, memories, scheduled tasks, heartbeat, email, SMS, notifications
+- [x] **Tools**: native tools, MCP servers, skills
+- [x] **Integrations**: Splinterlands, integration requests
+- [x] **Sandbox**: the Linux sandbox card (tab hidden where the sandbox does not exist)
+- [x] Rail + strip labels, detail pane routing, dashboard deep links updated
+
 ## Progress status
 
 ### Phase 1 — Chat-first shell ✅
@@ -170,3 +180,4 @@ Brand rules:
 ### Phase 6 — Input & toasts ✅
 ### Phase 7 — Code editor ✅
 ### Phase 8 — Docs ✅ (this file + CHANGELOG.md)
+### Phase 9 — Settings category tabs ✅

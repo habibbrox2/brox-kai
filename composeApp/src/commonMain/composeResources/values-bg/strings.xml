@@ -234,6 +234,7 @@
     <string name="interactive_welcome_title">Напълно работоспособен съм.</string>
     <string name="interactive_welcome_subtitle">Кажете ми какво искате да направите.</string>
     <string name="interactive_back_content_description">Назад</string>
+    <string name="interactive_mode_content_description">Превключи интерактивния UI</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">Изход от интерактивен режим</string>
     <string name="interactive_ui_parsing_failed">Анализът на UI се провали, нов опит…</string>
@@ -389,11 +390,12 @@
     <string name="bot_message_thinking_label">Мисли</string>
     <string name="bot_message_thinking_expand_content_description">Разгърни или свий мисленето</string>
     <string name="settings_theme">Тема</string>
-    <string name="settings_theme_description">Изберете между системна, светла, тъмна или чисто черна OLED.</string>
+    <string name="settings_theme_description">Изберете между системна, светла, тъмна, чисто черна OLED или Midnight.</string>
     <string name="settings_theme_system">Системна</string>
     <string name="settings_theme_light">Светла</string>
     <string name="settings_theme_dark">Тъмна</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">Невалидна заявка</string>
     <string name="error_content_moderation">Модериране на съдържание</string>
     <string name="error_provider_error">Доставчикът на модела върна грешка</string>

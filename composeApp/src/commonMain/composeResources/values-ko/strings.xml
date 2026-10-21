@@ -235,6 +235,7 @@
     <string name="interactive_welcome_title">완전히 작동 중입니다.</string>
     <string name="interactive_welcome_subtitle">무엇을 하고 싶은지 알려주세요.</string>
     <string name="interactive_back_content_description">뒤로</string>
+    <string name="interactive_mode_content_description">인터랙티브 UI 전환</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">인터랙티브 모드 종료</string>
     <string name="interactive_ui_parsing_failed">UI 파싱 실패, 다시 시도 중…</string>
@@ -389,11 +390,12 @@
     <string name="bot_message_thinking_label">생각 중</string>
     <string name="bot_message_thinking_expand_content_description">생각 펼치기 또는 접기</string>
     <string name="settings_theme">테마</string>
-    <string name="settings_theme_description">시스템 기본값, 밝게, 어둡게 또는 순수 검정 OLED 중에서 선택하세요.</string>
+    <string name="settings_theme_description">시스템 기본값, 밝게, 어둡게, 순수 검정 OLED 또는 Midnight 중에서 선택하세요.</string>
     <string name="settings_theme_system">시스템</string>
     <string name="settings_theme_light">밝게</string>
     <string name="settings_theme_dark">어둡게</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">잘못된 요청</string>
     <string name="error_content_moderation">콘텐츠 검토</string>
     <string name="error_provider_error">모델 제공업체에서 오류를 반환했습니다</string>

@@ -1,5 +1,6 @@
 package com.inspiredandroid.kai.linux
 
+import org.junit.Assume.assumeTrue
 import java.io.File
 import java.nio.file.Files
 import kotlin.test.AfterTest
@@ -110,6 +111,7 @@ class HomeMigrationTest {
 
     @Test
     fun `symlinks come across as links and are never followed`() {
+        assumeTrue("host filesystem cannot create symlinks", HostFileSystem.canCreateSymlinks)
         write(source, "real.txt", "content")
         Files.createSymbolicLink(File(source, "link.txt").toPath(), File("real.txt").toPath())
         // A loop is what makes following links unsafe on a real rootfs.
@@ -125,6 +127,7 @@ class HomeMigrationTest {
 
     @Test
     fun `private key permissions survive the copy`() {
+        assumeTrue("host filesystem has no POSIX permissions", HostFileSystem.hasPosixPermissions)
         val key = write(source, ".ssh/id_rsa", "key")
         Files.setPosixFilePermissions(key.toPath(), setOf(java.nio.file.attribute.PosixFilePermission.OWNER_READ))
 

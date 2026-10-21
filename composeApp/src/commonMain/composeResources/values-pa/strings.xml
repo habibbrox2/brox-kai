@@ -234,6 +234,7 @@
     <string name="interactive_welcome_title">ਮੈਂ ਪੂਰੀ ਤਰ੍ਹਾਂ ਕੰਮ ਕਰ ਰਿਹਾ ਹਾਂ।</string>
     <string name="interactive_welcome_subtitle">ਮੈਨੂੰ ਦੱਸੋ ਤੁਸੀਂ ਕੀ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ।</string>
     <string name="interactive_back_content_description">ਪਿੱਛੇ</string>
+    <string name="interactive_mode_content_description">ਇੰਟਰੈਕਟਿਵ UI ਟੌਗਲ ਕਰੋ</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">ਇੰਟਰੈਕਟਿਵ ਮੋਡ ਤੋਂ ਬਾਹਰ ਨਿਕਲੋ</string>
     <string name="interactive_ui_parsing_failed">UI ਪਾਰਸਿੰਗ ਅਸਫਲ, ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ…</string>
@@ -388,11 +389,12 @@
     <string name="bot_message_thinking_label">ਸੋਚ ਰਿਹਾ ਹੈ</string>
     <string name="bot_message_thinking_expand_content_description">ਸੋਚ ਨੂੰ ਵਿਸਤਾਰ ਜਾਂ ਸਮੇਟੋ</string>
     <string name="settings_theme">ਥੀਮ</string>
-    <string name="settings_theme_description">ਸਿਸਟਮ ਡਿਫੌਲਟ, ਹਲਕਾ, ਗੂੜ੍ਹਾ, ਜਾਂ ਸ਼ੁੱਧ-ਕਾਲਾ OLED ਵਿੱਚੋਂ ਚੁਣੋ।</string>
+    <string name="settings_theme_description">ਸਿਸਟਮ ਡਿਫੌਲਟ, ਹਲਕਾ, ਗੂੜ੍ਹਾ, ਸ਼ੁੱਧ-ਕਾਲਾ OLED ਜਾਂ Midnight ਵਿੱਚੋਂ ਚੁਣੋ।</string>
     <string name="settings_theme_system">ਸਿਸਟਮ</string>
     <string name="settings_theme_light">ਹਲਕਾ</string>
     <string name="settings_theme_dark">ਗੂੜ੍ਹਾ</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">ਗਲਤ ਬੇਨਤੀ</string>
     <string name="error_content_moderation">ਸਮੱਗਰੀ ਮਾਡਰੇਸ਼ਨ</string>
     <string name="error_provider_error">ਮਾਡਲ ਪ੍ਰਦਾਤਾ ਨੇ ਗਲਤੀ ਵਾਪਸ ਕੀਤੀ</string>

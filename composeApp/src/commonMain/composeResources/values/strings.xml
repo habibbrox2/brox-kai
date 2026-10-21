@@ -16,6 +16,7 @@
     <string name="settings_api_key_optional_label">API Key (optional)</string>
     <string name="settings_sign_in_copy_api_key_from">Sign in and copy your API key from</string>
     <string name="settings_model_label">Model</string>
+    <string name="settings_model_loading">Loading models…</string>
     <string name="settings_model_search">Search models…</string>
     <string name="settings_custom_model_label">Custom model</string>
     <string name="settings_custom_model_hint">Enter a model id supported by your server, even if it is not listed above.</string>
@@ -149,11 +150,12 @@
     <string name="bot_message_thinking_label">Thinking</string>
     <string name="bot_message_thinking_expand_content_description">Expand or collapse thinking</string>
     <string name="settings_theme">Theme</string>
-    <string name="settings_theme_description">Choose between system default, light, dark, or pure-black OLED.</string>
+    <string name="settings_theme_description">Choose between system default, light, dark, pure-black OLED, or Midnight.</string>
     <string name="settings_theme_system">System</string>
     <string name="settings_theme_light">Light</string>
     <string name="settings_theme_dark">Dark</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="settings_memories">Memories</string>
     <string name="settings_memories_description">Memories stored by the AI during conversations. These are included in every message to provide context.</string>
     <string name="settings_memories_delete">Delete memory</string>
@@ -337,6 +339,7 @@
     <string name="interactive_welcome_title">I'm completely operational.</string>
     <string name="interactive_welcome_subtitle">Tell me what you'd like to do.</string>
     <string name="interactive_back_content_description">Back</string>
+    <string name="interactive_mode_content_description">Toggle interactive UI</string>
     <string name="interactive_title">Brox Kai 2.0</string>
     <string name="interactive_exit_content_description">Exit interactive mode</string>
     <string name="interactive_ui_parsing_failed">UI parsing failed, trying again…</string>

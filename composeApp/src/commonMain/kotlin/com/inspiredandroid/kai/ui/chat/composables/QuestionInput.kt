@@ -64,6 +64,7 @@ import com.inspiredandroid.kai.skills.SkillManifest
 import com.inspiredandroid.kai.ui.gradientBrush
 import com.inspiredandroid.kai.ui.handCursor
 import com.inspiredandroid.kai.ui.outlineTextFieldColors
+import com.inspiredandroid.kai.ui.settings.SettingsModel
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
@@ -96,6 +97,10 @@ fun QuestionInput(
     cancel: () -> Unit = {},
     availableServices: ImmutableList<ServiceEntry> = persistentListOf(),
     onSelectService: (String) -> Unit = {},
+    availableModels: ImmutableList<SettingsModel> = persistentListOf(),
+    isLoadingModels: Boolean = false,
+    onSelectModel: (String) -> Unit = {},
+    onLoadModels: () -> Unit = {},
     installedSkills: ImmutableList<SkillManifest> = persistentListOf(),
     modifier: Modifier = Modifier,
 ) {
@@ -248,6 +253,10 @@ fun QuestionInput(
                         ServiceSelector(
                             services = availableServices,
                             onSelectService = onSelectService,
+                            models = availableModels,
+                            isLoadingModels = isLoadingModels,
+                            onSelectModel = onSelectModel,
+                            onLoadModels = onLoadModels,
                         )
                     }
                     if (isLoading) {

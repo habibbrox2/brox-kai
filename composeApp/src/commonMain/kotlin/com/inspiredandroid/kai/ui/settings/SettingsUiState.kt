@@ -51,16 +51,42 @@ enum class ConnectionStatus {
     Error,
 }
 
+/**
+ * The settings tabs, one per feature category.
+ *
+ * Every category owns its own tab: the app-level preferences stay in [General], while the agent
+ * behaviour, the tool surface, the third-party integrations and the Linux sandbox each live in
+ * their own tab instead of being folded into a single long page.
+ */
 enum class SettingsTab {
+    /** App-level preferences: theme, UI scale, dynamic UI, daemon mode, export/import. */
     General,
-    Model,
+
+    /** The agent itself: soul, memories, scheduled tasks, heartbeat, email, SMS, notifications. */
+    Agent,
+
+    /** Model providers, API keys and model selection. */
+    Services,
+
+    /** What the agent can do: native tools, MCP servers and skills. */
+    Tools,
+
+    /** Third-party integrations and integration requests. */
+    Integrations,
+
+    /** The Linux sandbox. Android only; the tab is hidden where the sandbox does not exist. */
+    Sandbox,
+
+    /** Stored data management. */
     Data,
+
+    /** Account and plan information. */
     Account,
 }
 
 @Immutable
 data class SettingsUiState(
-    val currentTab: SettingsTab = SettingsTab.Model,
+    val currentTab: SettingsTab = SettingsTab.Services,
     val configuredServices: ImmutableList<ConfiguredServiceEntry> = persistentListOf(),
     val expandedServiceId: String? = null,
     val availableServicesToAdd: ImmutableList<Service> = persistentListOf(),

@@ -234,6 +234,7 @@
     <string name="interactive_welcome_title">నేను పూర్తిగా పనిచేస్తున్నాను.</string>
     <string name="interactive_welcome_subtitle">మీరు ఏమి చేయాలనుకుంటున్నారో చెప్పండి.</string>
     <string name="interactive_back_content_description">వెనుకకు</string>
+    <string name="interactive_mode_content_description">ఇంటరాక్టివ్ UI ను మార్చండి</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">ఇంటరాక్టివ్ మోడ్ నుండి నిష్క్రమించు</string>
     <string name="interactive_ui_parsing_failed">UI పార్సింగ్ విఫలమైంది, మళ్ళీ ప్రయత్నిస్తోంది…</string>
@@ -388,11 +389,12 @@
     <string name="bot_message_thinking_label">ఆలోచన</string>
     <string name="bot_message_thinking_expand_content_description">ఆలోచనను విస్తరించు లేదా కుదించు</string>
     <string name="settings_theme">థీమ్</string>
-    <string name="settings_theme_description">సిస్టమ్ డిఫాల్ట్, లైట్, డార్క్ లేదా స్వచ్ఛమైన నలుపు OLED మధ్య ఎంచుకోండి.</string>
+    <string name="settings_theme_description">సిస్టమ్ డిఫాల్ట్, లైట్, డార్క్, స్వచ్ఛమైన నలుపు OLED లేదా Midnight మధ్య ఎంచుకోండి.</string>
     <string name="settings_theme_system">సిస్టమ్</string>
     <string name="settings_theme_light">లైట్</string>
     <string name="settings_theme_dark">డార్క్</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">చెడు అభ్యర్థన</string>
     <string name="error_content_moderation">కంటెంట్ మోడరేషన్</string>
     <string name="error_provider_error">మోడల్ ప్రొవైడర్ లోపాన్ని తిరిగి ఇచ్చింది</string>

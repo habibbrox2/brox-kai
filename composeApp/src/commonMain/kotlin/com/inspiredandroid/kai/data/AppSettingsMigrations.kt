@@ -17,6 +17,7 @@ fun AppSettings.runMigrations(legacySettings: Settings?) {
     migrateInstanceSettingsIfNeeded()
     migrateBaseUrlsToV1PathIfNeeded()
     migrateCustomModelSettingsIfNeeded()
+    seedDefaultServicesIfNeeded()
 }
 
 fun AppSettings.migrateFromLegacyIfNeeded(legacySettings: Settings?) {

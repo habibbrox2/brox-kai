@@ -235,6 +235,7 @@ Jos jokin vaatii huomiota (vanhentuneet muistot, erääntyneet tehtävät, käyt
     <string name="interactive_welcome_title">Olen täysin toimintakykyinen.</string>
     <string name="interactive_welcome_subtitle">Kerro minulle, mitä haluaisit tehdä.</string>
     <string name="interactive_back_content_description">Takaisin</string>
+    <string name="interactive_mode_content_description">Vaihda vuorovaikutteista käyttöliittymää</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">Poistu vuorovaikutustilasta</string>
     <string name="interactive_ui_parsing_failed">Käyttöliittymän jäsennys epäonnistui, yritetään uudelleen…</string>
@@ -390,11 +391,12 @@ Jos jokin vaatii huomiota (vanhentuneet muistot, erääntyneet tehtävät, käyt
     <string name="bot_message_thinking_label">Ajattelee</string>
     <string name="bot_message_thinking_expand_content_description">Laajenna tai supista ajattelu</string>
     <string name="settings_theme">Teema</string>
-    <string name="settings_theme_description">Valitse järjestelmän oletuksen, vaalean, tumman tai puhtaan mustan OLED-tilan välillä.</string>
+    <string name="settings_theme_description">Valitse järjestelmän oletuksen, vaalean, tumman, puhtaan mustan OLED-tilan tai Midnight välillä.</string>
     <string name="settings_theme_system">Järjestelmä</string>
     <string name="settings_theme_light">Vaalea</string>
     <string name="settings_theme_dark">Tumma</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">Virheellinen pyyntö</string>
     <string name="error_content_moderation">Sisällön moderointi</string>
     <string name="error_provider_error">Mallintarjoaja palautti virheen</string>

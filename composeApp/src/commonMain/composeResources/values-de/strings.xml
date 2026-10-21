@@ -235,6 +235,7 @@ Wenn etwas Aufmerksamkeit erfordert (veraltete Erinnerungen, fällige Aufgaben, 
     <string name="interactive_welcome_title">Ich bin voll einsatzbereit.</string>
     <string name="interactive_welcome_subtitle">Sag mir, was du tun möchtest.</string>
     <string name="interactive_back_content_description">Zurück</string>
+    <string name="interactive_mode_content_description">Interaktive UI umschalten</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">Interaktiven Modus verlassen</string>
     <string name="interactive_ui_parsing_failed">UI-Analyse fehlgeschlagen, erneuter Versuch…</string>
@@ -390,11 +391,12 @@ Wenn etwas Aufmerksamkeit erfordert (veraltete Erinnerungen, fällige Aufgaben, 
     <string name="bot_message_thinking_label">Überlegt</string>
     <string name="bot_message_thinking_expand_content_description">Überlegung ein- oder ausklappen</string>
     <string name="settings_theme">Design</string>
-    <string name="settings_theme_description">Wähle zwischen Systemstandard, hell, dunkel oder reinschwarzem OLED.</string>
+    <string name="settings_theme_description">Wähle zwischen Systemstandard, hell, dunkel, reinschwarzem OLED oder Midnight.</string>
     <string name="settings_theme_system">System</string>
     <string name="settings_theme_light">Hell</string>
     <string name="settings_theme_dark">Dunkel</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">Ungültige Anfrage</string>
     <string name="error_content_moderation">Inhaltsmoderation</string>
     <string name="error_provider_error">Der Modellanbieter hat einen Fehler zurückgegeben</string>

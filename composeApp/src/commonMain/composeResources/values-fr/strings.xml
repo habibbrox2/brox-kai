@@ -235,6 +235,7 @@ Si quelque chose nécessite de l'attention (souvenirs obsolètes, tâches échue
     <string name="interactive_welcome_title">Je suis pleinement opérationnel.</string>
     <string name="interactive_welcome_subtitle">Dites-moi ce que vous aimeriez faire.</string>
     <string name="interactive_back_content_description">Retour</string>
+    <string name="interactive_mode_content_description">Basculer l'interface interactive</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">Quitter le mode interactif</string>
     <string name="interactive_ui_parsing_failed">Échec de l'analyse de l'interface, nouvel essai…</string>
@@ -389,11 +390,12 @@ Si quelque chose nécessite de l'attention (souvenirs obsolètes, tâches échue
     <string name="bot_message_thinking_label">Réflexion</string>
     <string name="bot_message_thinking_expand_content_description">Développer ou réduire la réflexion</string>
     <string name="settings_theme">Thème</string>
-    <string name="settings_theme_description">Choisissez entre le réglage système, clair, sombre ou noir pur OLED.</string>
+    <string name="settings_theme_description">Choisissez entre le réglage système, clair, sombre, noir pur OLED ou Midnight.</string>
     <string name="settings_theme_system">Système</string>
     <string name="settings_theme_light">Clair</string>
     <string name="settings_theme_dark">Sombre</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">Requête invalide</string>
     <string name="error_content_moderation">Modération du contenu</string>
     <string name="error_provider_error">Le fournisseur du modèle a renvoyé une erreur</string>

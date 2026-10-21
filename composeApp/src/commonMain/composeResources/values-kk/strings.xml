@@ -234,6 +234,7 @@
     <string name="interactive_welcome_title">Мен толығымен жұмыс істеп тұрмын.</string>
     <string name="interactive_welcome_subtitle">Не істегіңіз келетінін айтыңыз.</string>
     <string name="interactive_back_content_description">Артқа</string>
+    <string name="interactive_mode_content_description">Интерактивті UI ауыстырыңыз</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">Интерактивті режимнен шығу</string>
     <string name="interactive_ui_parsing_failed">UI талдауы сәтсіз аяқталды, қайта әрекет жасалуда…</string>
@@ -388,11 +389,12 @@
     <string name="bot_message_thinking_label">Ойлану</string>
     <string name="bot_message_thinking_expand_content_description">Ойлануды кеңейту немесе жию</string>
     <string name="settings_theme">Тақырып</string>
-    <string name="settings_theme_description">Жүйенің әдепкісі, ашық, қара немесе таза қара OLED арасынан таңдаңыз.</string>
+    <string name="settings_theme_description">Жүйенің әдепкісі, ашық, қара, таза қара OLED немесе Midnight арасынан таңдаңыз.</string>
     <string name="settings_theme_system">Жүйе</string>
     <string name="settings_theme_light">Ашық</string>
     <string name="settings_theme_dark">Қара</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">Жарамсыз сұрау</string>
     <string name="error_content_moderation">Мазмұнды модерациялау</string>
     <string name="error_provider_error">Модель провайдері қате қайтарды</string>

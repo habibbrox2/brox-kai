@@ -234,6 +234,7 @@
     <string name="interactive_welcome_title">Som plne funkčný.</string>
     <string name="interactive_welcome_subtitle">Povedzte mi, čo chcete urobiť.</string>
     <string name="interactive_back_content_description">Späť</string>
+    <string name="interactive_mode_content_description">Prepnúť interaktívne UI</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">Ukončiť interaktívny režim</string>
     <string name="interactive_ui_parsing_failed">Analýza používateľského rozhrania zlyhala, skúšam znova…</string>
@@ -388,11 +389,12 @@
     <string name="bot_message_thinking_label">Premýšľanie</string>
     <string name="bot_message_thinking_expand_content_description">Rozbaliť alebo zbaliť premýšľanie</string>
     <string name="settings_theme">Téma</string>
-    <string name="settings_theme_description">Vyber predvolené nastavenie systému, svetlú, tmavú alebo čisto čiernu OLED.</string>
+    <string name="settings_theme_description">Vyber predvolené nastavenie systému, svetlú, tmavú, čisto čiernu OLED alebo Midnight.</string>
     <string name="settings_theme_system">Systém</string>
     <string name="settings_theme_light">Svetlá</string>
     <string name="settings_theme_dark">Tmavá</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">Neplatná požiadavka</string>
     <string name="error_content_moderation">Moderovanie obsahu</string>
     <string name="error_provider_error">Poskytovateľ modelu vrátil chybu</string>

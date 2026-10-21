@@ -234,6 +234,7 @@
     <string name="interactive_welcome_title">Είμαι πλήρως λειτουργικός.</string>
     <string name="interactive_welcome_subtitle">Πείτε μου τι θέλετε να κάνετε.</string>
     <string name="interactive_back_content_description">Πίσω</string>
+    <string name="interactive_mode_content_description">Εναλλαγή διαδραστικού UI</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">Έξοδος από τη διαδραστική λειτουργία</string>
     <string name="interactive_ui_parsing_failed">Η ανάλυση UI απέτυχε, νέα προσπάθεια…</string>
@@ -389,11 +390,12 @@
     <string name="bot_message_thinking_label">Σκέψη</string>
     <string name="bot_message_thinking_expand_content_description">Ανάπτυξη ή σύμπτυξη σκέψης</string>
     <string name="settings_theme">Θέμα</string>
-    <string name="settings_theme_description">Επιλέξτε ανάμεσα σε προεπιλογή συστήματος, ανοιχτό, σκούρο ή καθαρό μαύρο OLED.</string>
+    <string name="settings_theme_description">Επιλέξτε ανάμεσα σε προεπιλογή συστήματος, ανοιχτό, σκούρο, καθαρό μαύρο OLED ή Midnight.</string>
     <string name="settings_theme_system">Σύστημα</string>
     <string name="settings_theme_light">Ανοιχτό</string>
     <string name="settings_theme_dark">Σκούρο</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">Μη έγκυρο αίτημα</string>
     <string name="error_content_moderation">Εποπτεία περιεχομένου</string>
     <string name="error_provider_error">Ο πάροχος μοντέλου επέστρεψε σφάλμα</string>

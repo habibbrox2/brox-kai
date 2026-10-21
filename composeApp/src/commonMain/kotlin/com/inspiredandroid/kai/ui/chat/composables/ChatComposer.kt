@@ -2,7 +2,9 @@ package com.inspiredandroid.kai.ui.chat.composables
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.inspiredandroid.kai.data.ServiceEntry
 import com.inspiredandroid.kai.ui.chat.ChatUiState
+import kotlinx.collections.immutable.ImmutableList
 
 /**
  * Bottom composer for the chat workspace (Phase 2 of the chat UI upgrade plan).
@@ -17,6 +19,8 @@ fun ChatComposer(
     questionInputText: androidx.compose.ui.text.input.TextFieldValue,
     onTextStateChange: (androidx.compose.ui.text.input.TextFieldValue) -> Unit,
     isSandboxOpen: Boolean,
+    /** The services the picker offers — narrowed to agentic ones in interactive mode. */
+    availableServices: ImmutableList<ServiceEntry> = uiState.availableServices,
     modifier: Modifier = Modifier,
 ) {
     if (!isSandboxOpen) {
@@ -31,8 +35,12 @@ fun ChatComposer(
             onTextStateChange = onTextStateChange,
             isLoading = uiState.isLoading,
             cancel = uiState.actions.cancel,
-            availableServices = uiState.availableServices,
+            availableServices = availableServices,
             onSelectService = uiState.actions.selectService,
+            availableModels = uiState.availableModels,
+            isLoadingModels = uiState.isLoadingModels,
+            onSelectModel = uiState.actions.selectModel,
+            onLoadModels = uiState.actions.loadModels,
             installedSkills = uiState.installedSkills,
         )
     }

@@ -234,6 +234,7 @@
     <string name="interactive_welcome_title">Popolnoma sem operativen.</string>
     <string name="interactive_welcome_subtitle">Povejte mi, kaj želite storiti.</string>
     <string name="interactive_back_content_description">Nazaj</string>
+    <string name="interactive_mode_content_description">Preklopi interaktivni vmesnik</string>
     <string name="interactive_title">Kai 9000</string>
     <string name="interactive_exit_content_description">Zapusti interaktivni način</string>
     <string name="interactive_ui_parsing_failed">Razčlenjevanje UI ni uspelo, poskušam znova…</string>
@@ -388,11 +389,12 @@
     <string name="bot_message_thinking_label">Razmišljanje</string>
     <string name="bot_message_thinking_expand_content_description">Razširi ali strni razmišljanje</string>
     <string name="settings_theme">Tema</string>
-    <string name="settings_theme_description">Izberi med privzeto sistemsko, svetlo, temno ali povsem črno OLED.</string>
+    <string name="settings_theme_description">Izberi med privzeto sistemsko, svetlo, temno, povsem črno OLED ali Midnight.</string>
     <string name="settings_theme_system">Sistem</string>
     <string name="settings_theme_light">Svetla</string>
     <string name="settings_theme_dark">Temna</string>
     <string name="settings_theme_oled">OLED</string>
+    <string name="settings_theme_midnight">Midnight</string>
     <string name="error_bad_request">Neveljavna zahteva</string>
     <string name="error_content_moderation">Moderiranje vsebine</string>
     <string name="error_provider_error">Ponudnik modela je vrnil napako</string>

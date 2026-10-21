@@ -28,6 +28,7 @@ Behavior of each provider when an `assistant`-role message with prior `tool_call
 | Fireworks AI | **Accepted (documented)** | `reasoning_content` | Officially supported field on `ChatMessage`. Full preservation also requires `reasoning_history: "preserved"` on the request — Kai does not set this | [docs.fireworks.ai/api-reference/post-chatcompletions](https://docs.fireworks.ai/api-reference/post-chatcompletions) |
 | Z.AI standard | **Accepted (documented, inert without flag)** | `reasoning_content` | Preserved Thinking is opt-in on `/api/paas/v4`; without `clear_thinking: false` (which Kai does not send) the echo is ignored | [docs.z.ai/guides/capabilities/thinking-mode](https://docs.z.ai/guides/capabilities/thinking-mode) |
 | OpenRouter | **Accepted (alias)** | Canonical `reasoning`; `reasoning_content` is a documented alias. Anthropic/Gemini-via-OR need `reasoning_details[]` with thought signatures, which Kai does not send | [openrouter.ai/docs/guides/best-practices/reasoning-tokens](https://openrouter.ai/docs/guides/best-practices/reasoning-tokens) |
+| Kilo Gateway | **Accepted (alias)** | OpenRouter-compatible gateway: the canonical field is `reasoning`, `reasoning_content` is an accepted alias. Traces come back as `reasoning` with a `reasoning_details[]` array | [kilo.ai/docs/gateway](https://kilo.ai/docs/gateway) |
 | Requesty | **Accepted** | `reasoning_content` | Gateway accepted the field on a tool round-trip with `openai/gpt-4o-mini` and `deepseek/deepseek-chat` (live check). Whether it reaches the upstream vendor depends on the route; reasoning traces come back as `reasoning_content` | [docs.requesty.ai](https://docs.requesty.ai) |
 | LongCat | **Tolerated (undocumented)** | Schema documents `role` + `content` only; field is passed through silently | [longcat.chat/platform/docs/APIDocs.html](https://longcat.chat/platform/docs/APIDocs.html) |
 | Venice AI | **Tolerated (undocumented)** | Pass-through policy: "Request fields not listed may be passed through but are not validated" | [docs.venice.ai](https://docs.venice.ai) |
@@ -39,7 +40,7 @@ Behavior of each provider when an `assistant`-role message with prior `tool_call
 
 Each service carries a reasoning request mode, either `NONE` or `REASONING_CONTENT`. When `REASONING_CONTENT` is set and the prior assistant turn carried `tool_calls`, Kai emits the field on the next request.
 
-Services currently set to `REASONING_CONTENT`: DeepSeek, OpenRouter, Requesty, LongCat, Venice, Moonshot, Z.AI, Z.AI Coding Plan, MiniMax, Fireworks, OpenCode.
+Services currently set to `REASONING_CONTENT`: DeepSeek, OpenRouter, Requesty, LongCat, Venice, Moonshot, Z.AI, Z.AI Coding Plan, MiniMax, Fireworks, OpenCode, Kilo.
 
 All other services use the default `NONE` (the field is stripped on send). This is the safe default — any service we don't yet have evidence about will not regress.
 

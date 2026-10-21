@@ -26,9 +26,9 @@ class SettingsRouteTest {
 
     @Test
     fun tabNameRoundTrips() {
-        val route = Settings.of(SettingsTab.Model)
-        assertEquals("Model", route.tab)
-        assertEquals(SettingsTab.Model, Settings.tabOf(route))
+        val route = Settings.of(SettingsTab.Services)
+        assertEquals("Services", route.tab)
+        assertEquals(SettingsTab.Services, Settings.tabOf(route))
     }
 
     @Test

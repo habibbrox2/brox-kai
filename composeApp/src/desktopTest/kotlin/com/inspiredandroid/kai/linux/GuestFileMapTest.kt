@@ -1,5 +1,6 @@
 package com.inspiredandroid.kai.linux
 
+import org.junit.Assume.assumeTrue
 import java.io.File
 import java.nio.file.Files
 import kotlin.test.AfterTest
@@ -90,6 +91,7 @@ class GuestFileMapTest {
 
     @Test
     fun `a symlink pointing out of its root does not resolve`() {
+        assumeTrue("host filesystem cannot create symlinks", HostFileSystem.canCreateSymlinks)
         val outside = File(base, "outside").apply { mkdirs() }
         File(outside, "secret").writeText("nope")
         Files.createSymbolicLink(File(rootfs, "escape").toPath(), outside.toPath())
