@@ -40,11 +40,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -66,11 +65,11 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import kotlin.time.Clock
-import kotlin.time.Instant
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 /**
  * Primary navigation sidebar (Plan 7, Phases 1 + 4).
@@ -97,8 +96,11 @@ fun AppSidebar(
 ) {
     var query by remember { mutableStateOf("") }
     val visibleConversations = remember(filteredConversations, query) {
-        if (query.isBlank()) filteredConversations
-        else filteredConversations.filter { it.title.contains(query, ignoreCase = true) }.toImmutableList()
+        if (query.isBlank()) {
+            filteredConversations
+        } else {
+            filteredConversations.filter { it.title.contains(query, ignoreCase = true) }.toImmutableList()
+        }
     }
 
     // Time-based grouping. Pinned conversations always float to the top group.

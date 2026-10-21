@@ -155,8 +155,10 @@ object AutoUpdater {
         val plainAssets = assets - arm64Assets.toSet()
         return when {
             platformKey.startsWith("windows") -> plainAssets.firstOrNull { it.name.endsWith(".msi") }
+
             platformKey.startsWith("macos") ->
                 (if (isArm64) arm64Assets.firstOrNull { it.name.endsWith("-aarch64.dmg") } else plainAssets.firstOrNull { it.name.endsWith(".dmg") })
+
             platformKey.startsWith("linux") -> if (isArm64) {
                 arm64Assets.firstOrNull { it.name.endsWith("-aarch64.deb") }
                     ?: arm64Assets.firstOrNull { it.name.endsWith("-aarch64.AppImage") }
@@ -164,8 +166,8 @@ object AutoUpdater {
             } else {
                 plainAssets.firstOrNull { it.name.endsWith(".deb") || it.name.endsWith(".AppImage") || it.name.endsWith(".tar.gz") }
             }
+
             else -> null
         }
     }
 }
-
