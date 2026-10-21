@@ -22,15 +22,6 @@
 # supersedes most of them in coverage.
 -keep class !androidx.compose.**,!org.jetbrains.compose.**,** { *; }
 
-# Runtime-visible annotations carry the @Serializable markers that
-# kotlinx.serialization's serializer lookup (used by RouteSerializer in
-# androidx.navigation's type-safe routes) reads via reflection; ProGuard strips
-# optional class-file attributes by default, which empties the generated
-# typeMap ("Route settings could not find any NavType ..."). Signature is
-# required for generic serializer types, InnerClasses/EnclosingMethod for
-# serializer companions living inside data classes.
--keepattributes RuntimeVisibleAnnotations,RuntimeInvisibleAnnotations,AnnotationDefault,Signature,InnerClasses,EnclosingMethod
-
 # Belt-and-braces: disable method specialization globally. Even inside the
 # Compose packages we still shrink, the kotlinx.coroutines async/launch
 # builders are called from Compose code paths and specialization there
