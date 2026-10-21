@@ -1414,7 +1414,7 @@
 
 
 <h1 id="linux-sandbox">Linux Sandbox</h1>
-<p><strong>Last verified:</strong> 2026-10-02</p>
+<p><strong>Last verified:</strong> 2026-10-21</p>
 <p>Kai ships a self-contained Linux environment on Android so the assistant — and the user, via the in-app Terminal — can run real shell commands. The agent can install packages, write and run scripts, hit the network, and reach external servers over SSH/SFTP/FTP. The sandbox runs the user-space <code>proot</code> runtime against a rootfs extracted into the app's private storage; no root or system access is required.</p>
 <p>The sandbox is <strong>Android-only</strong>. iOS, desktop, and web have no-op stubs — sandbox operations are simply unavailable on those platforms.</p>
 <h2 id="concepts">Concepts</h2>
@@ -1486,7 +1486,7 @@
 <li><strong>Tool availability follows install state</strong>: the assistant's sandbox tools (shell command, <code>manage_process</code>, and the SSH-host config tool) are advertised to the model only when the sandbox is actually installed (Ready) <em>and</em> the sandbox toggle is on. Before the sandbox is installed they are not sent at all — there is no point offering tools that can only return "not installed," and the enable/disable toggle is itself hidden until install completes. Once installed, the switch on the distribution's card is the on/off control.</li>
 <li><strong>Switching distribution mid-life</strong>: selecting the other distribution in the Settings card re-points the shell integration at that distribution's install without touching either one. When it is already there the card is showing the new system — its size, its packages, its Terminal — within a moment; when it is not, the card offers to install it and the previous one is still on disk, one tap away. The agent's sandbox tools follow: they are withdrawn while the selected distribution has no install and come back describing the new distribution's package manager once it does.</li>
 <li><strong>Copying files between the two</strong>: the offer appears on the card only when the other install actually has something the selected one lacks, so it is a statement of fact rather than a standing button. The count and size are measured off the main thread and patched into the card when they land, never blocking the first paint or a switch. During the copy the card shows a running <code>n/total</code>, and afterwards the offer is gone because a second look finds nothing left.</li>
-<li><strong>First run</strong>: Settings → Tools → Linux Sandbox picks a distribution and downloads its rootfs — a few MB for Alpine, around 150 MB for Debian, varying by architecture. After extraction the package index is refreshed (Alpine walks its mirror list rewriting <code>repositories</code> until one answers; Debian has a single index) and the base packages install automatically — no further action needed. The sandbox reaches Ready at that point, with the optional package set not yet installed; the Settings card shows a separate <strong>Install Packages</strong> button for those until the user taps it. The whole flow surfaces progress in the Settings sheet.</li>
+<li><strong>First run</strong>: Settings → Sandbox picks a distribution and downloads its rootfs — a few MB for Alpine, around 150 MB for Debian, varying by architecture. After extraction the package index is refreshed (Alpine walks its mirror list rewriting <code>repositories</code> until one answers; Debian has a single index) and the base packages install automatically — no further action needed. The sandbox reaches Ready at that point, with the optional package set not yet installed; the Settings card shows a separate <strong>Install Packages</strong> button for those until the user taps it. The whole flow surfaces progress in the Settings sheet.</li>
 <li><strong>The status line is translated</strong>: every word the card shows about the install — not installed, downloading, extracting, configuring, installing base packages, installing a named package, copying files with its running count, ready, and each way any of those can fail — is a translated string, in all the languages the app ships. The install itself runs outside the UI, so it reports which step it is on and the card is what puts that into words. Only the underlying error text an OS call or a download mirror hands back stays as it arrived, inside a translated sentence; when there is none, the sentence says so rather than trailing off. The same goes for the Terminal, whose "sandbox is not ready" and failed-command notices are translated too, while real command output is not.</li>
 <li><strong>State across the app</strong>: each chat conversation has its own shell, and the Terminal tab has another. Files in <code>/root</code> and the rest of the rootfs are shared between them; live shell state (cwd, exports) is not. The Packages UI uses a separate "system" shell so its operations don't interfere with chats.</li>
 <li><strong>Network access</strong>: outbound IP works (DNS is configured against <code>8.8.8.8</code> / <code>8.8.4.4</code>). SSH/SFTP/FTP/HTTP all work; the user's Wi-Fi/mobile-data permission applies as normal.</li>
@@ -1647,6 +1647,14 @@
 <tr>
 <td><code>composeApp/src/commonMain/kotlin/com/inspiredandroid/kai/ui/settings/TerminalSheet.kt</code></td>
 <td>Visible terminal UI with command echo, color-coded streams, and an interactive input row.</td>
+</tr>
+<tr>
+<td><code>composeApp/src/commonMain/kotlin/com/inspiredandroid/kai/ui/settings/SandboxSettings.kt</code></td>
+<td>The Sandbox tab card: distribution picker, install progress, package install, file migration, uninstall.</td>
+</tr>
+<tr>
+<td><code>composeApp/src/commonMain/kotlin/com/inspiredandroid/kai/ui/settings/SettingsDetailPane.kt</code></td>
+<td>Routes the Sandbox tab to that card; the tab is hidden where the sandbox does not exist.</td>
 </tr>
 <tr>
 <td><code>composeApp/src/commonMain/kotlin/com/inspiredandroid/kai/SandboxController.kt</code> (<code>NoOpSandboxController</code>)</td>

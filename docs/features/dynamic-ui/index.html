@@ -622,10 +622,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#entering-interactive-mode" class="md-nav__link">
+  <a href="#turning-interactive-mode-on" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Entering Interactive Mode
+        Turning Interactive Mode On
       
     </span>
   </a>
@@ -644,21 +644,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#loading-frame" class="md-nav__link">
+  <a href="#back-action" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Loading Frame
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#back-button" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Back Button
+        Back Action
       
     </span>
   </a>
@@ -1338,10 +1327,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#entering-interactive-mode" class="md-nav__link">
+  <a href="#turning-interactive-mode-on" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Entering Interactive Mode
+        Turning Interactive Mode On
       
     </span>
   </a>
@@ -1360,21 +1349,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#loading-frame" class="md-nav__link">
+  <a href="#back-action" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Loading Frame
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#back-button" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Back Button
+        Back Action
       
     </span>
   </a>
@@ -1481,21 +1459,19 @@
 <h3 id="settings">Settings</h3>
 <p>The feature is controlled by the Dynamic UI toggle in Settings (General tab). When disabled, the system prompt omits kai-ui instructions so the AI stops generating them. Parsing and rendering remain active unconditionally.</p>
 <h2 id="interactive-ui-mode">Interactive UI Mode</h2>
-<p>A dedicated full-screen mode where the AI produces complete screen layouts via kai-ui. The user navigates between screens by clicking buttons — no chat scrolling, no markdown visible.</p>
-<h3 id="entering-interactive-mode">Entering Interactive Mode</h3>
-<p>Users click "Start Interactive UI" on the empty chat state. This enters interactive mode with a text input where they describe what they want (e.g., "Build me a quiz app"). The first message goes to the AI with an enhanced system prompt, and the AI responds with a full-screen UI. The button is hidden when the primary service is on-device (LiteRT), because small local models cannot reliably produce kai-ui JSON; on-device services are also filtered out of the interactive-mode service selector.</p>
+<p>A mode of the <strong>same chat</strong>, not a separate screen. When it is on, the AI answers with a complete screen layout built from kai-ui, and that screen renders inline in the conversation — the user keeps the chat timeline, the composer and the rest of the app, and navigates the screens by clicking the buttons inside them.</p>
+<h3 id="turning-interactive-mode-on">Turning Interactive Mode On</h3>
+<p>The chat header carries an interactive-UI toggle (a widgets icon, tinted while the mode is on), and the sidebar has an "Interactive UI" entry that shows the same state. Toggling it changes how the <strong>next</strong> answer is produced and rendered; the conversation itself is untouched — messages, history and the composer all stay where they were, and the mode can be switched off again at any time. The toggle is hidden when the primary service is on-device (LiteRT), because small local models cannot reliably produce kai-ui JSON; on-device services are also filtered out of the service picker while the mode is on.</p>
 <h3 id="screen-navigation">Screen Navigation</h3>
-<p>Each AI response replaces the previous screen entirely. Only the latest assistant message's kai-ui renders, taking the full available space. A top bar provides back and exit buttons.</p>
-<h3 id="loading-frame">Loading Frame</h3>
-<p>While an interactive-mode response is in flight, an animated gradient frame (the same rotating purple/violet/magenta border used by the "Start Interactive UI" button) is drawn around the whole screen edge to signal the AI is working. It disappears once the response arrives.</p>
-<h3 id="back-button">Back Button</h3>
-<p>The back button removes the last exchange (user message + assistant response) from conversation history, making the previous assistant response the active screen again. When only one exchange remains, pressing back clears the history and returns to the initial prompt input — interactive mode stays active. To leave interactive mode entirely, the user uses the exit button in the top bar.</p>
+<p>Each interactive answer is a self-contained screen inside the timeline. The kai-ui blocks of the latest assistant message stay interactive — buttons, forms and other callbacks work exactly as they do in the full-screen mode used before, and pressing one submits the collected values back to the AI.</p>
+<h3 id="back-action">Back Action</h3>
+<p>While interactive mode is on, the chat header offers a back action next to the toggle. It removes the last exchange (user message + assistant response) from the conversation history, so the previous answer becomes the active screen again. When only one exchange remains, the history is cleared and the user is back at the composer — interactive mode stays on.</p>
 <h3 id="auto-retry-on-parse-failure">Auto-Retry on Parse Failure</h3>
 <p>If the AI responds without valid kai-ui blocks, the system automatically retries up to 2 times, sending the parse error details back to the AI so it can fix its JSON.</p>
 <h3 id="conversation-persistence">Conversation Persistence</h3>
-<p>Interactive sessions are saved with type <code>interactive</code>. Loading an interactive conversation from history automatically re-enters interactive mode.</p>
+<p>Interactive sessions are saved with type <code>interactive</code>, and loading an interactive conversation from history turns the mode back on. Switching the mode in an open conversation updates that conversation's type, so the mode a chat was left in is the mode it reopens in.</p>
 <h3 id="system-prompt">System Prompt</h3>
-<p>In interactive mode, the system prompt instructs the AI to respond ONLY with a single kai-ui code fence — no markdown text outside the fence. The AI is told the user cannot see anything outside the rendered UI.</p>
+<p>In interactive mode, the system prompt asks the AI for a single kai-ui code fence that renders as a screen inside the chat, and tells it that text outside the fence is shown as ordinary chat text — so the prose stays minimal and the screen carries the content.</p>
 <h2 id="key-files">Key Files</h2>
 <table>
 <thead>
@@ -1546,12 +1522,12 @@
 <td>Branches between chat mode and interactive mode</td>
 </tr>
 <tr>
-<td><code>composeApp/.../ui/chat/composables/EmptyState.kt</code></td>
-<td>"Start Interactive UI" button</td>
+<td><code>composeApp/.../ui/chat/composables/TopBar.kt</code></td>
+<td>Chat header: the interactive-UI toggle and the back action</td>
 </tr>
 <tr>
 <td><code>composeApp/.../ui/chat/ChatActions.kt</code></td>
-<td>submitUiCallback, enterInteractiveMode, exitInteractiveMode, goBackInteractiveMode</td>
+<td>submitUiCallback, setInteractiveMode, goBackInteractiveMode</td>
 </tr>
 <tr>
 <td><code>composeApp/.../ui/chat/ChatViewModel.kt</code></td>
@@ -1560,6 +1536,10 @@
 <tr>
 <td><code>composeApp/.../ui/chat/ChatUiState.kt</code></td>
 <td>isInteractiveMode state flag</td>
+</tr>
+<tr>
+<td><code>composeApp/.../ui/chat/composables/ChatTimeline.kt</code></td>
+<td>Renders the kai-ui blocks inline, with the callbacks wired</td>
 </tr>
 <tr>
 <td><code>composeApp/.../data/DataRepository.kt</code></td>

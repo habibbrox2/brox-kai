@@ -1297,6 +1297,13 @@
 <td></td>
 </tr>
 <tr>
+<td>Kilo Gateway</td>
+<td><strong>Accepted (alias)</strong></td>
+<td>OpenRouter-compatible gateway: the canonical field is <code>reasoning</code>, <code>reasoning_content</code> is an accepted alias. Traces come back as <code>reasoning</code> with a <code>reasoning_details[]</code> array</td>
+<td><a href="https://kilo.ai/docs/gateway">kilo.ai/docs/gateway</a></td>
+<td></td>
+</tr>
+<tr>
 <td>Requesty</td>
 <td><strong>Accepted</strong></td>
 <td><code>reasoning_content</code></td>
@@ -1342,7 +1349,7 @@
 </table>
 <h2 id="what-kai-does-today">What Kai does today</h2>
 <p>Each service carries a reasoning request mode, either <code>NONE</code> or <code>REASONING_CONTENT</code>. When <code>REASONING_CONTENT</code> is set and the prior assistant turn carried <code>tool_calls</code>, Kai emits the field on the next request.</p>
-<p>Services currently set to <code>REASONING_CONTENT</code>: DeepSeek, OpenRouter, Requesty, LongCat, Venice, Moonshot, Z.AI, Z.AI Coding Plan, MiniMax, Fireworks, OpenCode.</p>
+<p>Services currently set to <code>REASONING_CONTENT</code>: DeepSeek, OpenRouter, Requesty, LongCat, Venice, Moonshot, Z.AI, Z.AI Coding Plan, MiniMax, Fireworks, OpenCode, Kilo.</p>
 <p>All other services use the default <code>NONE</code> (the field is stripped on send). This is the safe default — any service we don't yet have evidence about will not regress.</p>
 <p>The chain-of-thought is kept on the in-memory chat message (and persisted with the conversation) regardless of the wire-side decision so the UI can render thinking traces independently of what gets transmitted on the next request. This applies to assistant turns received over the OpenAI-compatible path; the Anthropic and Gemini paths have their own thinking handling and do not currently populate this field. Capture happens going forward — conversations saved before the persistence support was added will not retroactively gain reasoning content on reload.</p>
 <h2 id="openai-responses-api">OpenAI Responses API</h2>

@@ -45,6 +45,7 @@ string|heartbeat_banner_message|SGFydGtsb3AgaGV0IGlldHMgb20gdGUgcmFwcG9ydGVlcg==
 string|image_viewer_close|TWFhayB0b2U=
 string|interactive_back_content_description|VGVydWc=
 string|interactive_exit_content_description|VmVybGFhdCBpbnRlcmFrdGlld2UgbW9kdXM=
+string|interactive_mode_content_description|U2tha2VsIGludGVyYWt0aWV3ZSBVSQ==
 string|interactive_title|S2FpIDkwMDA=
 string|interactive_ui_parsing_failed|VUktb250bGVkaW5nIGhldCBtaXNsdWssIHByb2JlZXIgd2VlcuKApg==
 string|interactive_welcome_subtitle|VmVydGVsIG15IHdhdCBqeSB3aWwgZG9lbi4=
@@ -406,8 +407,9 @@ string|settings_task_details_schedule|U2tlZHVsZQ==
 string|settings_task_details_status|U3RhdHVz
 string|settings_task_details_trigger|U25lbGxlcg==
 string|settings_theme_dark|RG9ua2Vy
-string|settings_theme_description|S2llcyB0dXNzZW4gc3RlbHNlbHZlcnN0ZWssIGxpZywgZG9ua2VyLCBvZiBzdWl3ZXItc3dhcnQgT0xFRC4=
+string|settings_theme_description|S2llcyB0dXNzZW4gc3RlbHNlbHZlcnN0ZWssIGxpZywgZG9ua2VyLCBzdWl3ZXItc3dhcnQgT0xFRCBvZiBNaWRuaWdodC4=
 string|settings_theme_light|TGln
+string|settings_theme_midnight|TWlkbmlnaHQ=
 string|settings_theme_oled|T0xFRA==
 string|settings_theme_system|U3RlbHNlbA==
 string|settings_theme|VGVtYQ==
