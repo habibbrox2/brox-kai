@@ -87,8 +87,6 @@ class ChatViewModel(
     private var pendingConversationDeleteJob: Job? = null
 
     /** The instance whose provider model list was already fetched in this session. */
-    @Volatile
-    private var modelsLoadedInstanceId: String? = null
     private val _state = MutableStateFlow(
         ChatUiState(
             actions = actions,
@@ -537,7 +535,7 @@ class ChatViewModel(
      */
     private fun loadModels() {
         val (primary, service) = primaryServiceInstance() ?: return
-        if (modelsLoadedInstanceId == primary.instanceId) {
+        if (_state.value.modelsLoadedInstanceId == primary.instanceId) {
             refreshModelsForPrimary()
             return
         }
@@ -545,7 +543,7 @@ class ChatViewModel(
             _state.update { it.copy(isLoadingModels = true) }
             try {
                 dataRepository.validateConnection(service, primary.instanceId)
-                modelsLoadedInstanceId = primary.instanceId
+                _state.update { it.copy(modelsLoadedInstanceId = primary.instanceId) }
             } catch (_: Exception) {
                 // Keep the list we already have: the curated defaults are still selectable.
             }

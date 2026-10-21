@@ -87,6 +87,8 @@ data class ChatUiState(
     val availableModels: ImmutableList<SettingsModel> = persistentListOf(),
     /** True while the provider's model list is being fetched for the picker. */
     val isLoadingModels: Boolean = false,
+    /** The service instance whose provider model list was already fetched this session. */
+    val modelsLoadedInstanceId: String? = null,
     val savedConversations: ImmutableList<ConversationSummary> = persistentListOf(),
     val currentConversationId: String? = null,
     val hasUnreadHeartbeat: Boolean = false,
