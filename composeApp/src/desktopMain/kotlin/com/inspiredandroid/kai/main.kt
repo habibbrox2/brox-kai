@@ -21,11 +21,11 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import androidx.navigation.compose.rememberNavController
 import com.inspiredandroid.kai.updater.AutoUpdater
+import kai.composeapp.generated.resources.Res
+import kai.composeapp.generated.resources.logo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kai.composeapp.generated.resources.Res
-import kai.composeapp.generated.resources.logo
 import nl.marc_apps.tts.TextToSpeechEngine
 import nl.marc_apps.tts.TextToSpeechInstance
 import nl.marc_apps.tts.experimental.ExperimentalDesktopTarget
@@ -70,6 +70,10 @@ fun main() {
             val updateState = remember { mutableStateOf<AutoUpdater.UpdateState>(AutoUpdater.UpdateState.Idle) }
             val checker = remember { AutoUpdater.createUpdateChecker(updaterScope) { updateState.value = it } }
             LaunchedEffect(Unit) { checker.onStart() }
+            LaunchedEffect(updateState.value) {
+                val state = updateState.value
+                if (state !is AutoUpdater.UpdateState.Idle) println("[updater] state=$state")
+            }
             AutoUpdateDialog(updateState = updateState.value, onDismiss = { /* keep state */ })
         }
     }
@@ -101,6 +105,7 @@ private fun AutoUpdateDialog(
                 },
             )
         }
+
         else -> Unit
     }
 }

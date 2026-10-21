@@ -23,7 +23,6 @@ import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.persistentSetOf
-import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.StringResource
 
 @Immutable
@@ -52,7 +51,6 @@ enum class ConnectionStatus {
     Error,
 }
 
-@Serializable
 enum class SettingsTab {
     General,
     Model,

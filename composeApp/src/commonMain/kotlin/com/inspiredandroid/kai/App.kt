@@ -62,9 +62,25 @@ object Dashboard
 @SerialName("home")
 object Home
 
+/**
+ * Settings destination.
+ *
+ * The tab travels as its [SettingsTab] *name* instead of the enum itself: typed routes only
+ * support a fixed set of NavTypes, and an enum NavType exists on Android only. On desktop, iOS
+ * and wasm the enum resolves to `UNKNOWN` and the app crashes while the route pattern is built
+ * ("Route settings could not find any NavType for argument tab of type SettingsTab?").
+ */
 @Serializable
 @SerialName("settings")
-data class Settings(val tab: SettingsTab? = null)
+data class Settings(val tab: String? = null) {
+    companion object {
+        /** Route to the given settings [tab], or to the default tab when [tab] is null. */
+        fun of(tab: SettingsTab?): Settings = Settings(tab?.name)
+
+        /** The settings tab this route points at, or null when it points at the default tab. */
+        fun tabOf(route: Settings): SettingsTab? = route.tab?.let { value -> SettingsTab.entries.find { it.name == value } }
+    }
+}
 
 /** Kai Build as a real destination (Plan 6), resumed into [project] when set. */
 @Serializable
@@ -192,7 +208,7 @@ private fun AppContent(
                                 }
                             },
                             onOpenSettings = { tab ->
-                                navController.navigate(Settings(tab)) {
+                                navController.navigate(Settings.of(tab)) {
                                     popUpTo(Home)
                                     launchSingleTop = true
                                 }
@@ -235,7 +251,7 @@ private fun AppContent(
                         )
                     }
                     composable<Settings> { entry ->
-                        val initialTab = entry.toRoute<Settings>().tab
+                        val initialTab = Settings.tabOf(entry.toRoute<Settings>())
                         DisposableEffect(Unit) {
                             onDispose {
                                 chatViewModel.refreshSettings()
