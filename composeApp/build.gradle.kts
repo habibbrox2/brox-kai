@@ -249,10 +249,11 @@ class VersionGeneratorPlugin : Plugin<Project> {
             val appVersion = libs.versions.appVersion.get()
 
             // Generate Kotlin version file
-            val versionFile = project.layout.buildDirectory
-                .file("generated/src/commonMain/kotlin/com/inspiredandroid/kai/Version.kt")
-                .get()
-                .asFile
+            val versionFile =
+                project.layout.buildDirectory
+                    .file("generated/src/commonMain/kotlin/com/inspiredandroid/kai/Version.kt")
+                    .get()
+                    .asFile
             versionFile.parentFile?.mkdirs()
             versionFile.writeText(
                 """
@@ -289,10 +290,11 @@ tasks.register("generateVersionFile") {
     description = "Generates Version.kt with app version"
     doLast {
         val appVersion = libs.versions.appVersion.get()
-        val versionFile = project.layout.buildDirectory
-            .file("generated/src/commonMain/kotlin/com/inspiredandroid/kai/Version.kt")
-            .get()
-            .asFile
+        val versionFile =
+            project.layout.buildDirectory
+                .file("generated/src/commonMain/kotlin/com/inspiredandroid/kai/Version.kt")
+                .get()
+                .asFile
         versionFile.parentFile?.mkdirs()
         versionFile.writeText(
             """

@@ -25,12 +25,12 @@ object GalleryStatusTool : Tool {
         // The actual implementation is in GalleryStatusToolImpl (Android)
         mapOf(
             "success" to false,
-            "error" to "This tool must be implemented platform-specifically"
+            "error" to "This tool must be implemented platform-specifically",
         )
     } catch (e: Exception) {
         mapOf(
             "success" to false,
-            "error" to "Failed to get gallery status: ${e.message}"
+            "error" to "Failed to get gallery status: ${e.message}",
         )
     }
 
@@ -47,17 +47,12 @@ object GalleryStatusTool : Tool {
  * Result of the gallery status check.
  */
 data class GalleryStatusResult(
-    val permissionState: String,          // GRANTED, DENIED, SELECTED_PHOTOS_ONLY, PARTIAL, REVOKED
-    val accessScope: String,              // FULL, SELECTED_PHOTOS_ONLY, NONE
+    val permissionState: String, // GRANTED, DENIED, SELECTED_PHOTOS_ONLY, PARTIAL, REVOKED
+    val accessScope: String, // FULL, SELECTED_PHOTOS_ONLY, NONE
     val androidVersion: Int,
     val canQueryMediaStore: Boolean,
     val hasSelectedPhotosAccess: Boolean,
-    val message: String,                  // English description
-    val messageBengali: String,           // Bengali description
-    val details: Map<String, Any> = emptyMap()
+    val message: String, // English description
+    val messageBengali: String, // Bengali description
+    val details: Map<String, Any> = emptyMap(),
 )
-
-/**
- * Android implementation of the gallery status tool lives in androidMain
- * (GalleryStatusTool.android.kt).
- */

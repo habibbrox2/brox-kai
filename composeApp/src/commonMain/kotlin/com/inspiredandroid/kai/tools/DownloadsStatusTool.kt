@@ -25,12 +25,12 @@ object DownloadsStatusTool : Tool {
         // The actual implementation is in DownloadsStatusToolImpl (Android)
         mapOf(
             "success" to false,
-            "error" to "This tool must be implemented platform-specifically"
+            "error" to "This tool must be implemented platform-specifically",
         )
     } catch (e: Exception) {
         mapOf(
             "success" to false,
-            "error" to "Failed to get downloads status: ${e.message}"
+            "error" to "Failed to get downloads status: ${e.message}",
         )
     }
 
@@ -47,18 +47,13 @@ object DownloadsStatusTool : Tool {
  * Result of the downloads status check.
  */
 data class DownloadsStatusResult(
-    val overallCoverage: String,          // FULL, MEDIA_ONLY, PARTIAL, MEDIA_PARTIAL
+    val overallCoverage: String, // FULL, MEDIA_ONLY, PARTIAL, MEDIA_PARTIAL
     val sources: List<DownloadsSourceInfo>,
     val hasLegacyPermission: Boolean,
     val canQueryDownloadManager: Boolean,
     val canQueryMediaStore: Boolean,
     val isSafAvailable: Boolean,
-    val message: String,                  // English summary
-    val messageBengali: String,           // Bengali summary
-    val details: Map<String, Any> = emptyMap()
+    val message: String, // English summary
+    val messageBengali: String, // Bengali summary
+    val details: Map<String, Any> = emptyMap(),
 )
-
-/**
- * Android implementation of the downloads status tool lives in androidMain
- * (DownloadsStatusTool.android.kt).
- */

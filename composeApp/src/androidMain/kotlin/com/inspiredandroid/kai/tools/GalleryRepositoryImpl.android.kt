@@ -12,19 +12,19 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.inspiredandroid.kai.data.GalleryMediaItem
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import org.koin.java.KoinJavaComponent.inject
 
 /**
@@ -77,7 +77,9 @@ class GalleryRepositoryImpl(
         mimeType?.let {
             when {
                 it == "image/*" -> clauses.add("${MediaStore.Files.FileColumns.MIME_TYPE} LIKE 'image/%'")
+
                 it == "video/*" -> clauses.add("${MediaStore.Files.FileColumns.MIME_TYPE} LIKE 'video/%'")
+
                 else -> {
                     clauses.add("${MediaStore.Files.FileColumns.MIME_TYPE} = ?")
                     args.add(it)
@@ -143,16 +145,22 @@ class GalleryRepositoryImpl(
         // RELATIVE_PATH (API 29+)
         val relativePath = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             getStringOrNull(cursor, MediaStore.Files.FileColumns.RELATIVE_PATH)
-        } else null
+        } else {
+            null
+        }
 
         // IS_PENDING, IS_FAVORITE (API 29+)
         val isPending = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.IS_PENDING)) != 0
-        } else false
+        } else {
+            false
+        }
 
         val isFavorite = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             getIntOrNull(cursor, MediaStore.Files.FileColumns.IS_FAVORITE) == 1
-        } else false
+        } else {
+            false
+        }
 
         return GalleryMediaItem(
             id = id,
@@ -168,10 +176,14 @@ class GalleryRepositoryImpl(
             relativePath = getStringOrNull(cursor, MediaStore.Files.FileColumns.RELATIVE_PATH),
             isPending = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.IS_PENDING)) != 0
-            } else false,
+            } else {
+                false
+            },
             isFavorite = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.IS_FAVORITE)) == 1
-            } else false,
+            } else {
+                false
+            },
         )
     }
 
@@ -217,7 +229,7 @@ class GalleryRepositoryImpl(
                         projection,
                         selection,
                         selectionArgs,
-                        "$orderBy LIMIT $limit OFFSET $offset"
+                        "$orderBy LIMIT $limit OFFSET $offset",
                     )
 
                     if (cursor != null) {
@@ -230,7 +242,9 @@ class GalleryRepositoryImpl(
                             }
                         }
                         items
-                    } else emptyList()
+                    } else {
+                        emptyList()
+                    }
                 } finally {
                     cursor?.close()
                 }
@@ -256,7 +270,7 @@ class GalleryRepositoryImpl(
                     arrayOf(MediaStore.Files.FileColumns._ID),
                     selection,
                     selectionArgs,
-                    null
+                    null,
                 )
                 cursor?.count ?: 0
             } finally {

@@ -29,19 +29,19 @@ object GallerySearchTool : Tool {
             "sortBy" to ParameterSchema("string", "Sort order: NEWEST, OLDEST, LARGEST, SMALLEST, NAME_A_TO_Z, NAME_Z_TO_A", false),
             "limit" to ParameterSchema("int", "Max results (default 50, max 200)", false),
             "offset" to ParameterSchema("int", "Pagination offset (default 0)", false),
-        )
+        ),
     )
 
     override suspend fun execute(args: Map<String, Any>): Any = try {
         // প্ল্যাটফর্ম-নির্দিষ্ট ইমপ্লিমেন্টেশন:androidMain-এ GallerySearchToolImpl
         mapOf(
             "success" to false,
-            "error" to "This tool must be implemented platform-specifically"
+            "error" to "This tool must be implemented platform-specifically",
         )
     } catch (e: Exception) {
         mapOf(
             "success" to false,
-            "error" to "Failed to search gallery: ${e.message}"
+            "error" to "Failed to search gallery: ${e.message}",
         )
     }
 
@@ -66,8 +66,3 @@ data class GallerySearchResult(
     val message: String = "",
     val messageBengali: String = "",
 )
-
-/**
- * গ্যালারি সার্চ টুলের অ্যান্ড্রয়েড ইমপ্লিমেন্টেশন androidMain-এ আছে
- * (GallerySearchTool.android.kt)।
- */

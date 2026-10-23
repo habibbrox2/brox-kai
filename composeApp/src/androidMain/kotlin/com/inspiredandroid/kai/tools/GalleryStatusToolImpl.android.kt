@@ -34,9 +34,8 @@ class GalleryStatusToolImpl : Tool {
                     "read_media_images" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU),
                     "read_media_video" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU),
                     "read_media_visual_user_selected" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE),
-                )
-            )
+                ),
+            ),
         )
     }
-
 }

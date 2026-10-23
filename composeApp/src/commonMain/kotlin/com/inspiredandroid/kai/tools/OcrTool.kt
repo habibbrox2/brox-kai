@@ -36,18 +36,18 @@ object OcrTool : Tool {
                 description = "Whether to return detailed block/line/element structure",
                 required = false,
             ),
-        )
+        ),
     )
 
     override suspend fun execute(args: Map<String, Any>): Any = try {
         mapOf(
             "success" to false,
-            "error" to "This tool must be implemented platform-specifically"
+            "error" to "This tool must be implemented platform-specifically",
         )
     } catch (e: Exception) {
         mapOf(
             "success" to false,
-            "error" to "Failed to perform OCR: ${e.message}"
+            "error" to "Failed to perform OCR: ${e.message}",
         )
     }
 
@@ -91,7 +91,3 @@ data class OcrElementResult(
     val boundingBox: Map<String, Int> = emptyMap(),
     val confidence: Float = 0f,
 )
-
-/**
- * Android implementation of the OCR tool lives in androidMain (OcrTool.android.kt).
- */

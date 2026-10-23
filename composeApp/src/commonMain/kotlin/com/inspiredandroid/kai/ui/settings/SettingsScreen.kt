@@ -519,8 +519,8 @@ private fun SettingsTabSelector(
                             tabBounds[tab] = start..(start + coordinates.size.width)
                         }
                         .handCursor()
-                        .fillMaxHeight()
-                        .padding(vertical = 12.dp)
+                        .defaultMinSize(minHeight = 48.dp)
+                        .padding(vertical = 4.dp)
                         .focusRequester(tabFocusRequesters[index])
                         .onFocusChanged { focused ->
                             if (focused.isFocused) {

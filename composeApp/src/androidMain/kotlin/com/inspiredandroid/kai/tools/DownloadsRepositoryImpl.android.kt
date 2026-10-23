@@ -276,8 +276,11 @@ class DownloadsRepositoryImpl(
         mimeType?.let {
             when (it) {
                 "image/*" -> clauses.add("${MediaStore.Files.FileColumns.MIME_TYPE} LIKE 'image/%'")
+
                 "video/*" -> clauses.add("${MediaStore.Files.FileColumns.MIME_TYPE} LIKE 'video/%'")
+
                 "application/*" -> clauses.add("${MediaStore.Files.FileColumns.MIME_TYPE} LIKE 'application/%'")
+
                 else -> {
                     clauses.add("${MediaStore.Files.FileColumns.MIME_TYPE} = ?")
                     args.add(it)
@@ -404,11 +407,10 @@ class DownloadsRepositoryImpl(
 
     private fun canQueryMediaStore(): Boolean = downloadsPermissionController.canQueryMediaStoreDownloads()
 
-    private fun testLegacyStoragePermission(): Boolean =
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
-            ContextCompat.checkSelfPermission(context, android.Manifest.permission.READ_EXTERNAL_STORAGE) ==
-                android.content.pm.PackageManager.PERMISSION_GRANTED
-        } else {
-            false
-        }
+    private fun testLegacyStoragePermission(): Boolean = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
+        ContextCompat.checkSelfPermission(context, android.Manifest.permission.READ_EXTERNAL_STORAGE) ==
+            android.content.pm.PackageManager.PERMISSION_GRANTED
+    } else {
+        false
+    }
 }

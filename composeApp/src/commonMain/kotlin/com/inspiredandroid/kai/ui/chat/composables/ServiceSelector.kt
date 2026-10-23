@@ -356,7 +356,7 @@ private fun ModelMenuItem(
     } else {
         MaterialTheme.colorScheme.onSurface
     }
-    val displayName = model.displayName?.takeIf { it.isNotBlank() && it != model.id }
+    val shortName = model.displayName?.takeIf { it.isNotBlank() } ?: model.id
     Row(
         modifier = modifier
             .padding(horizontal = 4.dp)
@@ -368,24 +368,13 @@ private fun ModelMenuItem(
             .widthIn(min = 200.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Column {
-            Text(
-                text = displayName ?: model.id,
-                style = MaterialTheme.typography.bodyMedium,
-                color = textColor,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-            if (displayName != null) {
-                Text(
-                    text = model.id,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = textColor.copy(alpha = 0.7f),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
-        }
+        Text(
+            text = shortName,
+            style = MaterialTheme.typography.bodyMedium,
+            color = textColor,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
     }
 }
 

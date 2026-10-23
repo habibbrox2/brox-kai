@@ -40,9 +40,9 @@ class DownloadsStatusToolImpl : Tool {
                     "MEDIA_PARTIAL" to "Media files via MediaStore; non-media files not visible",
                     "PARTIAL" to "Only DownloadManager entries visible; limited coverage",
                     "MEDIA_ONLY" to "Only media files (images, videos, audio) in Downloads",
-                    "USER_SELECTED" to "Files/folders explicitly selected by user via SAF picker"
-                )
-            )
+                    "USER_SELECTED" to "Files/folders explicitly selected by user via SAF picker",
+                ),
+            ),
         )
     }
 }
