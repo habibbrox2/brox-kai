@@ -36,6 +36,7 @@ import com.inspiredandroid.kai.ui.components.CapabilityCountCard
 import com.inspiredandroid.kai.ui.components.CollectionEmptyState
 import com.inspiredandroid.kai.ui.components.OperationalStatus
 import com.inspiredandroid.kai.ui.handCursor
+import com.inspiredandroid.kai.ui.isOledFlavor
 import com.inspiredandroid.kai.ui.kaiAdaptiveCardBorder
 import com.inspiredandroid.kai.ui.kaiAdaptiveCardColors
 import kai.composeapp.generated.resources.Res
@@ -338,13 +339,28 @@ private fun ToolItem(
     onToggle: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val isOled = MaterialTheme.colorScheme.isOledFlavor
+    val cardBg = if (isOled) {
+        com.inspiredandroid.kai.ui.CardFill
+    } else {
+        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+    }
+    val cardBorder = if (isOled) {
+        androidx.compose.foundation.BorderStroke(1.dp, com.inspiredandroid.kai.ui.BorderSoft)
+    } else {
+        androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+    }
+    val cardShape = com.inspiredandroid.kai.ui.settings.SettingsShapes.card
+
     Card(
         modifier = modifier
-            .clip(CardDefaults.shape)
+            .fillMaxWidth()
+            .clip(cardShape)
             .clickable { onToggle(!tool.isEnabled) }
             .handCursor(),
-        colors = kaiAdaptiveCardColors(),
-        border = kaiAdaptiveCardBorder(),
+        colors = CardDefaults.cardColors(containerColor = cardBg),
+        border = cardBorder,
+        shape = cardShape,
     ) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
@@ -368,6 +384,12 @@ private fun ToolItem(
             Switch(
                 checked = tool.isEnabled,
                 onCheckedChange = onToggle,
+                colors = androidx.compose.material3.SwitchDefaults.colors(
+                    checkedThumbColor = com.inspiredandroid.kai.ui.AccentPrimary,
+                    checkedTrackColor = com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.3f),
+                    uncheckedThumbColor = if (isOled) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurfaceVariant,
+                    uncheckedTrackColor = if (isOled) com.inspiredandroid.kai.ui.BorderSoft else MaterialTheme.colorScheme.outlineVariant,
+                ),
             )
         }
     }

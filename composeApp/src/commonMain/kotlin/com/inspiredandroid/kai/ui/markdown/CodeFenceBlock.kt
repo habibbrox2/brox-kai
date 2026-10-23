@@ -6,26 +6,40 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.inspiredandroid.kai.ui.AccentPrimary
+import com.inspiredandroid.kai.ui.AccentGlow
+import com.inspiredandroid.kai.ui.BorderSoft
+import com.inspiredandroid.kai.ui.CardFill
+import com.inspiredandroid.kai.ui.OledBlack
+import com.inspiredandroid.kai.ui.isOledFlavor
 import com.inspiredandroid.kai.ui.rememberCopyToClipboard
+import com.inspiredandroid.kai.ui.settings.SettingsShapes
 
 @Composable
 internal fun CodeFenceBlock(
@@ -33,29 +47,44 @@ internal fun CodeFenceBlock(
     code: String,
     modifier: Modifier = Modifier,
     onOpenInEditor: ((String, String?) -> Unit)? = null,
+    onRunInSandbox: (() -> Unit)? = null,
 ) {
     val colorScheme = MaterialTheme.colorScheme
+    val isOled = colorScheme.isOledFlavor
     val highlightColors = remember(colorScheme) { codeHighlightColors(colorScheme) }
     val highlighted = remember(code, language, highlightColors) {
         highlightCode(code, language, highlightColors)
     }
     val copyToClipboard = rememberCopyToClipboard()
 
+    val surfaceBg = if (isOled) {
+        CardFill
+    } else {
+        colorScheme.surfaceVariant
+    }
+    val surfaceBorder = if (isOled) {
+        BorderSoft
+    } else {
+        colorScheme.outline.copy(alpha = 0.2f)
+    }
+
     Surface(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(8.dp),
-        color = colorScheme.surfaceVariant,
+        shape = SettingsShapes.card,
+        color = surfaceBg,
+        border = androidx.compose.foundation.BorderStroke(1.dp, surfaceBorder),
         contentColor = colorScheme.onSurfaceVariant,
     ) {
         Column {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth().padding(start = 12.dp, end = 4.dp),
+                modifier = Modifier.fillMaxWidth().padding(start = 12.dp, end = 4.dp, top = 8.dp, bottom = 4.dp),
             ) {
                 Text(
                     text = language?.takeIf { it.isNotBlank() } ?: "",
                     style = MaterialTheme.typography.labelSmall,
+                    color = if (isOled) AccentPrimary else colorScheme.onSurfaceVariant,
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                     if (onOpenInEditor != null) {
@@ -67,6 +96,31 @@ internal fun CodeFenceBlock(
                                 imageVector = Icons.Default.Edit,
                                 contentDescription = "Open in editor",
                                 modifier = Modifier.size(16.dp),
+                            )
+                        }
+                    }
+                    // Run in Sandbox button
+                    if (onRunInSandbox != null) {
+                        TextButton(
+                            onClick = onRunInSandbox,
+                            modifier = Modifier
+                                .height(28.dp)
+                                .padding(horizontal = 8.dp),
+                            colors = ButtonDefaults.textButtonColors(
+                                containerColor = AccentPrimary.copy(alpha = 0.15f),
+                                contentColor = AccentPrimary,
+                            ),
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.PlayArrow,
+                                contentDescription = "Run in Sandbox",
+                                modifier = Modifier.size(16.dp),
+                            )
+                            Spacer(Modifier.width(4.dp))
+                            Text(
+                                "Run in Sandbox",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = AccentPrimary,
                             )
                         }
                     }
@@ -82,7 +136,7 @@ internal fun CodeFenceBlock(
                     }
                 }
             }
-            HorizontalDivider(color = colorScheme.outline.copy(alpha = 0.2f))
+            HorizontalDivider(color = surfaceBorder)
             val scroll = rememberScrollState()
             Box(Modifier.horizontalScroll(scroll).padding(12.dp)) {
                 Text(

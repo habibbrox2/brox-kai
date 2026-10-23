@@ -84,6 +84,7 @@ import com.inspiredandroid.kai.data.Service
 import com.inspiredandroid.kai.data.supportsAgenticFlows
 import com.inspiredandroid.kai.getBackgroundDispatcher
 import com.inspiredandroid.kai.onDragAndDropEventDropped
+import com.inspiredandroid.kai.ui.isOledFlavor
 import com.inspiredandroid.kai.ui.build.KaiBuildScreen
 import com.inspiredandroid.kai.ui.chat.composables.AppSidebar
 import com.inspiredandroid.kai.ui.chat.composables.BotMessage
@@ -547,7 +548,18 @@ private fun ChatModeScreen(
                         }
                     }
                 },
-                modifier = Modifier.background(MaterialTheme.colorScheme.background).navigationBarsPadding().statusBarsPadding().imePadding(),
+                // Use OLED black background for pure dark theme
+                modifier = Modifier
+                    .background(
+                        if (MaterialTheme.colorScheme.isOledFlavor) {
+                            com.inspiredandroid.kai.ui.OledBlack
+                        } else {
+                            MaterialTheme.colorScheme.background
+                        }
+                    )
+                    .navigationBarsPadding()
+                    .statusBarsPadding()
+                    .imePadding(),
             )
         }
     }

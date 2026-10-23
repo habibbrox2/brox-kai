@@ -12,6 +12,21 @@
    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"/>
 
+   <!-- Gallery/Media permissions -->
+   <!-- Android 12L (API 32) and below: broad storage access for media -->
+   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+       android:maxSdkVersion="32" />
+   <!-- Android 13+ (API 33+): granular media permissions -->
+   <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+   <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+   <!-- Android 14+ (API 34+): selected photos picker access -->
+   <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
+
+   <!-- Downloads access: broad storage for legacy, DownloadManager for API 29+ -->
+   <!-- READ_EXTERNAL_STORAGE with maxSdkVersion="32" already declared above -->
+   <!-- DownloadManager queries don't require additional permissions -->
+   <!-- SAF (Storage Access Framework) works without manifest permissions -->
+
     <application
         android:name="com.inspiredandroid.kai.KaiApplication"
         android:allowBackup="false"

@@ -2,6 +2,7 @@ package com.inspiredandroid.kai.ui.chat.composables
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +29,7 @@ import androidx.compose.material.icons.filled.Terminal
 import androidx.compose.material.icons.filled.Widgets
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -57,6 +59,7 @@ import com.inspiredandroid.kai.ui.chat.ChatUiState
 import com.inspiredandroid.kai.ui.chat.ConversationSummary
 import com.inspiredandroid.kai.ui.components.KaiSearchField
 import com.inspiredandroid.kai.ui.handCursor
+import com.inspiredandroid.kai.ui.isOledFlavor
 import kai.composeapp.generated.resources.Res
 import kai.composeapp.generated.resources.chat_history_heartbeat_label
 import kai.composeapp.generated.resources.ic_settings
@@ -108,10 +111,31 @@ fun AppSidebar(
     // Time-based grouping. Pinned conversations always float to the top group.
     val groups = remember(visibleConversations) { groupConversations(visibleConversations) }
 
+    // Glassmorphic sidebar background
+    val isOled = MaterialTheme.colorScheme.isOledFlavor
+    val sidebarBg = if (isOled) {
+        com.inspiredandroid.kai.ui.SurfaceRaised.copy(alpha = 0.95f)
+    } else {
+        MaterialTheme.colorScheme.surfaceContainerLow.copy(alpha = 0.9f)
+    }
+    val sidebarBorder = if (isOled) {
+        com.inspiredandroid.kai.ui.BorderSoft
+    } else {
+        MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surfaceContainerLow)
+            .background(sidebarBg)
+            .border(
+                if (isOled) {
+                    androidx.compose.foundation.BorderStroke(1.dp, sidebarBorder)
+                } else {
+                    androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+                },
+                com.inspiredandroid.kai.ui.settings.SettingsShapes.section
+            )
             .padding(ChatSpacing.sm),
         verticalArrangement = Arrangement.spacedBy(ChatSpacing.xs),
     ) {
@@ -119,6 +143,10 @@ fun AppSidebar(
             onClick = onNewChat,
             modifier = Modifier.fillMaxWidth().handCursor(),
             shape = ChatShapes.quickStartCard,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = com.inspiredandroid.kai.ui.AccentPrimary,
+                contentColor = com.inspiredandroid.kai.ui.OledBlack,
+            ),
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
@@ -246,9 +274,17 @@ private fun ConversationRow(
         onClick = onSelect,
         shape = ChatShapes.quickStartCard,
         color = if (isSelected) {
-            MaterialTheme.colorScheme.primaryContainer
+            com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.15f)
         } else {
             androidx.compose.ui.graphics.Color.Transparent
+        },
+        border = if (isSelected) {
+            androidx.compose.foundation.BorderStroke(
+                1.dp,
+                com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.4f)
+            )
+        } else {
+            null
         },
         modifier = Modifier.fillMaxWidth().handCursor(),
     ) {
@@ -261,7 +297,7 @@ private fun ConversationRow(
                 imageVector = if (conversation.isPinned) Icons.Default.PushPin else Icons.AutoMirrored.Filled.Chat,
                 contentDescription = null,
                 tint = if (isSelected) {
-                    MaterialTheme.colorScheme.onPrimaryContainer
+                    com.inspiredandroid.kai.ui.AccentPrimary
                 } else {
                     MaterialTheme.colorScheme.onSurfaceVariant
                 },
@@ -279,7 +315,7 @@ private fun ConversationRow(
                     text = conversation.title.ifBlank { "Untitled" },
                     style = MaterialTheme.typography.bodySmall,
                     color = if (isSelected) {
-                        MaterialTheme.colorScheme.onPrimaryContainer
+                        com.inspiredandroid.kai.ui.AccentPrimary
                     } else {
                         MaterialTheme.colorScheme.onSurface
                     },
@@ -367,13 +403,23 @@ private fun SidebarLink(
     onClick: () -> Unit,
     isActive: Boolean = false,
 ) {
+    val isOled = MaterialTheme.colorScheme.isOledFlavor
+    
     Surface(
         onClick = onClick,
         shape = ChatShapes.quickStartCard,
         color = if (isActive) {
-            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.35f)
+            com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.15f)
         } else {
             androidx.compose.ui.graphics.Color.Transparent
+        },
+        border = if (isActive) {
+            androidx.compose.foundation.BorderStroke(
+                1.dp,
+                com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.4f)
+            )
+        } else {
+            null
         },
         modifier = Modifier.fillMaxWidth().handCursor(),
     ) {
@@ -386,7 +432,7 @@ private fun SidebarLink(
                 imageVector = icon,
                 contentDescription = null,
                 tint = if (isActive) {
-                    MaterialTheme.colorScheme.primary
+                    com.inspiredandroid.kai.ui.AccentPrimary
                 } else {
                     MaterialTheme.colorScheme.onSurfaceVariant
                 },
@@ -396,10 +442,11 @@ private fun SidebarLink(
                 text = label,
                 style = MaterialTheme.typography.bodyMedium,
                 color = if (isActive) {
-                    MaterialTheme.colorScheme.primary
+                    com.inspiredandroid.kai.ui.AccentPrimary
                 } else {
                     MaterialTheme.colorScheme.onSurface
                 },
+                fontWeight = if (isActive) FontWeight.Medium else FontWeight.Normal,
             )
         }
     }

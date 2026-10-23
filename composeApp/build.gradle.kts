@@ -156,6 +156,12 @@ kotlin {
                 implementation(libs.litert.lm)
                 implementation(libs.sqldelight.android.driver)
                 implementation(libs.xz)
+                // ML Kit Text Recognition v2 - OCR support
+                implementation(libs.mlkit.text.recognition)
+                implementation(libs.mlkit.text.recognition.chinese)
+                implementation(libs.mlkit.text.recognition.devanagari)
+                implementation(libs.mlkit.text.recognition.japanese)
+                implementation(libs.mlkit.text.recognition.korean)
             }
         }
         getByName("desktopMain") {
@@ -243,11 +249,10 @@ class VersionGeneratorPlugin : Plugin<Project> {
             val appVersion = libs.versions.appVersion.get()
 
             // Generate Kotlin version file
-            val versionFile =
-                layout.buildDirectory
-                    .file("generated/src/commonMain/kotlin/com/inspiredandroid/kai/Version.kt")
-                    .get()
-                    .asFile
+            val versionFile = project.layout.buildDirectory
+                .file("generated/src/commonMain/kotlin/com/inspiredandroid/kai/Version.kt")
+                .get()
+                .asFile
             versionFile.parentFile?.mkdirs()
             versionFile.writeText(
                 """
@@ -275,4 +280,40 @@ class VersionGeneratorPlugin : Plugin<Project> {
     }
 }
 
+// Apply the plugin to generate Version.kt
 apply<VersionGeneratorPlugin>()
+
+// Register the version generation task
+tasks.register("generateVersionFile") {
+    group = "build"
+    description = "Generates Version.kt with app version"
+    doLast {
+        val appVersion = libs.versions.appVersion.get()
+        val versionFile = project.layout.buildDirectory
+            .file("generated/src/commonMain/kotlin/com/inspiredandroid/kai/Version.kt")
+            .get()
+            .asFile
+        versionFile.parentFile?.mkdirs()
+        versionFile.writeText(
+            """
+            package com.inspiredandroid.kai
+
+            object Version {
+                const val appVersion = "$appVersion"
+            }
+            """.trimIndent(),
+        )
+    }
+}
+
+// Ensure version file is generated before Kotlin compilation
+tasks.named("compileKotlinDesktop") {
+    dependsOn("generateVersionFile")
+}
+
+// For Android, the task names are different - use pattern matching
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java).configureEach {
+    if (name.startsWith("compileKotlin")) {
+        dependsOn("generateVersionFile")
+    }
+}

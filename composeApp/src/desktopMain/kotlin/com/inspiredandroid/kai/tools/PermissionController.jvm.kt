@@ -15,6 +15,12 @@ internal actual fun platformHasPermission(permission: AppPermission): Boolean = 
 
     // Desktop doesn't gate local network access.
     AppPermission.LOCAL_NETWORK -> true
+
+    // Gallery access on desktop: file picker only, no runtime permission
+    AppPermission.GALLERY -> true
+
+    // Downloads access on desktop: file picker only, no runtime permission
+    AppPermission.DOWNLOADS -> true
 }
 
 internal actual fun platformCanRequest(permission: AppPermission): Boolean = false

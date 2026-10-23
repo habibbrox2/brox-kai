@@ -50,6 +50,34 @@ private fun permissionsFor(permission: AppPermission): Array<String> = when (per
     } else {
         emptyArray()
     }
+
+    // Gallery/Media permissions:
+    // - API ≤32: READ_EXTERNAL_STORAGE (declared with maxSdkVersion="32" in manifest)
+    // - API 33+: READ_MEDIA_IMAGES, READ_MEDIA_VIDEO
+    // - API 34+: READ_MEDIA_VISUAL_USER_SELECTED (selected photos picker)
+    AppPermission.GALLERY -> when {
+        Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2 -> arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE -> arrayOf(
+            Manifest.permission.READ_MEDIA_IMAGES,
+            Manifest.permission.READ_MEDIA_VIDEO,
+            Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED,
+        )
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> arrayOf(
+            Manifest.permission.READ_MEDIA_IMAGES,
+            Manifest.permission.READ_MEDIA_VIDEO,
+        )
+        else -> emptyArray() // Should not reach here due to manifest maxSdkVersion
+    }
+
+    // Downloads permissions:
+    // - API ≤28: READ_EXTERNAL_STORAGE (declared with maxSdkVersion="32" in manifest)
+    // - API 29+: DownloadManager queries (no permission needed)
+    // - API 33+: READ_MEDIA_* for media files in Downloads
+    // - SAF (Storage Access Framework) for user-selected files (no manifest permission)
+    AppPermission.DOWNLOADS -> when {
+        Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2 -> arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+        else -> emptyArray() // DownloadManager, MediaStore, SAF don't require manifest permissions
+    }
 }
 
 private val androidContext: Context by inject(Context::class.java)

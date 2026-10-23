@@ -30,6 +30,7 @@ import androidx.compose.foundation.text.selection.DisableSelection
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -63,6 +64,7 @@ import com.inspiredandroid.kai.data.imageExtensions
 import com.inspiredandroid.kai.skills.SkillManifest
 import com.inspiredandroid.kai.ui.gradientBrush
 import com.inspiredandroid.kai.ui.handCursor
+import com.inspiredandroid.kai.ui.isOledFlavor
 import com.inspiredandroid.kai.ui.outlineTextFieldColors
 import com.inspiredandroid.kai.ui.settings.SettingsModel
 import io.github.vinceglb.filekit.PlatformFile
@@ -82,6 +84,110 @@ import kotlinx.collections.immutable.persistentListOf
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+
+/**
+ * Detects slash-command query string the user is currently typing, or null if
+ * the cursor isn't inside a leading `/<token>`.
+ */
+internal fun detectSlashQuery(text: String, cursor: Int): String? {
+    if (!text.startsWith('/')) return null
+    val firstSpace = text.indexOfFirst { it.isWhitespace() }
+    val tokenEnd = if (firstSpace < 0) text.length else firstSpace
+    if (cursor > tokenEnd) return null
+    return text.substring(1, tokenEnd).lowercase()
+}
+
+/**
+ * Shortens a filename that is too long to display in a chip.
+ * Returns the first [maxChars] characters of the base name followed by `…` and the original extension.
+ */
+fun truncateFileName(name: String, maxChars: Int = 16): String {
+    if (name.length <= maxChars) return name
+    val dotIndex = name.lastIndexOf('.')
+    return if (dotIndex > 0 && dotIndex < name.length - 1) {
+        val base = name.substring(0, dotIndex)
+        val ext = name.substring(dotIndex) // includes the dot
+        val keep = (maxChars - ext.length - 1).coerceAtLeast(1)
+        "${base.take(keep)}…$ext"
+    } else {
+        "${name.take(maxChars - 1)}…"
+    }
+}
+
+@Composable
+internal fun TrailingIcon(
+    icon: org.jetbrains.compose.resources.DrawableResource = Res.drawable.ic_up,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    isPulsing: Boolean = false,
+) {
+    val pulseModifier = if (isPulsing) {
+        val infiniteTransition = rememberInfiniteTransition()
+        val pulseScale by infiniteTransition.animateFloat(
+            initialValue = 0.92f,
+            targetValue = 1.0f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(durationMillis = 800, easing = FastOutSlowInEasing),
+                repeatMode = RepeatMode.Reverse,
+            ),
+        )
+        val pulseAlpha by infiniteTransition.animateFloat(
+            initialValue = 0.7f,
+            targetValue = 1.0f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(durationMillis = 800, easing = FastOutSlowInEasing),
+                repeatMode = RepeatMode.Reverse,
+            ),
+        )
+        Modifier.graphicsLayer {
+            scaleX = pulseScale
+            scaleY = pulseScale
+            alpha = pulseAlpha
+        }
+    } else {
+        Modifier
+    }
+    Box(
+        modifier = modifier
+            .size(42.dp)
+            .clip(CircleShape)
+            .background(com.inspiredandroid.kai.ui.AccentPrimary, CircleShape)
+            .handCursor()
+            .clickable { onClick() },
+        contentAlignment = Alignment.Center,
+    ) {
+        Icon(
+            vectorResource(icon),
+            modifier = Modifier.size(32.dp).then(pulseModifier),
+            contentDescription = null,
+            tint = com.inspiredandroid.kai.ui.OledBlack,
+        )
+    }
+}
+
+@Composable
+internal fun CircleIconButton(
+    icon: ImageVector,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    tint: Color = MaterialTheme.colorScheme.onSurfaceVariant,
+) {
+    Box(
+        modifier = modifier
+            .size(42.dp)
+            .clip(CircleShape)
+            .clickable { onClick() }
+            .handCursor(),
+        contentAlignment = Alignment.Center,
+    ) {
+        Icon(
+            imageVector = icon,
+            modifier = Modifier.size(24.dp),
+            contentDescription = null,
+            tint = tint,
+        )
+    }
+}
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -196,211 +302,95 @@ fun QuestionInput(
         // grow with the font scale — otherwise the composer shows a single line of
         // what the user is typing at the largest accessibility font size.
         val maxComposerHeight = 120.dp * LocalDensity.current.fontScale
-        TextField(
-            value = textState,
-            onValueChange = onTextStateChange,
+
+        // Floating glassmorphic input pill
+        val isOled = MaterialTheme.colorScheme.isOledFlavor
+        val inputPillBg = if (isOled) {
+            com.inspiredandroid.kai.ui.SurfaceRaised.copy(alpha = 0.9f)
+        } else {
+            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f)
+        }
+        val inputBorder = if (isOled) {
+            com.inspiredandroid.kai.ui.BorderSoft
+        } else {
+            MaterialTheme.colorScheme.outlineVariant
+        }
+
+        Box(
             modifier = Modifier
-                .focusRequester(focusRequester)
-                .padding(16.dp)
-                .heightIn(max = maxComposerHeight)
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(28.dp))
-                .background(MaterialTheme.colorScheme.background)
-                .border(
-                    BorderStroke(width = 2.dp, brush = gradientBrush),
-                    shape = RoundedCornerShape(28.dp),
-                )
-                .onPreviewKeyEvent { event ->
-                    // Only handle hardware keyboard on desktop/web platforms
-                    if (currentPlatform !is Platform.Mobile && event.key.keyCode == Key.Enter.keyCode && event.type == KeyEventType.KeyDown) {
-                        if (event.isShiftPressed) {
-                            // Shift+Enter -> manually insert newline
-                            val currentText = textState.text
-                            val selection = textState.selection
-                            val start = minOf(selection.start, selection.end).coerceIn(0, currentText.length)
-                            val end = maxOf(selection.start, selection.end).coerceIn(0, currentText.length)
-
-                            val newText = currentText.replaceRange(start, end, "\n")
-                            onTextStateChange(
-                                TextFieldValue(
-                                    text = newText,
-                                    selection = TextRange(start + 1),
-                                ),
-                            )
-                            return@onPreviewKeyEvent true
-                        } else {
-                            // Enter without Shift -> send message and consume event
-                            submitQuestion()
-                            return@onPreviewKeyEvent true
-                        }
-                    }
-                    return@onPreviewKeyEvent false
-                },
-            colors = outlineTextFieldColors(),
-            placeholder = {
-                Text(
-                    stringResource(Res.string.prompt_ask_question),
-                    color = MaterialTheme.colorScheme.onBackground,
-                )
-            },
-            trailingIcon = {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(end = 7.dp),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                ) {
-                    if (availableServices.size > 1) {
-                        ServiceSelector(
-                            services = availableServices,
-                            onSelectService = onSelectService,
-                            models = availableModels,
-                            isLoadingModels = isLoadingModels,
-                            onSelectModel = onSelectModel,
-                            onLoadModels = onLoadModels,
+                .padding(horizontal = 16.dp, vertical = 12.dp)
+        ) {
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = inputPillBg,
+                shape = RoundedCornerShape(28.dp),
+                border = BorderStroke(
+                    width = if (isOled) 1.dp else 2.dp,
+                    color = inputBorder,
+                ),
+                shadowElevation = 8.dp,
+            ) {
+                TextField(
+                    value = textState,
+                    onValueChange = onTextStateChange,
+                    modifier = Modifier
+                        .focusRequester(focusRequester)
+                        .padding(16.dp)
+                        .heightIn(max = maxComposerHeight)
+                        .fillMaxWidth(),
+                    colors = outlineTextFieldColors(),
+                    placeholder = {
+                        Text(
+                            stringResource(Res.string.prompt_ask_question),
+                            color = MaterialTheme.colorScheme.onBackground,
                         )
-                    }
-                    if (isLoading) {
-                        TrailingIcon(icon = Res.drawable.ic_stop, onClick = cancel, isPulsing = true)
-                    } else if (textState.text.isNotBlank()) {
-                        TrailingIcon(icon = Res.drawable.ic_up, onClick = { submitQuestion() })
-                    }
-                }
-            },
-            keyboardActions = if (currentPlatform !is Platform.Mobile) {
-                KeyboardActions(onSend = { submitQuestion() })
-            } else {
-                KeyboardActions() // No keyboard send action on mobile
-            },
-            leadingIcon = if (filePickerLauncher != null) {
-                {
-                    CircleIconButton(
-                        icon = vectorResource(Res.drawable.ic_attach),
-                        onClick = { filePickerLauncher.launch() },
-                        modifier = Modifier.padding(start = 7.dp),
-                        tint = MaterialTheme.colorScheme.onBackground,
-                    )
-                }
-            } else {
-                null
-            },
-            keyboardOptions = KeyboardOptions(
-                imeAction = if (currentPlatform is Platform.Mobile) ImeAction.Default else ImeAction.Send,
-            ),
-        )
-        val inInspection = LocalInspectionMode.current
-        LaunchedEffect(Unit) {
-            if (!inInspection) focusRequester.requestFocus()
+                    },
+                    trailingIcon = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(end = 7.dp),
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        ) {
+                            if (availableServices.size > 1) {
+                                ServiceSelector(
+                                    services = availableServices,
+                                    onSelectService = onSelectService,
+                                    models = availableModels,
+                                    isLoadingModels = isLoadingModels,
+                                    onSelectModel = onSelectModel,
+                                    onLoadModels = onLoadModels,
+                                )
+                            }
+                            if (isLoading) {
+                                TrailingIcon(icon = Res.drawable.ic_stop, onClick = cancel, isPulsing = true)
+                            } else if (textState.text.isNotBlank()) {
+                                TrailingIcon(icon = Res.drawable.ic_up, onClick = { submitQuestion() })
+                            }
+                        }
+                    },
+                    keyboardActions = if (currentPlatform !is Platform.Mobile) {
+                        KeyboardActions(onSend = { submitQuestion() })
+                    } else {
+                        KeyboardActions() // No keyboard send action on mobile
+                    },
+                    leadingIcon = if (filePickerLauncher != null) {
+                        {
+                            CircleIconButton(
+                                icon = vectorResource(Res.drawable.ic_attach),
+                                onClick = { filePickerLauncher.launch() },
+                                modifier = Modifier.padding(start = 7.dp),
+                                tint = MaterialTheme.colorScheme.onBackground,
+                            )
+                        }
+                    } else {
+                        null
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = if (currentPlatform is Platform.Mobile) ImeAction.Default else ImeAction.Send,
+                    ),
+                )
+            }
         }
-    }
-}
-
-/**
- * Returns the slash-command query string the user is currently typing, or null if
- * the cursor isn't inside a leading `/<token>`. Examples:
- *  - `"/su"` cursor at 3 → `"su"`
- *  - `"/summarize https://…"` cursor at 4 → `"sum"`
- *  - `"hello /foo"` (slash not at start) → `null`
- *  - `"/foo bar"` cursor at 6 → `null` (cursor past first space)
- */
-internal fun detectSlashQuery(text: String, cursor: Int): String? {
-    if (!text.startsWith('/')) return null
-    val firstSpace = text.indexOfFirst { it.isWhitespace() }
-    val tokenEnd = if (firstSpace < 0) text.length else firstSpace
-    if (cursor > tokenEnd) return null
-    return text.substring(1, tokenEnd).lowercase()
-}
-
-/**
- * Shortens a filename that is too long to display in a chip. Returns the first [maxChars]
- * characters of the base name followed by `…` and the original extension, so the user still
- * recognizes the file type. Short names are returned unchanged.
- */
-internal fun truncateFileName(name: String, maxChars: Int = 16): String {
-    if (name.length <= maxChars) return name
-    val dotIndex = name.lastIndexOf('.')
-    return if (dotIndex > 0 && dotIndex < name.length - 1) {
-        val base = name.substring(0, dotIndex)
-        val ext = name.substring(dotIndex) // includes the dot
-        val keep = (maxChars - ext.length - 1).coerceAtLeast(1)
-        "${base.take(keep)}…$ext"
-    } else {
-        "${name.take(maxChars - 1)}…"
-    }
-}
-
-@Composable
-internal fun TrailingIcon(
-    icon: org.jetbrains.compose.resources.DrawableResource = Res.drawable.ic_up,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    isPulsing: Boolean = false,
-) {
-    val pulseModifier = if (isPulsing) {
-        val infiniteTransition = rememberInfiniteTransition()
-        val pulseScale by infiniteTransition.animateFloat(
-            initialValue = 0.92f,
-            targetValue = 1.0f,
-            animationSpec = infiniteRepeatable(
-                animation = tween(durationMillis = 800, easing = FastOutSlowInEasing),
-                repeatMode = RepeatMode.Reverse,
-            ),
-        )
-        val pulseAlpha by infiniteTransition.animateFloat(
-            initialValue = 0.7f,
-            targetValue = 1.0f,
-            animationSpec = infiniteRepeatable(
-                animation = tween(durationMillis = 800, easing = FastOutSlowInEasing),
-                repeatMode = RepeatMode.Reverse,
-            ),
-        )
-        Modifier.graphicsLayer {
-            scaleX = pulseScale
-            scaleY = pulseScale
-            alpha = pulseAlpha
-        }
-    } else {
-        Modifier
-    }
-    Box(
-        modifier = modifier
-            .size(42.dp)
-            .clip(CircleShape)
-            .background(brush = gradientBrush, CircleShape)
-            .handCursor()
-            .clickable {
-                onClick()
-            },
-        contentAlignment = Alignment.Center,
-    ) {
-        Icon(
-            vectorResource(icon),
-            modifier = Modifier.size(32.dp).then(pulseModifier),
-            contentDescription = null,
-            tint = Color.White,
-        )
-    }
-}
-
-@Composable
-internal fun CircleIconButton(
-    icon: ImageVector,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    tint: Color = MaterialTheme.colorScheme.onSurfaceVariant,
-) {
-    Box(
-        modifier = modifier
-            .size(42.dp)
-            .clip(CircleShape)
-            .clickable { onClick() }
-            .handCursor(),
-        contentAlignment = Alignment.Center,
-    ) {
-        Icon(
-            imageVector = icon,
-            modifier = Modifier.size(24.dp),
-            contentDescription = null,
-            tint = tint,
-        )
     }
 }

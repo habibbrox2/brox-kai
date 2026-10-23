@@ -3,10 +3,12 @@ package com.inspiredandroid.kai.ui.chat.composables
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dns
 import androidx.compose.material.icons.filled.Menu
@@ -16,6 +18,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -26,6 +29,7 @@ import com.inspiredandroid.kai.BackIcon
 import com.inspiredandroid.kai.data.ServiceEntry
 import com.inspiredandroid.kai.ui.chat.ChatActions
 import com.inspiredandroid.kai.ui.handCursor
+import com.inspiredandroid.kai.ui.isOledFlavor
 import com.inspiredandroid.kai.ui.settings.SettingsModel
 import kai.composeapp.generated.resources.Res
 import kai.composeapp.generated.resources.ic_settings
@@ -71,87 +75,131 @@ internal fun TopBar(
     /** Removes the last exchange — only offered while interactive mode is on. */
     onGoBack: (() -> Unit)? = null,
 ) {
+    val isOled = MaterialTheme.colorScheme.isOledFlavor
+    val topBarBg = if (isOled) {
+        com.inspiredandroid.kai.ui.SurfaceRaised.copy(alpha = 0.9f)
+    } else {
+        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+    }
+    val topBarBorder = if (isOled) {
+        androidx.compose.foundation.BorderStroke(1.dp, com.inspiredandroid.kai.ui.BorderSoft)
+    } else {
+        null
+    }
+    val topBarShape = com.inspiredandroid.kai.ui.chat.ChatShapes.panel
+
     Box(
         modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 56.dp),
     ) {
-        Row(modifier = Modifier.align(Alignment.CenterStart)) {
-            if (onOpenDrawer != null) {
-                IconButton(
-                    modifier = Modifier.handCursor(),
-                    onClick = onOpenDrawer,
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Menu,
-                        contentDescription = "Open navigation",
-                        tint = MaterialTheme.colorScheme.onBackground,
-                    )
-                }
-            }
-            // Leading cluster: the interactive-UI toggle lives here so the right cluster
-            // keeps room for the model pill on narrow screens.
-            onToggleInteractiveMode?.let { toggle ->
-                IconToggleButton(
-                    checked = isInteractiveMode,
-                    onCheckedChange = { toggle() },
-                    modifier = Modifier.handCursor(),
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Widgets,
-                        contentDescription = stringResource(Res.string.interactive_mode_content_description),
-                        tint = if (isInteractiveMode) {
-                            MaterialTheme.colorScheme.primary
-                        } else {
-                            MaterialTheme.colorScheme.onBackground
-                        },
-                    )
-                }
-            }
-        }
-        Box(modifier = Modifier.align(Alignment.Center)) {
-            if (services.isNotEmpty()) {
-                ServiceSelector(
-                    services = services,
-                    onSelectService = actions.selectService,
-                    models = models,
-                    isLoadingModels = isLoadingModels,
-                    onSelectModel = actions.selectModel,
-                    onLoadModels = actions.loadModels,
-                    showLabel = true,
-                )
-            }
-        }
-        Row(modifier = Modifier.align(Alignment.CenterEnd)) {
-            onGoBack?.let { goBack ->
-                IconButton(
-                    modifier = Modifier.handCursor(),
-                    onClick = goBack,
-                ) {
-                    Icon(
-                        imageVector = BackIcon,
-                        contentDescription = stringResource(Res.string.interactive_back_content_description),
-                        tint = MaterialTheme.colorScheme.onBackground,
-                    )
-                }
-            }
-            if (isSandboxAvailable) {
-                SandboxToggleButton(
-                    isSandboxOpen = isSandboxOpen,
-                    isShellExecuting = isShellExecuting,
-                    onToggleSandbox = onToggleSandbox,
-                )
-            }
-            if (textToSpeech != null) {
-                SpeechToggleButton(textToSpeech, isSpeechOutputEnabled, isSpeaking, actions)
-            }
-            IconButton(
-                modifier = Modifier.handCursor(),
-                onClick = onNavigateToSettings,
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            color = topBarBg,
+            shape = topBarShape,
+            border = topBarBorder,
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Icon(
-                    imageVector = vectorResource(Res.drawable.ic_settings),
-                    contentDescription = stringResource(Res.string.settings_content_description),
-                    tint = MaterialTheme.colorScheme.onBackground,
-                )
+                // Leading cluster: drawer toggle + interactive mode toggle
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    if (onOpenDrawer != null) {
+                        IconButton(
+                            modifier = Modifier.handCursor(),
+                            onClick = onOpenDrawer,
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Menu,
+                                contentDescription = "Open navigation",
+                                tint = MaterialTheme.colorScheme.onBackground,
+                            )
+                        }
+                    }
+                    // Leading cluster: the interactive-UI toggle lives here so the right cluster
+                    // keeps room for the model pill on narrow screens.
+                    onToggleInteractiveMode?.let { toggle ->
+                        IconToggleButton(
+                            checked = isInteractiveMode,
+                            onCheckedChange = { toggle() },
+                            modifier = Modifier.handCursor(),
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Widgets,
+                                contentDescription = stringResource(Res.string.interactive_mode_content_description),
+                                tint = if (isInteractiveMode) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.onBackground
+                                },
+                            )
+                        }
+                    }
+                }
+
+                // Center: model selector
+                Box(
+                    modifier = Modifier.weight(1f).fillMaxWidth(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    if (services.isNotEmpty()) {
+                        ServiceSelector(
+                            services = services,
+                            onSelectService = actions.selectService,
+                            models = models,
+                            isLoadingModels = isLoadingModels,
+                            onSelectModel = actions.selectModel,
+                            onLoadModels = actions.loadModels,
+                            showLabel = true,
+                        )
+                    }
+                }
+
+                // Trailing cluster: go back, sandbox, speech, settings
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    onGoBack?.let { goBack ->
+                        IconButton(
+                            modifier = Modifier.handCursor(),
+                            onClick = goBack,
+                        ) {
+                            Icon(
+                                imageVector = BackIcon,
+                                contentDescription = stringResource(Res.string.interactive_back_content_description),
+                                tint = MaterialTheme.colorScheme.onBackground,
+                            )
+                        }
+                    }
+                    if (isSandboxAvailable) {
+                        SandboxToggleButton(
+                            isSandboxOpen = isSandboxOpen,
+                            isShellExecuting = isShellExecuting,
+                            onToggleSandbox = onToggleSandbox,
+                        )
+                    }
+                    if (textToSpeech != null) {
+                        SpeechToggleButton(textToSpeech, isSpeechOutputEnabled, isSpeaking, actions)
+                    }
+                    IconButton(
+                        modifier = Modifier.handCursor(),
+                        onClick = onNavigateToSettings,
+                    ) {
+                        Icon(
+                            imageVector = vectorResource(Res.drawable.ic_settings),
+                            contentDescription = stringResource(Res.string.settings_content_description),
+                            tint = MaterialTheme.colorScheme.onBackground,
+                        )
+                    }
+                }
             }
         }
     }

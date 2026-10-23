@@ -47,6 +47,8 @@ import com.inspiredandroid.kai.ui.chat.ChatSpacing
 import com.inspiredandroid.kai.ui.components.LogoAnimation
 import com.inspiredandroid.kai.ui.components.animatedGradientBorder
 import com.inspiredandroid.kai.ui.handCursor
+import com.inspiredandroid.kai.ui.isOledFlavor
+import com.inspiredandroid.kai.ui.AccentPrimary
 import kai.composeapp.generated.resources.Res
 import kai.composeapp.generated.resources.privacy_agree_prefix
 import kai.composeapp.generated.resources.privacy_policy
@@ -154,57 +156,52 @@ private fun QuickStartCard(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
-    val borderAlpha by animateFloatAsState(
-        targetValue = if (isHovered) 1f else 0.4f,
-        animationSpec = tween(180),
-        label = "borderAlpha",
-    )
+    val isOled = MaterialTheme.colorScheme.isOledFlavor
+    
+    val cardBg = if (isOled) {
+        com.inspiredandroid.kai.ui.CardFill
+    } else {
+        MaterialTheme.colorScheme.surfaceContainerLow
+    }
+    val cardBorder = if (isHovered) {
+        androidx.compose.foundation.BorderStroke(1.dp, com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.5f))
+    } else if (isOled) {
+        androidx.compose.foundation.BorderStroke(1.dp, com.inspiredandroid.kai.ui.BorderSoft)
+    } else {
+        androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+    }
+
     Surface(
         onClick = onClick,
         shape = ChatShapes.quickStartCard,
-        color = MaterialTheme.colorScheme.surfaceContainerLow,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = borderAlpha)),
+        color = cardBg,
+        border = cardBorder,
         modifier = modifier
             .handCursor()
             .hoverable(interactionSource),
     ) {
-        Box(
-            modifier = Modifier
-                .then(
-                    if (isHovered) {
-                        Modifier.animatedGradientBorder(
-                            cornerRadius = 12.dp,
-                            borderWidth = 1.5.dp,
-                            backgroundColor = MaterialTheme.colorScheme.surfaceContainerLow,
-                        )
-                    } else {
-                        Modifier
-                    },
-                ),
+        Row(
+            modifier = Modifier.padding(ChatSpacing.md),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(ChatSpacing.sm),
         ) {
-            Row(
-                modifier = Modifier.padding(ChatSpacing.md),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(ChatSpacing.sm),
-            ) {
-                Icon(
-                    imageVector = item.icon,
-                    contentDescription = item.label,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(20.dp),
+            Icon(
+                imageVector = item.icon,
+                contentDescription = item.label,
+                tint = if (isHovered) com.inspiredandroid.kai.ui.AccentPrimary else MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(20.dp),
+            )
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text(
+                    text = item.label,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
-                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                    Text(
-                        text = item.label,
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                    Text(
-                        text = item.subtext,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
+                Text(
+                    text = item.subtext,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
     }

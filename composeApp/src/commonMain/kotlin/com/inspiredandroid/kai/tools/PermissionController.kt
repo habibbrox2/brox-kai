@@ -28,6 +28,23 @@ enum class AppPermission {
      * LM Studio, ...) on the user's home network.
      */
     LOCAL_NETWORK,
+
+    /**
+     * Access to the user's media gallery (photos/videos).
+     * - API ≤32: READ_EXTERNAL_STORAGE
+     * - API 33+: READ_MEDIA_IMAGES, READ_MEDIA_VIDEO
+     * - API 34+: READ_MEDIA_VISUAL_USER_SELECTED (selected photos picker)
+     */
+    GALLERY,
+
+    /**
+     * Access to the user's Downloads folder and download history.
+     * - API ≤28: READ_EXTERNAL_STORAGE
+     * - API 29+: DownloadManager queries (no permission) + MediaStore
+     * - API 33+: READ_MEDIA_* for media files in Downloads
+     * - SAF (Storage Access Framework) for user-selected files (no manifest permission)
+     */
+    DOWNLOADS,
 }
 
 /**

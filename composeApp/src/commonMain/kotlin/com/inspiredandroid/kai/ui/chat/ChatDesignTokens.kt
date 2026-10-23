@@ -7,21 +7,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.inspiredandroid.kai.ui.broxCyan
-import com.inspiredandroid.kai.ui.broxDeepNavy
-import com.inspiredandroid.kai.ui.broxMutedText
-import com.inspiredandroid.kai.ui.broxNavy
+import com.inspiredandroid.kai.ui.AccentPrimary
+import com.inspiredandroid.kai.ui.AccentGlow
+import com.inspiredandroid.kai.ui.BorderSoft
+import com.inspiredandroid.kai.ui.CardFill
+import com.inspiredandroid.kai.ui.DangerAlert
+import com.inspiredandroid.kai.ui.OledBlack
+import com.inspiredandroid.kai.ui.SuccessGreen
+import com.inspiredandroid.kai.ui.SurfaceRaised
+import com.inspiredandroid.kai.ui.TextPrimary
+import com.inspiredandroid.kai.ui.TextSecondary
+import com.inspiredandroid.kai.ui.WarningAmber
 
 /**
  * Shared design tokens for the Brox Kai chat workspace.
- *
- * Phase 1 of the chat UI upgrade plan introduces these tokens so that later
- * phases (responsive shell, timeline, composer) can consume a single source of
- * truth for spacing, shapes, surfaces and status colors instead of hard-coding
- * values inside individual composables.
- *
- * Nothing here moves business logic into the UI layer: these are pure
- * presentation constants and theme-aware color resolvers.
+ * Updated for Futuristic Midnight Glassmorphism design system.
  */
 object ChatSpacing {
     val xxs: Dp = 2.dp
@@ -59,7 +59,7 @@ object ChatShapes {
     val quickStartCard = RoundedCornerShape(16.dp)
 
     /** Composer container. */
-    val composer = RoundedCornerShape(24.dp)
+    val composer = RoundedCornerShape(28.dp)
 
     /** Compact pill (status pills, chips). */
     val pill = RoundedCornerShape(999.dp)
@@ -69,55 +69,50 @@ object ChatShapes {
 }
 
 /**
- * Status colors used by timeline cards and status pills. These are brand-aligned
- * and chosen for contrast on both light and dark surfaces.
+ * Status colors used by timeline cards and status pills. Updated for cyan accent theme.
  */
 object ChatStatusColors {
-    val streaming = broxCyan
-    val toolActivity = Color(0xFF168BDB)
+    val streaming = AccentPrimary
+    val toolActivity = AccentPrimary.copy(alpha = 0.8f)
     val fallback = Color(0xFFB388FF)
-    val error = Color(0xFFFF5252)
-    val retry = Color(0xFFFFB74D)
-    val success = Color(0xFF4CAF50)
+    val error = DangerAlert
+    val retry = WarningAmber
+    val success = SuccessGreen
+    val glow = AccentGlow
 }
 
 /**
- * Surface resolvers. Kept as functions (rather than constants) so they can react
- * to the active theme and OLED flavor.
+ * Surface resolvers. Updated for glassmorphism design system.
  */
 object ChatSurfaces {
     @Composable
-    fun page(): Color = if (MaterialTheme.colorScheme.background.luminance() > 0.5f) {
-        Color(0xFFFFFFFF)
-    } else {
-        broxDeepNavy
+    fun page(): Color = when {
+        MaterialTheme.colorScheme.background == OledBlack -> OledBlack
+        MaterialTheme.colorScheme.background.luminance() > 0.5f -> Color(0xFFFFFFFF)
+        else -> OledBlack
     }
 
     @Composable
     fun elevated(): Color = if (MaterialTheme.colorScheme.background.luminance() > 0.5f) {
         Color(0xFFF2F2F2)
     } else {
-        broxNavy
+        SurfaceRaised
     }
 
     @Composable
-    fun border(): Color = if (MaterialTheme.colorScheme.background.luminance() > 0.5f) {
-        Color(0xFFDCE3EE)
-    } else {
-        Color(0xFF1F3355)
-    }
+    fun border(): Color = BorderSoft
 
     @Composable
     fun assistantMessage(): Color = if (MaterialTheme.colorScheme.background.luminance() > 0.5f) {
         Color(0xFFF5F8FC)
     } else {
-        Color(0xFF112240)
+        CardFill
     }
 
     @Composable
     fun composer(): Color = if (MaterialTheme.colorScheme.background.luminance() > 0.5f) {
         Color(0xFFFFFFFF)
     } else {
-        Color(0xFF0E1C36)
+        SurfaceRaised.copy(alpha = 0.9f)
     }
 }

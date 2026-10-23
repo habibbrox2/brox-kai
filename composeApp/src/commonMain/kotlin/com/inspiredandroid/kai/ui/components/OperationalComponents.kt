@@ -1,6 +1,7 @@
 package com.inspiredandroid.kai.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,9 +22,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.inspiredandroid.kai.ui.kaiAdaptiveCardBorder
 import com.inspiredandroid.kai.ui.kaiAdaptiveCardColors
+import com.inspiredandroid.kai.ui.isOledFlavor
 
 /**
  * Shared operational status vocabulary (Plan 4, Phase 1) so MCP, skills,
@@ -124,10 +127,24 @@ fun CapabilityCountCard(
     modifier: Modifier = Modifier,
     status: OperationalStatus? = null,
 ) {
+    val isOled = MaterialTheme.colorScheme.isOledFlavor
+    val cardBg = if (isOled) {
+        com.inspiredandroid.kai.ui.CardFill
+    } else {
+        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+    }
+    val cardBorder = if (isOled) {
+        androidx.compose.foundation.BorderStroke(1.dp, com.inspiredandroid.kai.ui.BorderSoft)
+    } else {
+        androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+    }
+    val cardShape = com.inspiredandroid.kai.ui.settings.SettingsShapes.card
+
     Card(
         modifier = modifier,
-        colors = kaiAdaptiveCardColors(),
-        border = kaiAdaptiveCardBorder(),
+        colors = CardDefaults.cardColors(containerColor = cardBg),
+        border = cardBorder,
+        shape = cardShape,
     ) {
         Column(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
@@ -172,11 +189,25 @@ fun CollectionEmptyState(
     message: String,
     modifier: Modifier = Modifier,
 ) {
+    val isOled = MaterialTheme.colorScheme.isOledFlavor
+    val cardBg = if (isOled) {
+        com.inspiredandroid.kai.ui.CardFill
+    } else {
+        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+    }
+    val cardBorder = if (isOled) {
+        androidx.compose.foundation.BorderStroke(1.dp, com.inspiredandroid.kai.ui.BorderSoft)
+    } else {
+        androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+    }
+    val cardShape = com.inspiredandroid.kai.ui.settings.SettingsShapes.card
+
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .clip(MaterialTheme.shapes.medium)
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
+            .clip(cardShape)
+            .background(cardBg)
+            .border(cardBorder, cardShape)
             .padding(20.dp),
         contentAlignment = Alignment.Center,
     ) {
@@ -184,6 +215,7 @@ fun CollectionEmptyState(
             text = message,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
         )
     }
 }

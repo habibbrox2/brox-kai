@@ -33,6 +33,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -46,6 +47,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -77,6 +79,7 @@ import com.inspiredandroid.kai.data.Service
 import com.inspiredandroid.kai.linux.LinuxDistro
 import com.inspiredandroid.kai.ui.components.VerticalScrollbarForScroll
 import com.inspiredandroid.kai.ui.handCursor
+import com.inspiredandroid.kai.ui.isOledFlavor
 import com.inspiredandroid.kai.ui.kaiAdaptiveCardBorder
 import com.inspiredandroid.kai.ui.kaiAdaptiveCardColors
 import kai.composeapp.generated.resources.Res
@@ -233,7 +236,14 @@ fun SettingsScreenContent(
         )
     }
 
-    Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).navigationBarsPadding().statusBarsPadding().imePadding()) {
+    // Use OLED black background for pure dark theme
+    val backgroundColor = if (MaterialTheme.colorScheme.isOledFlavor) {
+        com.inspiredandroid.kai.ui.OledBlack
+    } else {
+        MaterialTheme.colorScheme.background
+    }
+
+    Box(Modifier.fillMaxSize().background(backgroundColor).navigationBarsPadding().statusBarsPadding().imePadding()) {
         BoxWithConstraints(Modifier.fillMaxSize()) {
             val expanded = maxWidth >= 840.dp
             // The sandbox tab only exists where the sandbox does; on every other
@@ -322,18 +332,39 @@ fun SettingsScreenContent(
 
 @Composable
 private fun TopBar(onNavigateBack: () -> Unit) {
-    Row {
-        IconButton(
-            modifier = Modifier.handCursor(),
-            onClick = onNavigateBack,
+    val isOled = MaterialTheme.colorScheme.isOledFlavor
+    val barBg = if (isOled) {
+        com.inspiredandroid.kai.ui.SurfaceRaised.copy(alpha = 0.9f)
+    } else {
+        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+    }
+
+    Surface(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+        color = barBg,
+        shape = com.inspiredandroid.kai.ui.settings.SettingsShapes.section,
+        border = if (isOled) {
+            androidx.compose.foundation.BorderStroke(1.dp, com.inspiredandroid.kai.ui.BorderSoft)
+        } else {
+            null
+        },
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
         ) {
-            Icon(
-                imageVector = BackIcon,
-                contentDescription = "Navigate back",
-                tint = MaterialTheme.colorScheme.onBackground,
-            )
+            IconButton(
+                modifier = Modifier.handCursor(),
+                onClick = onNavigateBack,
+            ) {
+                Icon(
+                    imageVector = BackIcon,
+                    contentDescription = "Navigate back",
+                    tint = MaterialTheme.colorScheme.onBackground,
+                )
+            }
+            Spacer(Modifier.weight(1f))
         }
-        Spacer(Modifier.weight(1f))
     }
 }
 
@@ -361,9 +392,22 @@ private fun SettingsTabSelector(
         scrollState.animateScrollTo(target.coerceIn(0, scrollState.maxValue))
     }
 
+    // Glassmorphic tab bar container
+    val isOled = MaterialTheme.colorScheme.isOledFlavor
+    val tabBarBg = if (isOled) {
+        com.inspiredandroid.kai.ui.SurfaceRaised.copy(alpha = 0.8f)
+    } else {
+        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+    }
+
     Surface(
         modifier = Modifier.widthIn(max = 900.dp).fillMaxWidth().padding(vertical = 8.dp),
-        color = Color.Transparent,
+        color = tabBarBg,
+        shape = com.inspiredandroid.kai.ui.settings.SettingsShapes.pill,
+        border = androidx.compose.foundation.BorderStroke(
+            1.dp,
+            if (isOled) com.inspiredandroid.kai.ui.BorderSoft else MaterialTheme.colorScheme.outlineVariant
+        ),
     ) {
         Row(
             modifier = Modifier
@@ -373,6 +417,7 @@ private fun SettingsTabSelector(
         ) {
             tabs.forEach { tab ->
                 val isSelected = currentTab == tab
+
                 Surface(
                     modifier = Modifier
                         .onGloballyPositioned { coordinates ->
@@ -381,12 +426,19 @@ private fun SettingsTabSelector(
                         }
                         .handCursor()
                         .clip(RoundedCornerShape(50))
-                        .clickable { onSelectTab(tab) },
+                        .clickable { onSelectTab(tab) }
+                        .fillMaxHeight()
+                        .padding(vertical = 4.dp),
                     shape = RoundedCornerShape(50),
                     color = if (isSelected) {
-                        MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+                        com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.15f)
                     } else {
                         Color.Transparent
+                    },
+                    border = if (isSelected) {
+                        androidx.compose.foundation.BorderStroke(1.dp, com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.3f))
+                    } else {
+                        null
                     },
                 ) {
                     Text(
@@ -401,9 +453,14 @@ private fun SettingsTabSelector(
                             SettingsTab.Account -> "Account & Plan"
                         },
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                        color = MaterialTheme.colorScheme.primary,
+                        color = if (isSelected) {
+                            com.inspiredandroid.kai.ui.AccentPrimary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
                         style = MaterialTheme.typography.labelLarge,
                         maxLines = 1,
+                        fontWeight = if (isSelected) androidx.compose.ui.text.font.FontWeight.SemiBold else androidx.compose.ui.text.font.FontWeight.Normal,
                     )
                 }
             }
@@ -514,15 +571,32 @@ internal fun SettingsCard(
     onClick: (() -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
+    val scheme = MaterialTheme.colorScheme
+    val isOled = scheme.isOledFlavor
+    val cardBg = if (isOled) {
+        com.inspiredandroid.kai.ui.CardFill
+    } else {
+        scheme.surfaceVariant.copy(alpha = 0.5f)
+    }
+    val cardBorder = if (isOled) {
+        androidx.compose.foundation.BorderStroke(1.dp, com.inspiredandroid.kai.ui.BorderSoft)
+    } else {
+        androidx.compose.foundation.BorderStroke(1.dp, scheme.outlineVariant)
+    }
+    val cardShape = com.inspiredandroid.kai.ui.settings.SettingsShapes.card
+
     Card(
-        modifier = modifier,
-        colors = kaiAdaptiveCardColors(),
-        border = kaiAdaptiveCardBorder(),
+        modifier = modifier
+            .fillMaxWidth()
+            .then(if (onClick != null) Modifier.clickable(onClick = onClick).handCursor() else Modifier),
+        colors = CardDefaults.cardColors(containerColor = cardBg),
+        border = cardBorder,
+        shape = cardShape,
+        elevation = if (isOled) CardDefaults.cardElevation(defaultElevation = 4.dp) else CardDefaults.cardElevation(defaultElevation = 1.dp),
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .then(if (onClick != null) Modifier.clickable(onClick = onClick).handCursor() else Modifier)
                 .then(if (innerPadding) Modifier.padding(16.dp) else Modifier),
         ) {
             content()
@@ -578,6 +652,8 @@ internal fun ToggleableHeadline(
     actions: @Composable RowScope.() -> Unit = {},
 ) {
     val switchInteractionSource = remember { MutableInteractionSource() }
+    val isOled = MaterialTheme.colorScheme.isOledFlavor
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -595,10 +671,16 @@ internal fun ToggleableHeadline(
             modifier = Modifier.weight(1f),
         )
         actions()
-        Switch(
+        androidx.compose.material3.Switch(
             checked = checked,
             onCheckedChange = null,
             interactionSource = switchInteractionSource,
+            colors = androidx.compose.material3.SwitchDefaults.colors(
+                checkedThumbColor = com.inspiredandroid.kai.ui.AccentPrimary,
+                checkedTrackColor = com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.3f),
+                uncheckedThumbColor = if (isOled) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurfaceVariant,
+                uncheckedTrackColor = if (isOled) com.inspiredandroid.kai.ui.BorderSoft else MaterialTheme.colorScheme.outlineVariant,
+            ),
         )
     }
     Spacer(Modifier.size(4.dp))

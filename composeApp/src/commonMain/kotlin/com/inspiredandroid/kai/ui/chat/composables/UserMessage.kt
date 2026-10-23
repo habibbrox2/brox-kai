@@ -18,6 +18,7 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -30,6 +31,8 @@ import com.inspiredandroid.kai.data.Attachment
 import com.inspiredandroid.kai.decodeToImageBitmap
 import com.inspiredandroid.kai.ui.components.LocalShowFullScreenImage
 import com.inspiredandroid.kai.ui.handCursor
+import com.inspiredandroid.kai.ui.isOledFlavor
+import androidx.compose.foundation.border
 import kai.composeapp.generated.resources.Res
 import kai.composeapp.generated.resources.ic_file
 import kotlinx.collections.immutable.ImmutableList
@@ -45,14 +48,28 @@ internal fun UserMessage(
     attachments: ImmutableList<Attachment> = persistentListOf(),
 ) {
     val showFullScreen = LocalShowFullScreenImage.current
+    val isOled = MaterialTheme.colorScheme.isOledFlavor
+    
     SelectionContainer {
         Row(Modifier.padding(16.dp)) {
             Spacer(Modifier.weight(1f))
             Column(
                 modifier = Modifier
                     .background(
-                        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.15f),
-                        RoundedCornerShape(8.dp),
+                        if (isOled) {
+                            com.inspiredandroid.kai.ui.SurfaceRaised.copy(alpha = 0.9f)
+                        } else {
+                            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+                        },
+                        RoundedCornerShape(16.dp),
+                    )
+                    .border(
+                        if (isOled) {
+                            androidx.compose.foundation.BorderStroke(1.dp, com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.3f))
+                        } else {
+                            androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+                        },
+                        RoundedCornerShape(16.dp)
                     )
                     .padding(16.dp),
                 horizontalAlignment = Alignment.End,
@@ -87,14 +104,23 @@ internal fun UserMessage(
                         verticalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
                         for (att in others) {
+                            val chipColors = SuggestionChipDefaults.suggestionChipColors(
+                                containerColor = if (isOled) {
+                                    com.inspiredandroid.kai.ui.CardFill
+                                } else {
+                                    MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                                },
+                                labelColor = MaterialTheme.colorScheme.onSurface,
+                            )
                             SuggestionChip(
                                 onClick = {},
+                                colors = chipColors,
                                 icon = {
                                     Icon(
                                         modifier = Modifier.size(16.dp),
                                         painter = painterResource(Res.drawable.ic_file),
                                         contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onBackground,
+                                        tint = MaterialTheme.colorScheme.onSurface,
                                     )
                                 },
                                 label = { Text(truncateFileName(att.fileName ?: att.mimeType)) },

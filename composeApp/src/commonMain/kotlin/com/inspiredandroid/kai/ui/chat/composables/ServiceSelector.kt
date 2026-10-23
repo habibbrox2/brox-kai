@@ -1,6 +1,7 @@
 package com.inspiredandroid.kai.ui.chat.composables
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -48,8 +49,9 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
 import androidx.compose.ui.window.PopupProperties
 import com.inspiredandroid.kai.data.ServiceEntry
-import com.inspiredandroid.kai.ui.handCursor
 import com.inspiredandroid.kai.ui.settings.SettingsModel
+import com.inspiredandroid.kai.ui.handCursor
+import com.inspiredandroid.kai.ui.isOledFlavor
 import kai.composeapp.generated.resources.Res
 import kai.composeapp.generated.resources.settings_model_label
 import kai.composeapp.generated.resources.settings_model_loading
@@ -91,10 +93,23 @@ internal fun ServiceSelector(
     Box {
         if (showLabel) {
             // Pill variant used by the Plan 7 top bar: icon + name + chevron.
+            val isOled = MaterialTheme.colorScheme.isOledFlavor
+            val pillBg = if (isOled) {
+                com.inspiredandroid.kai.ui.SurfaceRaised.copy(alpha = 0.9f)
+            } else {
+                MaterialTheme.colorScheme.surfaceContainerHigh
+            }
+            val pillBorder = if (isOled) {
+                com.inspiredandroid.kai.ui.BorderSoft
+            } else {
+                MaterialTheme.colorScheme.outlineVariant
+            }
+
             Row(
                 modifier = Modifier
                     .clip(RoundedCornerShape(50))
-                    .background(MaterialTheme.colorScheme.surfaceContainerHigh, RoundedCornerShape(50))
+                    .background(pillBg, RoundedCornerShape(50))
+                    .border(androidx.compose.foundation.BorderStroke(1.dp, pillBorder), RoundedCornerShape(50))
                     .clickable { expanded = true }
                     .handCursor()
                     .padding(horizontal = 12.dp, vertical = 6.dp),
@@ -134,11 +149,24 @@ internal fun ServiceSelector(
                 )
             }
         } else {
+            val isOled = MaterialTheme.colorScheme.isOledFlavor
+            val circleBg = if (isOled) {
+                com.inspiredandroid.kai.ui.SurfaceRaised.copy(alpha = 0.9f)
+            } else {
+                MaterialTheme.colorScheme.surfaceVariant
+            }
+            val circleBorder = if (isOled) {
+                com.inspiredandroid.kai.ui.BorderSoft
+            } else {
+                MaterialTheme.colorScheme.outlineVariant
+            }
+
             Box(
                 modifier = Modifier
                     .size(42.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surfaceVariant, CircleShape)
+                    .background(circleBg, CircleShape)
+                    .border(androidx.compose.foundation.BorderStroke(1.dp, circleBorder), CircleShape)
                     .clickable { expanded = true }
                     .handCursor(),
                 contentAlignment = Alignment.Center,
@@ -154,6 +182,18 @@ internal fun ServiceSelector(
 
         if (expanded) {
             val spacingPx = with(LocalDensity.current) { 8.dp.roundToPx() }
+            val isOled = MaterialTheme.colorScheme.isOledFlavor
+            val popupBg = if (isOled) {
+                com.inspiredandroid.kai.ui.CardFill
+            } else {
+                MaterialTheme.colorScheme.surface
+            }
+            val popupBorder = if (isOled) {
+                androidx.compose.foundation.BorderStroke(1.dp, com.inspiredandroid.kai.ui.BorderSoft)
+            } else {
+                androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+            }
+
             Popup(
                 onDismissRequest = { expanded = false },
                 properties = PopupProperties(focusable = false),
@@ -163,9 +203,10 @@ internal fun ServiceSelector(
                     val maxMenuHeight = maxHeight - 24.dp // keep a margin from screen edges
                     Surface(
                         shape = RoundedCornerShape(16.dp),
-                        color = MaterialTheme.colorScheme.surface,
-                        tonalElevation = 3.dp,
-                        shadowElevation = 8.dp,
+                        color = popupBg,
+                        border = popupBorder,
+                        tonalElevation = if (isOled) 3.dp else 0.dp,
+                        shadowElevation = if (isOled) 8.dp else 0.dp,
                     ) {
                         Column(
                             modifier = Modifier
@@ -256,13 +297,14 @@ private fun ModelMenuItem(
     isCurrent: Boolean,
     onClick: () -> Unit,
 ) {
+    val isOled = MaterialTheme.colorScheme.isOledFlavor
     val rowBackground = if (isCurrent) {
-        MaterialTheme.colorScheme.primaryContainer
+        com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.15f)
     } else {
         Color.Transparent
     }
     val textColor = if (isCurrent) {
-        MaterialTheme.colorScheme.onPrimaryContainer
+        com.inspiredandroid.kai.ui.AccentPrimary
     } else {
         MaterialTheme.colorScheme.onSurface
     }
@@ -305,18 +347,19 @@ private fun ServiceMenuItem(
     isCurrent: Boolean,
     onClick: () -> Unit,
 ) {
+    val isOled = MaterialTheme.colorScheme.isOledFlavor
     val rowBackground = if (isCurrent) {
-        MaterialTheme.colorScheme.primaryContainer
+        com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.15f)
     } else {
         Color.Transparent
     }
     val textColor = if (isCurrent) {
-        MaterialTheme.colorScheme.onPrimaryContainer
+        com.inspiredandroid.kai.ui.AccentPrimary
     } else {
         MaterialTheme.colorScheme.onSurface
     }
     val subTextColor = if (isCurrent) {
-        MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+        com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.7f)
     } else {
         MaterialTheme.colorScheme.onSurfaceVariant
     }

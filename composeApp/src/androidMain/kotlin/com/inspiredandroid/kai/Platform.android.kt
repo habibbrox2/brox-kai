@@ -33,16 +33,31 @@ import com.inspiredandroid.kai.tools.AppPermission
 import com.inspiredandroid.kai.tools.CalendarRepository
 import com.inspiredandroid.kai.tools.CommonTools
 import com.inspiredandroid.kai.tools.CreateCalendarEventTool
+import com.inspiredandroid.kai.tools.DownloadsStatusTool
+import com.inspiredandroid.kai.tools.DownloadsStatusToolImpl
+import com.inspiredandroid.kai.tools.GalleryPermissionController
+import com.inspiredandroid.kai.tools.GallerySearchTool
+import com.inspiredandroid.kai.tools.GallerySearchToolImpl
+import com.inspiredandroid.kai.tools.GalleryStatusTool
+import com.inspiredandroid.kai.tools.GalleryStatusToolImpl
 import com.inspiredandroid.kai.tools.NotificationHelper
 import com.inspiredandroid.kai.tools.NotificationTools
+import com.inspiredandroid.kai.tools.OcrTool
+import com.inspiredandroid.kai.tools.OcrToolImpl
 import com.inspiredandroid.kai.tools.OpenFileTool
+import com.inspiredandroid.kai.tools.ParameterExtractionTool
+import com.inspiredandroid.kai.tools.ParameterExtractionToolImpl
 import com.inspiredandroid.kai.tools.PermissionController
 import com.inspiredandroid.kai.tools.ProcessManagerTool
+import com.inspiredandroid.kai.tools.ResultSummarizationTool
+import com.inspiredandroid.kai.tools.ResultSummarizationToolImpl
 import com.inspiredandroid.kai.tools.SendNotificationTool
 import com.inspiredandroid.kai.tools.SetAlarmTool
 import com.inspiredandroid.kai.tools.ShellCommandTool
 import com.inspiredandroid.kai.tools.SmsTools
 import com.inspiredandroid.kai.tools.SshConfigureHostTool
+import com.inspiredandroid.kai.tools.WorkflowTool
+import com.inspiredandroid.kai.tools.WorkflowToolImpl
 import com.inspiredandroid.kai.tools.buildAgentToolSet
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.SharedPreferencesSettings
@@ -185,6 +200,13 @@ actual fun getPlatformToolDefinitions(): List<ToolInfo> = CommonTools.commonTool
         ShellCommandTool.toolInfo,
         ProcessManagerTool.toolInfo,
         SshConfigureHostTool.toolInfo,
+        GalleryStatusTool.toolInfo,
+        DownloadsStatusTool.toolInfo,
+        GallerySearchTool.toolInfo,
+        OcrTool.toolInfo,
+        WorkflowTool.toolInfo,
+        ParameterExtractionTool.toolInfo,
+        ResultSummarizationTool.toolInfo,
     )
 
 actual fun getAvailableTools(): List<Tool> {
@@ -194,6 +216,10 @@ actual fun getAvailableTools(): List<Tool> {
     val taskStore: TaskStore by inject(TaskStore::class.java)
     val emailStore: EmailStore by inject(EmailStore::class.java)
     val mcpServerManager: McpServerManager by inject(McpServerManager::class.java)
+
+    // Gallery permission controller gates the gallery search tool. Both controllers and the
+    // repositories behind them are registered in androidToolsModule.
+    val galleryPermissionController: GalleryPermissionController by inject(GalleryPermissionController::class.java)
 
     return buildAgentToolSet(
         appSettings = appSettings,
@@ -265,6 +291,33 @@ actual fun getAvailableTools(): List<Tool> {
                 addAll(NotificationTools.getNotificationTools(notificationStore, notificationReader))
             }
         }
+
+        // Gallery status tool - always available for permission status checking
+        add(GalleryStatusToolImpl())
+
+        // Downloads status tool - always available for permission status checking
+        add(DownloadsStatusToolImpl())
+
+        // Gallery search tool - available when gallery permission is granted
+        if (galleryPermissionController.hasBaseGalleryAccess()) {
+            add(GallerySearchToolImpl())
+        }
+
+        // OCR tool - always available on Android with ML Kit
+        val ocrTool = OcrToolImpl()
+        add(ocrTool)
+
+        // Workflow tool - natural language workflow execution
+        val workflowTool = WorkflowToolImpl()
+        add(workflowTool)
+
+        // Parameter extraction tool - for extracting structured params from natural language
+        val paramExtractionTool = ParameterExtractionToolImpl()
+        add(paramExtractionTool)
+
+        // Result summarization tool - for summarizing tool results
+        val resultSummarizer = ResultSummarizationToolImpl()
+        add(resultSummarizer)
     }
 }
 

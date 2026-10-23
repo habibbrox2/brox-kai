@@ -12,6 +12,12 @@ internal actual fun platformHasPermission(permission: AppPermission): Boolean = 
 
     // The browser doesn't gate local network access as an app permission.
     AppPermission.LOCAL_NETWORK -> true
+
+    // Web uses file picker for gallery access (no runtime permission)
+    AppPermission.GALLERY -> true
+
+    // Web uses file picker for downloads access (no runtime permission)
+    AppPermission.DOWNLOADS -> true
 }
 
 internal actual fun platformCanRequest(permission: AppPermission): Boolean = false

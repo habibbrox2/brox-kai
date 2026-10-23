@@ -37,6 +37,7 @@ import com.inspiredandroid.kai.ui.DarkColorScheme
 import com.inspiredandroid.kai.ui.LightColorScheme
 import com.inspiredandroid.kai.ui.MidnightColorScheme
 import com.inspiredandroid.kai.ui.Theme
+import com.inspiredandroid.kai.ui.withBlackBackground
 import com.inspiredandroid.kai.ui.build.KaiBuildScreen
 import com.inspiredandroid.kai.ui.chat.ChatScreen
 import com.inspiredandroid.kai.ui.chat.ChatViewModel
@@ -45,7 +46,6 @@ import com.inspiredandroid.kai.ui.dashboard.DashboardScreen
 import com.inspiredandroid.kai.ui.rememberSandboxAwareUriHandler
 import com.inspiredandroid.kai.ui.settings.SettingsScreen
 import com.inspiredandroid.kai.ui.settings.SettingsTab
-import com.inspiredandroid.kai.ui.withBlackBackground
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import nl.marc_apps.tts.TextToSpeechInstance

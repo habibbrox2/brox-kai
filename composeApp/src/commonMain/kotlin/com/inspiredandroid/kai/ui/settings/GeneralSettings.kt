@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.inspiredandroid.kai.data.ThemeMode
 import com.inspiredandroid.kai.ui.components.KaiSlider
 import com.inspiredandroid.kai.ui.handCursor
+import com.inspiredandroid.kai.ui.isOledFlavor
 import kai.composeapp.generated.resources.Res
 import kai.composeapp.generated.resources.settings_daemon_mode
 import kai.composeapp.generated.resources.settings_daemon_mode_description
@@ -129,6 +130,8 @@ private fun ThemeModeSwitch(
         ThemeMode.Midnight to stringResource(Res.string.settings_theme_midnight),
     )
 
+    val isOled = MaterialTheme.colorScheme.isOledFlavor
+
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = stringResource(Res.string.settings_theme),
@@ -153,6 +156,7 @@ private fun ThemeModeSwitch(
                     label = label,
                     isSelected = mode == themeMode,
                     onClick = { onChangeThemeMode(mode) },
+                    isOled = isOled,
                 )
             }
         }
@@ -164,22 +168,46 @@ private fun ThemeModeButton(
     label: String,
     isSelected: Boolean,
     onClick: () -> Unit,
+    isOled: Boolean,
 ) {
+    val selectedBg = if (isOled) {
+        com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.2f)
+    } else {
+        MaterialTheme.colorScheme.primaryContainer
+    }
+    val selectedText = if (isOled) {
+        com.inspiredandroid.kai.ui.AccentPrimary
+    } else {
+        MaterialTheme.colorScheme.onPrimaryContainer
+    }
+    val unselectedBg = if (isOled) {
+        com.inspiredandroid.kai.ui.CardFill
+    } else {
+        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+    }
+    val unselectedText = if (isOled) {
+        MaterialTheme.colorScheme.onSurfaceVariant
+    } else {
+        MaterialTheme.colorScheme.onSurfaceVariant
+    }
+    val unselectedBorder = if (isOled) {
+        com.inspiredandroid.kai.ui.BorderSoft
+    } else {
+        MaterialTheme.colorScheme.outlineVariant
+    }
+
     Surface(
         modifier = Modifier
             .clip(RoundedCornerShape(50))
             .handCursor()
             .clickable { onClick() },
         shape = RoundedCornerShape(50),
-        color = if (isSelected) {
-            MaterialTheme.colorScheme.primaryContainer
+        color = if (isSelected) selectedBg else unselectedBg,
+        contentColor = if (isSelected) selectedText else unselectedText,
+        border = if (!isSelected) {
+            androidx.compose.foundation.BorderStroke(1.dp, unselectedBorder)
         } else {
-            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-        },
-        contentColor = if (isSelected) {
-            MaterialTheme.colorScheme.onPrimaryContainer
-        } else {
-            MaterialTheme.colorScheme.onSurfaceVariant
+            androidx.compose.foundation.BorderStroke(1.dp, com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.4f))
         },
     ) {
         Text(

@@ -35,6 +35,11 @@ litert-lm = "0.17.1"
 sqldelight = "2.4.1"
 materialIcons = "1.7.3"
 xz = "1.12"
+mlkit-text-recognition = "16.0.1"
+mlkit-text-recognition-chinese = "16.0.1"
+mlkit-text-recognition-devanagari = "16.0.1"
+mlkit-text-recognition-japanese = "16.0.1"
+mlkit-text-recognition-korean = "16.0.1"
 
 [libraries]
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
@@ -97,6 +102,11 @@ sqldelight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sq
 sqldelight-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
 sqldelight-native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqldelight" }
 sqldelight-sqlite-driver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
+mlkit-text-recognition = { module = "com.google.mlkit:text-recognition", version.ref = "mlkit-text-recognition" }
+mlkit-text-recognition-chinese = { module = "com.google.mlkit:text-recognition-chinese", version.ref = "mlkit-text-recognition-chinese" }
+mlkit-text-recognition-devanagari = { module = "com.google.mlkit:text-recognition-devanagari", version.ref = "mlkit-text-recognition-devanagari" }
+mlkit-text-recognition-japanese = { module = "com.google.mlkit:text-recognition-japanese", version.ref = "mlkit-text-recognition-japanese" }
+mlkit-text-recognition-korean = { module = "com.google.mlkit:text-recognition-korean", version.ref = "mlkit-text-recognition-korean" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
