@@ -140,13 +140,13 @@ fun SettingsDetailPane(
             Spacer(Modifier.weight(1f))
 
             BottomInfo()
+
+            VerticalScrollbarForList(
+                listState = settingsListState,
+                modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
+            )
         }
-        VerticalScrollbarForList(
-            listState = settingsListState,
-            modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
-        )
     }
-}
 
 @Composable
 private fun SandboxUnavailableContent() {

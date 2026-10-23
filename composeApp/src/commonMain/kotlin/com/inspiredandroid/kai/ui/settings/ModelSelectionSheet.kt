@@ -241,9 +241,6 @@ internal fun ModelSelection(
                     }
                 }
             }
-                    }
-                }
-            }
         }
     }
 }
