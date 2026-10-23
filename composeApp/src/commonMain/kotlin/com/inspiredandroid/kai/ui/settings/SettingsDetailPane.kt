@@ -11,8 +11,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -22,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.unit.dp
 import com.inspiredandroid.kai.linux.LinuxDistro
-import com.inspiredandroid.kai.ui.components.VerticalScrollbarForScroll
+import com.inspiredandroid.kai.ui.components.VerticalScrollbarForList
 
 /**
  * Detail pane for the settings screen (Plan 2, Phase 2). Renders the scrollable
@@ -43,28 +44,30 @@ fun SettingsDetailPane(
     onMigrateHome: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val settingsScrollState = rememberScrollState()
+    val settingsListState = rememberLazyListState()
     Box(modifier = modifier.fillMaxWidth()) {
-        Column(
-            Modifier.fillMaxWidth().verticalScroll(settingsScrollState),
+        LazyColumn(
+            state = settingsListState,
+            modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Spacer(Modifier.height(16.dp))
+            item { Spacer(Modifier.height(16.dp)) }
 
             val maxContentWidth = when (uiState.currentTab) {
                 SettingsTab.Services -> 500.dp
                 else -> 900.dp
             }
-            Column(
-                Modifier.widthIn(max = maxContentWidth).fillMaxWidth().padding(horizontal = 16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .semantics { liveRegion = LiveRegionMode.Polite },
+            item {
+                Column(
+                    Modifier.widthIn(max = maxContentWidth).fillMaxWidth().padding(horizontal = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    when (uiState.currentTab) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .semantics { liveRegion = LiveRegionMode.Polite },
+                    ) {
+                        when (uiState.currentTab) {
                     SettingsTab.General -> {
                         SettingsOverview(uiState = uiState, sandboxInstalled = sandboxState.sandboxInstalled)
                         Spacer(Modifier.height(SettingsSpacing.md))

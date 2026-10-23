@@ -824,8 +824,10 @@ private fun RenderList(
     onCallback: (String, Map<String, String>) -> Unit,
     depth: Int,
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        for ((index, item) in node.items.withIndex()) {
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        itemsIndexed(node.items) { index, item ->
             Row {
                 val prefix = if (node.ordered == true) "${index + 1}. " else "\u2022 "
                 Text(prefix, style = MaterialTheme.typography.bodyLarge)
@@ -1509,11 +1511,13 @@ private fun RenderBox(
             }
         }
     } else {
-        Column(
+        LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth().wrapContentHeight(),
         ) {
-            RenderChildren(node.children, isInteractive, formState, toggleState, onCallback, depth)
+            items(node.children) { child ->
+                RenderNode(child, isInteractive, formState, toggleState, onCallback, depth + 1)
+            }
         }
     }
 }
@@ -1598,11 +1602,13 @@ private fun RenderTabs(
 
         val selectedTab = node.tabs.getOrNull(selectedIndex)
         if (selectedTab != null) {
-            Column(
+            LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
             ) {
-                RenderChildren(selectedTab.children, isInteractive, formState, toggleState, onCallback, depth)
+                items(selectedTab.children) { child ->
+                    RenderNode(child, isInteractive, formState, toggleState, onCallback, depth + 1)
+                }
             }
         }
     }
@@ -1645,11 +1651,13 @@ private fun RenderAccordion(
                 enter = expandVertically(),
                 exit = shrinkVertically(),
             ) {
-                Column(
+                LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.fillMaxWidth().padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
                 ) {
-                    RenderChildren(node.children, isInteractive, formState, toggleState, onCallback, depth)
+                    items(node.children) { child ->
+                        RenderNode(child, isInteractive, formState, toggleState, onCallback, depth + 1)
+                    }
                 }
             }
         }
