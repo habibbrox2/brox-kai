@@ -490,7 +490,10 @@ private fun ScheduledTaskList(
                 val subtitle = when (task.trigger) {
                     TaskTrigger.HEARTBEAT -> "${task.status} - $onEveryHeartbeat"
 
-                    TaskTrigger.CRON -> "${task.status} - ${task.cron?.let { describeCron(it) } ?: "cron"}"
+                    TaskTrigger.CRON -> {
+                        val cronDesc = task.cron?.let { describeCron(it) } ?: "cron"
+                        "${task.status} - $cronDesc"
+                    }
 
                     TaskTrigger.TIME -> "${task.status} - ${formatTaskInstant(task.scheduledAtEpochMs)}"
                 }
