@@ -29,6 +29,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.inspiredandroid.kai.data.Attachment
 import com.inspiredandroid.kai.decodeToImageBitmap
+import com.inspiredandroid.kai.ui.chat.ChatSpacing
 import com.inspiredandroid.kai.ui.components.LocalShowFullScreenImage
 import com.inspiredandroid.kai.ui.handCursor
 import com.inspiredandroid.kai.ui.isOledFlavor
@@ -51,7 +52,7 @@ internal fun UserMessage(
     val isOled = MaterialTheme.colorScheme.isOledFlavor
     
     SelectionContainer {
-        Row(Modifier.padding(16.dp)) {
+        Row(Modifier.padding(ChatSpacing.lg)) {
             Spacer(Modifier.weight(1f))
             Column(
                 modifier = Modifier
@@ -71,7 +72,7 @@ internal fun UserMessage(
                         },
                         RoundedCornerShape(16.dp)
                     )
-                    .padding(16.dp),
+                    .padding(ChatSpacing.lg),
                 horizontalAlignment = Alignment.End,
             ) {
                 val images = attachments.filter { it.mimeType.startsWith("image/") }
@@ -95,13 +96,13 @@ internal fun UserMessage(
                                 .clickable { showFullScreen(imageBitmap) },
                             contentScale = ContentScale.FillWidth,
                         )
-                        Spacer(Modifier.height(8.dp))
+                        Spacer(Modifier.height(ChatSpacing.sm))
                     }
                 }
                 if (others.isNotEmpty()) {
                     FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                        horizontalArrangement = Arrangement.spacedBy(ChatSpacing.sm),
+                        verticalArrangement = Arrangement.spacedBy(ChatSpacing.xs),
                     ) {
                         for (att in others) {
                             val chipColors = SuggestionChipDefaults.suggestionChipColors(
@@ -117,7 +118,7 @@ internal fun UserMessage(
                                 colors = chipColors,
                                 icon = {
                                     Icon(
-                                        modifier = Modifier.size(16.dp),
+                                        modifier = Modifier.size(ChatSpacing.lg),
                                         painter = painterResource(Res.drawable.ic_file),
                                         contentDescription = null,
                                         tint = MaterialTheme.colorScheme.onSurface,
@@ -128,7 +129,7 @@ internal fun UserMessage(
                         }
                     }
                     if (message.isNotEmpty()) {
-                        Spacer(Modifier.height(8.dp))
+                        Spacer(Modifier.height(ChatSpacing.sm))
                     }
                 }
                 if (message.isNotEmpty()) {

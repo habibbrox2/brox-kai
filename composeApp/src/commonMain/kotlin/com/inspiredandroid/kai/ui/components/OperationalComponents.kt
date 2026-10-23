@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.inspiredandroid.kai.ui.kaiAdaptiveCardBorder
 import com.inspiredandroid.kai.ui.kaiAdaptiveCardColors
 import com.inspiredandroid.kai.ui.isOledFlavor
+import com.inspiredandroid.kai.ui.settings.SettingsSpacing
 
 /**
  * Shared operational status vocabulary (Plan 4, Phase 1) so MCP, skills,
@@ -147,7 +148,7 @@ fun CapabilityCountCard(
         shape = cardShape,
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier.fillMaxWidth().padding(SettingsSpacing.lg),
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             Text(
@@ -208,7 +209,7 @@ fun CollectionEmptyState(
             .clip(cardShape)
             .background(cardBg)
             .border(cardBorder, cardShape)
-            .padding(20.dp),
+            .padding(SettingsSpacing.xl),
         contentAlignment = Alignment.Center,
     ) {
         Text(

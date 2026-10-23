@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.inspiredandroid.kai.ui.chat.ChatSpacing
 import com.inspiredandroid.kai.ui.handCursor
 
 @Composable
@@ -29,7 +30,7 @@ fun KaiSearchField(
     OutlinedTextField(
         value = query,
         onValueChange = onQueryChange,
-        modifier = modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 8.dp),
+        modifier = modifier.fillMaxWidth().padding(horizontal = ChatSpacing.sm, vertical = ChatSpacing.sm),
         shape = RoundedCornerShape(28.dp),
         singleLine = true,
         placeholder = { Text(placeholder) },

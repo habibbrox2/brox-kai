@@ -17,6 +17,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Shapes
+import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
@@ -30,11 +33,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 // ═══════════════════════════════════════════════════════════════
@@ -83,6 +89,131 @@ val SuccessGreen = Color(0xFF4CAF50)
 /** Warning/pending state */
 val WarningAmber = Color(0xFFFF9800)
 
+// ─── KaiTypography — Centralized type scale for Futuristic Midnight Glassmorphism ───
+val KaiTypography = Typography(
+    displayLarge = TextStyle(
+        fontSize = 57.sp,
+        brush = SolidColor(TextPrimary),
+    ),
+    displayMedium = TextStyle(
+        fontSize = 45.sp,
+        brush = SolidColor(TextPrimary),
+    ),
+    displaySmall = TextStyle(
+        fontSize = 36.sp,
+        brush = SolidColor(TextPrimary),
+    ),
+    headlineLarge = TextStyle(
+        fontSize = 32.sp,
+        brush = SolidColor(TextPrimary),
+    ),
+    headlineMedium = TextStyle(
+        fontSize = 28.sp,
+        brush = SolidColor(TextPrimary),
+    ),
+    headlineSmall = TextStyle(
+        fontSize = 24.sp,
+        brush = SolidColor(TextPrimary),
+    ),
+    titleLarge = TextStyle(
+        fontSize = 22.sp,
+        brush = SolidColor(TextPrimary),
+    ),
+    titleMedium = TextStyle(
+        fontSize = 16.sp,
+        brush = SolidColor(TextPrimary),
+    ),
+    titleSmall = TextStyle(
+        fontSize = 14.sp,
+        brush = SolidColor(TextSecondary),
+    ),
+    bodyLarge = TextStyle(
+        fontSize = 16.sp,
+        brush = SolidColor(TextPrimary),
+    ),
+    bodyMedium = TextStyle(
+        fontSize = 14.sp,
+        brush = SolidColor(TextPrimary),
+    ),
+    bodySmall = TextStyle(
+        fontSize = 12.sp,
+        brush = SolidColor(TextSecondary),
+    ),
+    labelLarge = TextStyle(
+        fontSize = 14.sp,
+        brush = SolidColor(TextPrimary),
+    ),
+    labelMedium = TextStyle(
+        fontSize = 12.sp,
+        brush = SolidColor(TextSecondary),
+    ),
+    labelSmall = TextStyle(
+        fontSize = 11.sp,
+        brush = SolidColor(TextSecondary),
+    ),
+)
+
+// ─── KaiShapes — Centralized shape definitions ───
+object KaiShapes {
+    /** Card / panel default radius */
+    val card = RoundedCornerShape(16.dp)
+    /** Section container radius */
+    val section = RoundedCornerShape(20.dp)
+    /** Row / item container radius */
+    val row = RoundedCornerShape(12.dp)
+    /** Pill / chip full radius */
+    val pill = RoundedCornerShape(999.dp)
+    /** Input field radius */
+    val input = RoundedCornerShape(12.dp)
+    /** Button radius */
+    val button = RoundedCornerShape(999.dp)
+    /** User message bubble */
+    val userBubble = RoundedCornerShape(
+        topStart = 20.dp,
+        topEnd = 8.dp,
+        bottomStart = 20.dp,
+        bottomEnd = 20.dp,
+    )
+    /** Assistant message surface */
+    val assistantSurface = RoundedCornerShape(16.dp)
+    /** Status card */
+    val statusCard = RoundedCornerShape(12.dp)
+    /** Quick-start card */
+    val quickStartCard = RoundedCornerShape(16.dp)
+    /** Composer container */
+    val composer = RoundedCornerShape(28.dp)
+    /** Panel / sheet heading */
+    val panel = RoundedCornerShape(20.dp)
+}
+
+// ─── KaiBorders — Centralized stroke definitions ───
+object KaiBorders {
+    /** Subtle 0.5px hairline */
+    val hairline = BorderStroke(0.5.dp, BorderSoft)
+    /** Standard 1px soft outline */
+    val soft = BorderStroke(1.dp, BorderSoft)
+    /** Neon cyan accent border */
+    val accent = BorderStroke(1.dp, AccentPrimary)
+    /** Focused state border with glow */
+    val focus = BorderStroke(1.dp, AccentPrimary.copy(alpha = 0.6f))
+    /** Input focused border */
+    val inputFocused = BorderStroke(1.dp, AccentPrimary)
+    /** Disabled border */
+    val disabled = BorderStroke(1.dp, BorderSoft.copy(alpha = 0.3f))
+}
+
+// ─── KaiElevation — Cross-platform elevation using borders + alpha overlays ───
+object KaiElevation {
+    /** Subtle card elevation — soft border + faint overlay */
+    val level1 = BorderStroke(1.dp, BorderSoft.copy(alpha = 0.8f))
+    /** Raised panel elevation — soft border + visible overlay */
+    val level2 = BorderStroke(1.dp, BorderSoft.copy(alpha = 1.0f))
+    /** Interactive element elevation — accent border + glow overlay */
+    val level3 = BorderStroke(1.dp, AccentPrimary.copy(alpha = 0.4f))
+    /** Modal / dialog elevation — accent border + strong glow */
+    val level4 = BorderStroke(1.dp, AccentPrimary.copy(alpha = 0.6f))
+}
+
 // ─── Legacy brand tokens (kept for migration) ───
 val darkPurple = broxNavy
 val lightPurple = Color(0xff8063C5)
@@ -99,17 +230,15 @@ fun Modifier.handCursor() = pointerHoverIcon(PointerIcon.Hand, overrideDescendan
 /** Glassmorphic card surface with backdrop blur effect */
 @Composable
 fun Modifier.glassmorphicSurface(
-    shape: Shape = RoundedCornerShape(16.dp),
+    shape: Shape = KaiShapes.card,
     elevation: Boolean = true
 ): Modifier = this
     .clip(shape)
     .background(CardFill, shape)
-    .border(BorderStroke(1.dp, BorderSoft), shape)
+    .border(KaiBorders.soft, shape)
     .then(
         if (elevation) {
-            Modifier.graphicsLayer {
-                shadowElevation = 4.dp.toPx()
-            }
+            Modifier.border(KaiElevation.level1, shape)
         } else {
             Modifier
         }
@@ -118,7 +247,7 @@ fun Modifier.glassmorphicSurface(
 /** Glassmorphic card with hover/focus glow */
 @Composable
 fun Modifier.glassmorphicCard(
-    shape: Shape = RoundedCornerShape(16.dp),
+    shape: Shape = KaiShapes.card,
     isInteractive: Boolean = false,
     isFocused: Boolean = false,
     isHovered: Boolean = false,
@@ -126,33 +255,27 @@ fun Modifier.glassmorphicCard(
     .clip(shape)
     .background(CardFill, shape)
     .border(
-        BorderStroke(
-            1.dp,
-            if (isFocused || isHovered) AccentPrimary.copy(alpha = 0.4f) else BorderSoft
-        ),
+        if (isFocused || isHovered) KaiBorders.focus else KaiBorders.soft,
         shape
     )
     .then(
         if (isInteractive && (isFocused || isHovered)) {
-            Modifier.graphicsLayer {
-                shadowElevation = 8.dp.toPx()
-            }
+            Modifier.border(KaiElevation.level3, shape)
         } else if (isInteractive) {
-            Modifier.graphicsLayer {
-                shadowElevation = 2.dp.toPx()
-            }
+            Modifier.border(KaiElevation.level1, shape)
         } else {
             Modifier
         }
     )
 
-/** Cyan glow modifier for active/primary elements */
+/** Cyan glow modifier for active/primary elements.
+ *  Cross-platform implementation using border + alpha overlay instead of RenderEffect.
+ */
 @Composable
 fun Modifier.cyanGlow(enabled: Boolean = true): Modifier = if (enabled) {
-    this.graphicsLayer {
-        // RenderEffect for glow would be platform-specific
-        // This is a placeholder for the visual effect
-    }
+    this
+        .border(KaiBorders.accent)
+        .background(AccentGlow, shape = KaiShapes.pill)
 } else {
     this
 }
@@ -456,6 +579,14 @@ fun Theme(
 ) {
     MaterialTheme(
         colorScheme = colorScheme,
+        typography = KaiTypography,
+        shapes = Shapes(
+            extraSmall = KaiShapes.input,
+            small = KaiShapes.row,
+            medium = KaiShapes.card,
+            large = KaiShapes.section,
+            extraLarge = KaiShapes.panel,
+        ),
     ) {
         content()
     }

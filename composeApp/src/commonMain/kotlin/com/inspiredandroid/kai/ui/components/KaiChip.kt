@@ -13,6 +13,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.inspiredandroid.kai.ui.chat.ChatSpacing
 import com.inspiredandroid.kai.ui.handCursor
 
 /**
@@ -48,7 +49,7 @@ fun KaiChip(
         Box(
             modifier = Modifier
                 .defaultMinSize(minWidth = 48.dp)
-                .padding(horizontal = 16.dp, vertical = 4.dp),
+                .padding(horizontal = ChatSpacing.lg, vertical = ChatSpacing.xs),
             contentAlignment = Alignment.Center,
         ) {
             CompositionLocalProvider(LocalContentColor provides contentColor) {

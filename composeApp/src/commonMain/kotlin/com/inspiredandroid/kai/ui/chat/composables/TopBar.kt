@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.inspiredandroid.kai.BackIcon
 import com.inspiredandroid.kai.data.ServiceEntry
 import com.inspiredandroid.kai.ui.chat.ChatActions
+import com.inspiredandroid.kai.ui.chat.ChatSpacing
 import com.inspiredandroid.kai.ui.handCursor
 import com.inspiredandroid.kai.ui.isOledFlavor
 import com.inspiredandroid.kai.ui.settings.SettingsModel
@@ -89,12 +90,12 @@ internal fun TopBar(
     val topBarShape = com.inspiredandroid.kai.ui.chat.ChatShapes.panel
 
     Box(
-        modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 56.dp),
+        modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = ChatSpacing.xxxl),
     ) {
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+                .padding(horizontal = ChatSpacing.lg, vertical = ChatSpacing.sm),
             color = topBarBg,
             shape = topBarShape,
             border = topBarBorder,
@@ -102,14 +103,14 @@ internal fun TopBar(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 12.dp, vertical = 4.dp),
+                    .padding(horizontal = ChatSpacing.md, vertical = ChatSpacing.xs),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 // Leading cluster: drawer toggle + interactive mode toggle
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(ChatSpacing.xs),
                 ) {
                     if (onOpenDrawer != null) {
                         IconButton(
@@ -165,7 +166,7 @@ internal fun TopBar(
                 // Trailing cluster: go back, sandbox, speech, settings
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(ChatSpacing.xs),
                 ) {
                     onGoBack?.let { goBack ->
                         IconButton(

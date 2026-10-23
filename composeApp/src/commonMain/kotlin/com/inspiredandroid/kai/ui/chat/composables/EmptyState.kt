@@ -72,8 +72,8 @@ internal fun EmptyState(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        LogoAnimation(size = 40.dp)
-        Spacer(Modifier.height(12.dp))
+        LogoAnimation(size = ChatSpacing.xxxl)
+        Spacer(Modifier.height(ChatSpacing.md))
         Text(
             text = "How can I help you today?",
             modifier = Modifier.padding(horizontal = 16.dp),
@@ -82,11 +82,11 @@ internal fun EmptyState(
             color = MaterialTheme.colorScheme.onBackground,
         )
         if (onQuickStart != null) {
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(ChatSpacing.xl))
             QuickStartCards(onQuickStart = onQuickStart)
         }
         if (isUsingSharedKey) {
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(ChatSpacing.xl))
             val linkColor = MaterialTheme.colorScheme.primary
             val prefixText = stringResource(Res.string.privacy_agree_prefix)
             val policyText = stringResource(Res.string.privacy_policy)

@@ -39,6 +39,7 @@ import com.inspiredandroid.kai.ui.CardFill
 import com.inspiredandroid.kai.ui.OledBlack
 import com.inspiredandroid.kai.ui.isOledFlavor
 import com.inspiredandroid.kai.ui.rememberCopyToClipboard
+import com.inspiredandroid.kai.ui.chat.ChatSpacing
 import com.inspiredandroid.kai.ui.settings.SettingsShapes
 
 @Composable
@@ -79,7 +80,9 @@ internal fun CodeFenceBlock(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth().padding(start = 12.dp, end = 4.dp, top = 8.dp, bottom = 4.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = ChatSpacing.md, end = ChatSpacing.xs, top = ChatSpacing.sm, bottom = ChatSpacing.xs),
             ) {
                 Text(
                     text = language?.takeIf { it.isNotBlank() } ?: "",
@@ -138,7 +141,7 @@ internal fun CodeFenceBlock(
             }
             HorizontalDivider(color = surfaceBorder)
             val scroll = rememberScrollState()
-            Box(Modifier.horizontalScroll(scroll).padding(12.dp)) {
+            Box(Modifier.horizontalScroll(scroll).padding(ChatSpacing.md)) {
                 Text(
                     text = highlighted,
                     fontFamily = FontFamily.Monospace,
