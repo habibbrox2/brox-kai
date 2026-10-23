@@ -36,6 +36,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -419,13 +422,15 @@ private fun RenderColumn(
     onCallback: (String, Map<String, String>) -> Unit,
     depth: Int,
 ) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+    LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight(),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        RenderChildren(node.children, isInteractive, formState, toggleState, onCallback, depth)
+        items(node.children) { child ->
+            RenderNode(child, isInteractive, formState, toggleState, onCallback, depth + 1)
+        }
     }
 }
 
@@ -439,15 +444,13 @@ private fun RenderRow(
     depth: Int,
 ) {
     val allStats = node.children.isNotEmpty() && node.children.all { it is StatNode }
-    @OptIn(ExperimentalLayoutApi::class)
-    FlowRow(
+    LazyRow(
         horizontalArrangement = if (allStats) Arrangement.SpaceEvenly else Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight(),
     ) {
-        for (child in node.children) {
+        items(node.children) { child ->
             RenderNode(child, isInteractive, formState, toggleState, onCallback, depth + 1)
         }
     }
@@ -467,11 +470,13 @@ private fun RenderCard(
         colors = kaiAdaptiveCardColors(),
         border = kaiAdaptiveCardBorder(),
     ) {
-        Column(
+        LazyColumn(
             modifier = Modifier.padding(16.dp).wrapContentHeight(),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            RenderChildren(node.children, isInteractive, formState, toggleState, onCallback, depth)
+            items(node.children) { child ->
+                RenderNode(child, isInteractive, formState, toggleState, onCallback, depth + 1)
+            }
         }
     }
 }

@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.gestures.OverscrollBehavior
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -121,6 +122,7 @@ internal fun ChatHistorySheet(
                             state = historyListState,
                             contentPadding = PaddingValues(horizontal = 16.dp),
                             verticalArrangement = Arrangement.spacedBy(6.dp),
+                            overscrollBehavior = OverscrollBehavior(),
                         ) {
                             items(conversations, key = { it.id }) { conversation ->
                                 val isActive = conversation.id == currentConversationId
@@ -197,7 +199,7 @@ internal fun ChatHistorySheet(
                                         )
                                     }
                                     IconButton(
-                                        modifier = Modifier.handCursor(),
+                                        modifier = Modifier.handCursor().defaultMinSize(minWidth = 48.dp, minHeight = 48.dp),
                                         onClick = { actions.deleteConversation(conversation.id) },
                                     ) {
                                         Icon(
