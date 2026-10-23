@@ -89,18 +89,21 @@ private fun snackbarColors(
             text = colorScheme.onTertiaryContainer,
             border = colorScheme.tertiary,
         )
+
     SnackbarVariant.Warning ->
         SnackbarColors(
             background = colorScheme.secondaryContainer,
             text = colorScheme.onSecondaryContainer,
             border = colorScheme.secondary,
         )
+
     SnackbarVariant.Error ->
         SnackbarColors(
             background = colorScheme.errorContainer,
             text = colorScheme.onErrorContainer,
             border = colorScheme.error,
         )
+
     SnackbarVariant.Info ->
         SnackbarColors(
             background = colorScheme.primaryContainer,

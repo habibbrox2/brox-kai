@@ -31,18 +31,18 @@ object WorkflowTool : Tool {
                 description = "Whether to ask for confirmation before each step (default false)",
                 required = false,
             ),
-        )
+        ),
     )
 
     override suspend fun execute(args: Map<String, Any>): Any = try {
         mapOf(
             "success" to false,
-            "error" to "This tool must be implemented platform-specifically"
+            "error" to "This tool must be implemented platform-specifically",
         )
     } catch (e: Exception) {
         mapOf(
             "success" to false,
-            "error" to "Failed to execute workflow: ${e.message}"
+            "error" to "Failed to execute workflow: ${e.message}",
         )
     }
 
@@ -94,18 +94,18 @@ object ParameterExtractionTool : Tool {
                 description = "JSON schema of the target tool's parameters",
                 required = true,
             ),
-        )
+        ),
     )
 
     override suspend fun execute(args: Map<String, Any>): Any = try {
         mapOf(
             "success" to false,
-            "error" to "This tool must be implemented platform-specifically"
+            "error" to "This tool must be implemented platform-specifically",
         )
     } catch (e: Exception) {
         mapOf(
             "success" to false,
-            "error" to "Failed to extract parameters: ${e.message}"
+            "error" to "Failed to extract parameters: ${e.message}",
         )
     }
 
@@ -142,18 +142,18 @@ object ResultSummarizationTool : Tool {
                 description = "Optional context about what the user was trying to achieve",
                 required = false,
             ),
-        )
+        ),
     )
 
     override suspend fun execute(args: Map<String, Any>): Any = try {
         mapOf(
             "success" to false,
-            "error" to "This tool must be implemented platform-specifically"
+            "error" to "This tool must be implemented platform-specifically",
         )
     } catch (e: Exception) {
         mapOf(
             "success" to false,
-            "error" to "Failed to summarize result: ${e.message}"
+            "error" to "Failed to summarize result: ${e.message}",
         )
     }
 

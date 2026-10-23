@@ -84,7 +84,6 @@ import com.inspiredandroid.kai.data.Service
 import com.inspiredandroid.kai.data.supportsAgenticFlows
 import com.inspiredandroid.kai.getBackgroundDispatcher
 import com.inspiredandroid.kai.onDragAndDropEventDropped
-import com.inspiredandroid.kai.ui.isOledFlavor
 import com.inspiredandroid.kai.ui.build.KaiBuildScreen
 import com.inspiredandroid.kai.ui.chat.composables.AppSidebar
 import com.inspiredandroid.kai.ui.chat.composables.BotMessage
@@ -102,6 +101,7 @@ import com.inspiredandroid.kai.ui.components.VerticalScrollbarForList
 import com.inspiredandroid.kai.ui.dynamicui.toSpeakableText
 import com.inspiredandroid.kai.ui.editor.CodeEditorScreen
 import com.inspiredandroid.kai.ui.handCursor
+import com.inspiredandroid.kai.ui.isOledFlavor
 import com.inspiredandroid.kai.ui.sandbox.SandboxTabsContent
 import com.inspiredandroid.kai.ui.settings.SandboxUiState
 import com.inspiredandroid.kai.ui.settings.SandboxViewModel
@@ -327,7 +327,7 @@ private fun ChatModeScreen(
         val expanded = chatWindowSizeClass(maxWidth) == ChatWindowSizeClass.Expanded
         val isPreview = LocalInspectionMode.current
         // Hoisted unconditional to satisfy Koin/Compose ViewModel scoping rules
-        val sandboxViewModel by remember { if (isPreview) null else koinViewModel<SandboxViewModel>() }
+        val sandboxViewModel: SandboxViewModel? = if (isPreview) null else koinViewModel<SandboxViewModel>()
         val sandboxState = if (isSandboxOpen && sandboxViewModel != null) {
             sandboxViewModel.state.collectAsStateWithLifecycle().value
         } else {
@@ -560,7 +560,7 @@ private fun ChatModeScreen(
                             com.inspiredandroid.kai.ui.OledBlack
                         } else {
                             MaterialTheme.colorScheme.background
-                        }
+                        },
                     )
                     .navigationBarsPadding()
                     .statusBarsPadding()

@@ -81,17 +81,17 @@ enum class DownloadsSource {
     DOWNLOAD_MANAGER,
     MEDIA_STORE,
     SAF,
-    ALL
+    ALL,
 }
 
 /**
  * Download sort options.
  */
 enum class DownloadsSortBy {
-    NEWEST,     // Newest first (date desc)
-    OLDEST,     // Oldest first (date asc)
-    LARGEST,    // Largest file (size desc)
-    SMALLEST,   // Smallest file (size asc)
+    NEWEST, // Newest first (date desc)
+    OLDEST, // Oldest first (date asc)
+    LARGEST, // Largest file (size desc)
+    SMALLEST, // Smallest file (size asc)
     NAME_A_TO_Z, // Name A-Z
     NAME_Z_TO_A, // Name Z-A
 }

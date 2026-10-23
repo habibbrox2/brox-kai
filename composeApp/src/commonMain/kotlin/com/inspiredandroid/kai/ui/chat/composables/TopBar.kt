@@ -24,10 +24,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import com.inspiredandroid.kai.BackIcon
 import com.inspiredandroid.kai.data.ServiceEntry
+import com.inspiredandroid.kai.prefersReducedMotion
 import com.inspiredandroid.kai.ui.chat.ChatActions
 import com.inspiredandroid.kai.ui.chat.ChatSpacing
 import com.inspiredandroid.kai.ui.handCursor
@@ -213,7 +213,7 @@ private fun SandboxToggleButton(
     isShellExecuting: Boolean,
     onToggleSandbox: () -> Unit,
 ) {
-    val prefersReducedMotion = LocalConfiguration.current.prefersReducedMotion
+    val prefersReducedMotion = prefersReducedMotion()
     val flashAlpha = remember { Animatable(0f) }
     LaunchedEffect(isShellExecuting) {
         if (isShellExecuting && !prefersReducedMotion) {

@@ -20,6 +20,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.inspiredandroid.kai.linux.LinuxDistro
 import com.inspiredandroid.kai.ui.components.VerticalScrollbarForList
@@ -67,86 +69,89 @@ fun SettingsDetailPane(
                             .semantics { liveRegion = LiveRegionMode.Polite },
                     ) {
                         when (uiState.currentTab) {
-                    SettingsTab.General -> {
-                        SettingsOverview(uiState = uiState, sandboxInstalled = sandboxState.sandboxInstalled)
-                        Spacer(Modifier.height(SettingsSpacing.md))
-                        GeneralContent(uiState = uiState, actions = actions)
-                    }
+                            SettingsTab.General -> {
+                                SettingsOverview(uiState = uiState, sandboxInstalled = sandboxState.sandboxInstalled)
+                                Spacer(Modifier.height(SettingsSpacing.md))
+                                GeneralContent(uiState = uiState, actions = actions)
+                            }
 
-                    SettingsTab.Agent -> {
-                        // Use LazyColumn for Agent tab which can have many items
-                        LazyColumn(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalArrangement = Arrangement.spacedBy(12.dp),
-                        ) {
-                            item { AgentContent(uiState = uiState, actions = actions) }
+                            SettingsTab.Agent -> {
+                                // Use LazyColumn for Agent tab which can have many items
+                                LazyColumn(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                                ) {
+                                    item { AgentContent(uiState = uiState, actions = actions) }
+                                }
+                            }
+
+                            SettingsTab.Services -> {
+                                // ServicesContent already handles its own virtualization
+                                ServicesContent(uiState = uiState, actions = actions)
+                            }
+
+                            SettingsTab.Tools -> {
+                                // Use LazyColumn for Tools tab which can have many items
+                                LazyColumn(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                                ) {
+                                    item {
+                                        ToolsTabContent(
+                                            uiState = uiState,
+                                            actions = actions,
+                                            sandboxState = sandboxState,
+                                        )
+                                    }
+                                }
+                            }
+
+                            SettingsTab.Integrations -> {
+                                IntegrationsContent()
+                            }
+
+                            SettingsTab.Sandbox -> {
+                                if (sandboxState.showSandbox) {
+                                    SandboxSettingsCard(
+                                        sandboxState = sandboxState,
+                                        onToggleSandbox = onToggleSandbox,
+                                        onSelectDistro = onSelectDistro,
+                                        onSetupSandbox = onSetupSandbox,
+                                        onCancelSandbox = onCancelSandbox,
+                                        onResetSandbox = onResetSandbox,
+                                        onInstallPackages = onInstallPackages,
+                                        onMigrateHome = onMigrateHome,
+                                    )
+                                } else {
+                                    SandboxUnavailableContent()
+                                }
+                            }
+
+                            SettingsTab.Data -> {
+                                DataControlContent(uiState = uiState, actions = actions)
+                            }
+
+                            SettingsTab.Account -> {
+                                AccountPlanContent(uiState = uiState)
+                            }
                         }
-                    }
-
-                    SettingsTab.Services -> {
-                        // ServicesContent already handles its own virtualization
-                        ServicesContent(uiState = uiState, actions = actions)
-                    }
-
-                    SettingsTab.Tools -> {
-                        // Use LazyColumn for Tools tab which can have many items
-                        LazyColumn(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalArrangement = Arrangement.spacedBy(12.dp),
-                        ) {
-                            item { ToolsTabContent(
-                                uiState = uiState,
-                                actions = actions,
-                                sandboxState = sandboxState,
-                            ) }
-                        }
-                    }
-
-                    SettingsTab.Integrations -> {
-                        IntegrationsContent()
-                    }
-
-                    SettingsTab.Sandbox -> {
-                        if (sandboxState.showSandbox) {
-                            SandboxSettingsCard(
-                                sandboxState = sandboxState,
-                                onToggleSandbox = onToggleSandbox,
-                                onSelectDistro = onSelectDistro,
-                                onSetupSandbox = onSetupSandbox,
-                                onCancelSandbox = onCancelSandbox,
-                                onResetSandbox = onResetSandbox,
-                                onInstallPackages = onInstallPackages,
-                                onMigrateHome = onMigrateHome,
-                            )
-                        } else {
-                            SandboxUnavailableContent()
-                        }
-                    }
-
-                    SettingsTab.Data -> {
-                        DataControlContent(uiState = uiState, actions = actions)
-                    }
-
-                    SettingsTab.Account -> {
-                        AccountPlanContent(uiState = uiState)
                     }
                 }
             }
+            item { Spacer(Modifier.height(16.dp)) }
             item {
-                Spacer(Modifier.height(16.dp))
+                Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                    BottomInfo()
+                }
             }
         }
 
-            Spacer(Modifier.weight(1f))
-
-            BottomInfo()
-
-            VerticalScrollbarForList(
-                listState = settingsListState,
-                modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
-            )
-        }
+        VerticalScrollbarForList(
+            listState = settingsListState,
+            modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
+        )
     }
+}
 
 @Composable
 private fun SandboxUnavailableContent() {

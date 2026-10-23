@@ -93,6 +93,7 @@ data class TextInputNode(
     val placeholder: String? = null,
     val value: String? = null,
     val multiline: Boolean? = null,
+    val type: String? = null,
 ) : KaiUiNode
 
 @Immutable

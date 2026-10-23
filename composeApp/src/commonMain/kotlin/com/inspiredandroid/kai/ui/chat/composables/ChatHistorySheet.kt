@@ -11,13 +11,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.gestures.OverscrollBehavior
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -39,6 +39,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Modifier
@@ -50,7 +51,6 @@ import com.inspiredandroid.kai.ui.chat.ConversationSummary
 import com.inspiredandroid.kai.ui.components.VerticalScrollbarForList
 import com.inspiredandroid.kai.ui.components.animatedGradientBorder
 import com.inspiredandroid.kai.ui.handCursor
-import java.util.Locale
 import kai.composeapp.generated.resources.Res
 import kai.composeapp.generated.resources.chat_history_delete_content_description
 import kai.composeapp.generated.resources.chat_history_empty
@@ -60,8 +60,8 @@ import kai.composeapp.generated.resources.ic_history
 import kai.composeapp.generated.resources.snackbar_conversation_deleted
 import kai.composeapp.generated.resources.snackbar_undo
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.datetime.format.DateTimeFormatter
-import androidx.compose.ui.platform.LocalConfiguration
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
@@ -122,7 +122,7 @@ internal fun ChatHistorySheet(
                             state = historyListState,
                             contentPadding = PaddingValues(horizontal = 16.dp),
                             verticalArrangement = Arrangement.spacedBy(6.dp),
-                            overscrollBehavior = OverscrollBehavior(),
+
                         ) {
                             items(conversations, key = { it.id }) { conversation ->
                                 val isActive = conversation.id == currentConversationId
@@ -232,13 +232,15 @@ internal fun ChatHistorySheet(
     }
 }
 
-@Composable
-private fun formatDate(epochMillis: Long): String {
-    val locale = LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()
-    return try {
-        kotlinx.datetime.Instant.fromEpochMilliseconds(epochMillis)
-            .format(DateTimeFormatter.ofPattern("d MMM yyyy", locale))
-    } catch (_: Exception) {
-        ""
-    }
+private val historyMonthNames = listOf(
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+)
+
+private fun formatDate(epochMillis: Long): String = try {
+    val local = kotlinx.datetime.Instant.fromEpochMilliseconds(epochMillis)
+        .toLocalDateTime(TimeZone.currentSystemDefault())
+    "${local.day} ${historyMonthNames[local.monthNumber - 1]} ${local.year}"
+} catch (_: Exception) {
+    ""
 }

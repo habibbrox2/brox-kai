@@ -17,12 +17,12 @@ data class Rect(
  * OCR Language support.
  */
 enum class OcrLanguage {
-    LATIN,      // Latin script (English, etc.)
-    CHINESE,    // Chinese (Simplified/Traditional)
+    LATIN, // Latin script (English, etc.)
+    CHINESE, // Chinese (Simplified/Traditional)
     DEVANAGARI, // Devanagari script (Hindi, etc.)
-    JAPANESE,   // Japanese
-    KOREAN,     // Korean
-    AUTO,       // Auto-detect (Latin fallback)
+    JAPANESE, // Japanese
+    KOREAN, // Korean
+    AUTO, // Auto-detect (Latin fallback)
 }
 
 /**

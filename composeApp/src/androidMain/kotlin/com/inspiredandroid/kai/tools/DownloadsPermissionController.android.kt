@@ -22,7 +22,7 @@ import org.koin.java.KoinJavaComponent.inject
  * 2. MediaStore - media files (images, videos, audio) in Downloads folder
  * 3. Storage Access Framework (SAF) - user-selected files/folders
  * 4. READ_EXTERNAL_STORAGE (legacy, API ≤28)
- * 
+ *
  * IMPORTANT: No single source provides complete visibility into all downloads.
  * This controller honestly reports what sources are available and their limitations.
  */
@@ -75,8 +75,8 @@ class DownloadsPermissionController(private val context: Context) {
             coverage = DownloadsCoverage.PARTIAL,
             limitations = listOf(
                 "Only downloads initiated via DownloadManager API",
-                "Does not show files copied via file manager, USB, or other apps"
-            )
+                "Does not show files copied via file manager, USB, or other apps",
+            ),
         )
 
         // MediaStore for media files in Downloads
@@ -87,8 +87,8 @@ class DownloadsPermissionController(private val context: Context) {
                 coverage = DownloadsCoverage.MEDIA_ONLY,
                 limitations = listOf(
                     "Only media files (images, videos, audio)",
-                    "Does not show PDF, APK, ZIP, or other non-media files"
-                )
+                    "Does not show PDF, APK, ZIP, or other non-media files",
+                ),
             )
         } else if (hasLegacyStoragePermission()) {
             sources += DownloadsSourceInfo(
@@ -97,8 +97,8 @@ class DownloadsPermissionController(private val context: Context) {
                 coverage = DownloadsCoverage.MEDIA_ONLY,
                 limitations = listOf(
                     "Only media files (images, videos, audio)",
-                    "Requires READ_EXTERNAL_STORAGE permission"
-                )
+                    "Requires READ_EXTERNAL_STORAGE permission",
+                ),
             )
         }
 
@@ -109,8 +109,8 @@ class DownloadsPermissionController(private val context: Context) {
             coverage = DownloadsCoverage.USER_SELECTED,
             limitations = listOf(
                 "Requires user to select files/folders via picker",
-                "Access is per-URI and can be revoked by user"
-            )
+                "Access is per-URI and can be revoked by user",
+            ),
         )
 
         // Calculate overall coverage
@@ -123,7 +123,7 @@ class DownloadsPermissionController(private val context: Context) {
         return DownloadsAccessState(
             sources = sources,
             overallCoverage = overallCoverage,
-            hasLegacyPermission = hasLegacyStoragePermission()
+            hasLegacyPermission = hasLegacyStoragePermission(),
         )
     }
 
@@ -159,7 +159,7 @@ class DownloadsPermissionController(private val context: Context) {
                 projection,
                 selection,
                 selectionArgs,
-                null
+                null,
             )?.use { cursor ->
                 cursor.moveToFirst() // Just test if query executes
             }
@@ -194,5 +194,5 @@ class DownloadsPermissionController(private val context: Context) {
 data class DownloadsAccessState(
     val sources: List<DownloadsSourceInfo>,
     val overallCoverage: DownloadsCoverage,
-    val hasLegacyPermission: Boolean
+    val hasLegacyPermission: Boolean,
 )

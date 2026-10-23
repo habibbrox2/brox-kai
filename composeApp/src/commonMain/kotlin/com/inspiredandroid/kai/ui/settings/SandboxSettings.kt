@@ -23,7 +23,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
@@ -145,7 +144,7 @@ internal fun SandboxSettingsCard(
                 text = stringResource(
                     Res.string.settings_sandbox_migrate_detail,
                     migration.fileCount,
-                    formatFileSize(migration.bytes, LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()),
+                    formatFileSize(migration.bytes),
                 ),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,

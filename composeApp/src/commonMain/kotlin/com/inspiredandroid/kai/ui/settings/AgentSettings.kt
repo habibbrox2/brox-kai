@@ -33,15 +33,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import java.util.Locale
-import kotlinx.datetime.format.DateTimeFormatter
-import kotlinx.datetime.format.FormatStyle
 import com.inspiredandroid.kai.data.HeartbeatLogEntry
 import com.inspiredandroid.kai.data.MemoryEntry
 import com.inspiredandroid.kai.data.ScheduledTask
@@ -85,6 +81,7 @@ import kai.composeapp.generated.resources.settings_task_details_status
 import kai.composeapp.generated.resources.settings_task_details_trigger
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -655,7 +652,6 @@ private fun TaskDetailRow(label: String, value: String) {
 }
 
 @Composable
-@Composable
 private fun ExecutionLogRow(success: Boolean, timestampEpochMs: Long, message: String?) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
@@ -695,12 +691,9 @@ private fun EmptyLogText(text: String) {
     )
 }
 
-@Composable
 private fun formatTaskInstant(epochMs: Long): String {
     if (epochMs <= 0L) return "—"
-    val locale = LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()
     val instant = kotlinx.datetime.Instant.fromEpochMilliseconds(epochMs)
-    val zoned = instant.toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault())
-    val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, locale)
-    return zoned.format(formatter)
+    val local = instant.toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault())
+    return "${local.day}/${local.monthNumber}/${local.year} ${local.hour}:${local.minute.toString().padStart(2, '0')}"
 }

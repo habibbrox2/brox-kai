@@ -2,8 +2,6 @@
 
 package com.inspiredandroid.kai.ui.dynamicui
 
-import kotlin.uuid.Uuid
-
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -16,6 +14,7 @@ import kotlinx.serialization.json.booleanOrNull
 import kotlinx.serialization.json.doubleOrNull
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.longOrNull
+import kotlin.uuid.Uuid
 
 // Tolerant field-by-field builders that turn a JsonElement tree into a KaiUiNode.
 //
@@ -465,6 +464,7 @@ private fun parseTextInputNode(obj: JsonObject): TextInputNode = TextInputNode(
     placeholder = obj.readNullableString("placeholder"),
     value = obj.readNullableString("value"),
     multiline = obj.readNullableBoolean("multiline"),
+    type = obj.readNullableString("type"),
 )
 
 private fun parseCheckboxNode(obj: JsonObject): CheckboxNode = CheckboxNode(

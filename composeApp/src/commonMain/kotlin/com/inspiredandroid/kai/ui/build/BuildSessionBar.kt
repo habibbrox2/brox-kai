@@ -24,7 +24,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PaddingValues
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,6 +37,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.onKeyEvent
@@ -59,6 +61,7 @@ import kai.composeapp.generated.resources.kai_build_session_new_content_descript
 import kai.composeapp.generated.resources.kai_build_session_shell
 import kotlinx.collections.immutable.ImmutableList
 import org.jetbrains.compose.resources.stringResource
+import androidx.compose.ui.input.key.key
 
 /**
  * The terminal screen's only chrome: back out of the project, switch between the
@@ -101,7 +104,7 @@ internal fun BuildSessionBar(
             .padding(horizontal = 4.dp)
             .onKeyEvent { event ->
                 when (event.key) {
-                    Key.DpadLeft -> {
+                    Key.DirectionLeft -> {
                         focusedTabIndex = (focusedTabIndex - 1).coerceIn(0, tabCount - 1)
                         if (focusedTabIndex < sessions.size) {
                             onSelectSession(sessions[focusedTabIndex].id)
@@ -110,7 +113,7 @@ internal fun BuildSessionBar(
                         }
                         true
                     }
-                    Key.DpadRight -> {
+                    Key.DirectionRight -> {
                         focusedTabIndex = (focusedTabIndex + 1).coerceIn(0, tabCount - 1)
                         if (focusedTabIndex < sessions.size) {
                             onSelectSession(sessions[focusedTabIndex].id)
@@ -119,7 +122,7 @@ internal fun BuildSessionBar(
                         }
                         true
                     }
-                    Key.Enter, Key.NumpadEnter -> {
+                    Key.Enter, Key.NumPadEnter -> {
                         if (focusedTabIndex < sessions.size) {
                             onSelectSession(sessions[focusedTabIndex].id)
                         } else {
@@ -254,18 +257,19 @@ private fun SessionTab(
         focusRequester = focusRequester,
         isFocused = isFocused,
         onFocus = onFocus,
-    ) {
-        IconButton(onClick = onClose, modifier = Modifier.size(48.dp).handCursor()) {
-            Icon(
-                imageVector = Icons.Default.Close,
-                contentDescription = stringResource(
-                    Res.string.kai_build_session_close_content_description,
-                ),
-                tint = contentColor,
-                modifier = Modifier.size(14.dp),
-            )
-        }
-    }
+        trailing = {
+            IconButton(onClick = onClose, modifier = Modifier.size(48.dp).handCursor()) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = stringResource(
+                        Res.string.kai_build_session_close_content_description,
+                    ),
+                    tint = contentColor,
+                    modifier = Modifier.size(14.dp),
+                )
+            }
+        },
+    )
 }
 
 /** The strip's pill shape. [trailing] is shown only while selected — that is where a tab's close button goes. */
@@ -316,7 +320,7 @@ private fun TabPill(
             }
             .onKeyEvent { event ->
                 when (event.key) {
-                    Key.Enter, Key.NumpadEnter -> {
+                    Key.Enter, Key.NumPadEnter -> {
                         onSelect()
                         true
                     }

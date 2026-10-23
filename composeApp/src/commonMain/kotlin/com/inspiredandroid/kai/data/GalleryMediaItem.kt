@@ -54,16 +54,14 @@ data class GalleryMediaItem(
         get() = mimeType.startsWith("video/")
 
     /** ফাইলের আকার মানব-पঠনযোগ্য ফরম্যাটে রিটার্ন করে (KB, MB, GB) */
-    fun humanReadableSize(): String {
-        return when {
-            sizeBytes < 1024 -> "${sizeBytes} B"
-            sizeBytes < 1024 * 1024 -> "${(sizeBytes / 1024).toString()} KB"
-            sizeBytes < 1024 * 1024 * 1024 -> "${sizeBytes / (1024.0 * 1024)} MB"
-            else -> "${sizeBytes / (1024.0 * 1024 * 1024)} GB"
-        }
+    fun humanReadableSize(): String = when {
+        sizeBytes < 1024 -> "$sizeBytes B"
+        sizeBytes < 1024 * 1024 -> "${(sizeBytes / 1024)} KB"
+        sizeBytes < 1024 * 1024 * 1024 -> "${sizeBytes / (1024.0 * 1024)} MB"
+        else -> "${sizeBytes / (1024.0 * 1024 * 1024)} GB"
     }
 
     /** রেজোলিউশন স্ট্রিং রিটার্ন করে (উদাহরণ: "1920x1080") */
     val resolutionString: String?
-        get() = if (width != null && height != null) "${width}x${height}" else null
+        get() = if (width != null && height != null) "${width}x$height" else null
 }

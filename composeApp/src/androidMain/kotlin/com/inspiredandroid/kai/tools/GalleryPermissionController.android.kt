@@ -26,15 +26,16 @@ class GalleryPermissionController(private val context: Context) {
         val sdk = Build.VERSION.SDK_INT
         return when {
             sdk <= Build.VERSION_CODES.S_V2 -> hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+
             sdk >= Build.VERSION_CODES.TIRAMISU ->
                 hasPermission(Manifest.permission.READ_MEDIA_IMAGES) &&
                     hasPermission(Manifest.permission.READ_MEDIA_VIDEO)
+
             else -> false
         }
     }
 
-    private fun hasPermission(permission: String): Boolean =
-        ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
+    private fun hasPermission(permission: String): Boolean = ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
 
     /**
      * Checks if the app has access to the selected photos picker (Android 14+).
@@ -64,13 +65,11 @@ class GalleryPermissionController(private val context: Context) {
      * Checks if the app can access a specific media URI.
      * This is needed when accessing individual files via content URIs.
      */
-    fun canAccessMediaUri(uri: android.net.Uri): Boolean {
-        return try {
-            context.contentResolver.openFileDescriptor(uri, "r")?.use { it.close() }
-            true
-        } catch (_: Exception) {
-            false
-        }
+    fun canAccessMediaUri(uri: android.net.Uri): Boolean = try {
+        context.contentResolver.openFileDescriptor(uri, "r")?.use { it.close() }
+        true
+    } catch (_: Exception) {
+        false
     }
 
     /**
@@ -100,12 +99,15 @@ class GalleryPermissionController(private val context: Context) {
 enum class GalleryAccessState {
     /** Full access to all media via MediaStore */
     FULL,
+
     /** Only access to user-selected photos (Android 14+ picker) */
     SELECTED_PHOTOS_ONLY,
+
     /** No gallery access */
     NONE,
+
     /** Access was previously granted but has been revoked */
-    REVOKED
+    REVOKED,
 }
 
 /**

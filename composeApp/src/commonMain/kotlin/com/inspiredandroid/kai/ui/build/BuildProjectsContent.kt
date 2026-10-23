@@ -43,7 +43,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import com.inspiredandroid.kai.build.BuildAgent
 import com.inspiredandroid.kai.build.BuildAgents
@@ -52,10 +51,15 @@ import com.inspiredandroid.kai.build.KaiBuildState
 import com.inspiredandroid.kai.formatFileSize
 import com.inspiredandroid.kai.ui.components.KaiChip
 import com.inspiredandroid.kai.ui.handCursor
+import com.inspiredandroid.kai.ui.settings.SettingsCard
 import com.inspiredandroid.kai.ui.settings.SettingsShapes
 import kai.composeapp.generated.resources.Res
 import kai.composeapp.generated.resources.kai_build_new_project_title
 import kai.composeapp.generated.resources.kai_build_open_with
+import kai.composeapp.generated.resources.kai_build_projects_cancel_create
+import kai.composeapp.generated.resources.kai_build_projects_cancel_delete
+import kai.composeapp.generated.resources.kai_build_projects_cancel_rename
+import kai.composeapp.generated.resources.kai_build_projects_cancel_uninstall
 import kai.composeapp.generated.resources.kai_build_projects_create
 import kai.composeapp.generated.resources.kai_build_projects_empty
 import kai.composeapp.generated.resources.kai_build_projects_new_placeholder
@@ -461,15 +465,15 @@ private fun BuildSystemCard(
             Spacer(Modifier.height(12.dp))
             SystemInfoRow(
                 label = stringResource(Res.string.kai_build_system_disk_system),
-                value = formatFileSize(info.systemBytes, LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()),
+                value = formatFileSize(info.systemBytes),
             )
             SystemInfoRow(
                 label = stringResource(Res.string.kai_build_system_disk_projects),
-                value = formatFileSize(info.projectsBytes, LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()),
+                value = formatFileSize(info.projectsBytes),
             )
             SystemInfoRow(
                 label = stringResource(Res.string.kai_build_system_disk_free),
-                value = formatFileSize(info.freeBytes, LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()),
+                value = formatFileSize(info.freeBytes),
             )
         }
 

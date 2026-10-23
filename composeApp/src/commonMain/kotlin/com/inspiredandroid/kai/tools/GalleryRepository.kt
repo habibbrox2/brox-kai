@@ -62,10 +62,10 @@ interface GalleryRepository {
  * Gallery sort options.
  */
 enum class GallerySortBy {
-    NEWEST,     // Newest first (DATE_ADDED desc)
-    OLDEST,     // Oldest first (DATE_ADDED asc)
-    LARGEST,    // Largest file (SIZE desc)
-    SMALLEST,   // Smallest file (SIZE asc)
+    NEWEST, // Newest first (DATE_ADDED desc)
+    OLDEST, // Oldest first (DATE_ADDED asc)
+    LARGEST, // Largest file (SIZE desc)
+    SMALLEST, // Smallest file (SIZE asc)
     NAME_A_TO_Z, // Name A-Z
     NAME_Z_TO_A, // Name Z-A
 }

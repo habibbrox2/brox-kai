@@ -7,6 +7,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,7 +20,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PaddingValues
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -33,8 +33,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.semantics.Role
@@ -275,7 +278,10 @@ private fun SessionChipRow(viewModel: SandboxSessionViewModel) {
                 onClick = { viewModel.selectSession(tab.id) },
                 modifier = Modifier
                     .handCursor()
-                    .semantics { role = Role.Tab; selected = isSelected },
+                    .semantics {
+                        role = Role.Tab
+                        selected = isSelected
+                    },
                 colors = buttonColors,
                 shape = RoundedCornerShape(50),
                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp),
@@ -311,20 +317,23 @@ private fun SandboxSubTabSelector(
             .padding(4.dp)
             .onKeyEvent { event ->
                 when (event.key) {
-                    Key.DpadLeft -> {
+                    Key.DirectionLeft -> {
                         focusedTabIndex = (focusedTabIndex - 1).coerceIn(0, tabs.size - 1)
                         onSelectTab(tabs[focusedTabIndex])
                         true
                     }
-                    Key.DpadRight -> {
+
+                    Key.DirectionRight -> {
                         focusedTabIndex = (focusedTabIndex + 1).coerceIn(0, tabs.size - 1)
                         onSelectTab(tabs[focusedTabIndex])
                         true
                     }
-                    Key.Enter, Key.NumpadEnter -> {
+
+                    Key.Enter, Key.NumPadEnter -> {
                         onSelectTab(tabs[focusedTabIndex])
                         true
                     }
+
                     else -> false
                 }
             },
@@ -370,24 +379,30 @@ private fun SandboxSubTabSelector(
                     }
                     .onKeyEvent { event ->
                         when (event.key) {
-                            Key.DpadLeft -> {
+                            Key.DirectionLeft -> {
                                 focusedTabIndex = (focusedTabIndex - 1).coerceIn(0, tabs.size - 1)
                                 onSelectTab(tabs[focusedTabIndex])
                                 true
                             }
-                            Key.DpadRight -> {
+
+                            Key.DirectionRight -> {
                                 focusedTabIndex = (focusedTabIndex + 1).coerceIn(0, tabs.size - 1)
                                 onSelectTab(tabs[focusedTabIndex])
                                 true
                             }
-                            Key.Enter, Key.NumpadEnter -> {
+
+                            Key.Enter, Key.NumPadEnter -> {
                                 onSelectTab(tabs[focusedTabIndex])
                                 true
                             }
+
                             else -> false
                         }
                     }
-                    .semantics { role = Role.Tab; selected = isSelected },
+                    .semantics {
+                        role = Role.Tab
+                        selected = isSelected
+                    },
                 colors = buttonColors,
                 shape = RoundedCornerShape(50),
                 border = border,

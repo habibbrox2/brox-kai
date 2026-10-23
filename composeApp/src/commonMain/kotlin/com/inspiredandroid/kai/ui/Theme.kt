@@ -7,11 +7,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ImeAction
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.KeyboardType
-import androidx.compose.foundation.text.PasswordVisualTransformation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.CardColors
@@ -43,6 +40,9 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,13 +54,14 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 // ─── Core Brand Colors ───
 val broxNavy = Color(0xFF0B2B5B)
-val broxCyan = Color(0xFF00E5FF)  // Updated to Neon Cyan #00E5FF
+val broxCyan = Color(0xFF00E5FF) // Updated to Neon Cyan #00E5FF
 val broxDeepNavy = Color(0xFF06152E)
 val broxCharcoal = Color(0xFF1A1F2B)
 val broxLightSurface = Color(0xFFF5F8FC)
 val broxMutedText = Color(0xFF718096)
 
 // ─── Glassmorphism Design Tokens ───
+
 /** Ultra-deep OLED background — pure black #000000 */
 val OledBlack = Color.Black
 
@@ -162,16 +163,22 @@ val KaiTypography = Typography(
 object KaiShapes {
     /** Card / panel default radius */
     val card = RoundedCornerShape(16.dp)
+
     /** Section container radius */
     val section = RoundedCornerShape(20.dp)
+
     /** Row / item container radius */
     val row = RoundedCornerShape(12.dp)
+
     /** Pill / chip full radius */
     val pill = RoundedCornerShape(999.dp)
+
     /** Input field radius */
     val input = RoundedCornerShape(12.dp)
+
     /** Button radius */
     val button = RoundedCornerShape(999.dp)
+
     /** User message bubble */
     val userBubble = RoundedCornerShape(
         topStart = 20.dp,
@@ -179,14 +186,19 @@ object KaiShapes {
         bottomStart = 20.dp,
         bottomEnd = 20.dp,
     )
+
     /** Assistant message surface */
     val assistantSurface = RoundedCornerShape(16.dp)
+
     /** Status card */
     val statusCard = RoundedCornerShape(12.dp)
+
     /** Quick-start card */
     val quickStartCard = RoundedCornerShape(16.dp)
+
     /** Composer container */
     val composer = RoundedCornerShape(28.dp)
+
     /** Panel / sheet heading */
     val panel = RoundedCornerShape(20.dp)
 }
@@ -195,14 +207,19 @@ object KaiShapes {
 object KaiBorders {
     /** Subtle 0.5px hairline */
     val hairline = BorderStroke(0.5.dp, BorderSoft)
+
     /** Standard 1px soft outline */
     val soft = BorderStroke(1.dp, BorderSoft)
+
     /** Neon cyan accent border */
     val accent = BorderStroke(1.dp, AccentPrimary)
+
     /** Focused state border with glow */
     val focus = BorderStroke(1.dp, AccentPrimary.copy(alpha = 0.6f))
+
     /** Input focused border */
     val inputFocused = BorderStroke(1.dp, AccentPrimary)
+
     /** Disabled border */
     val disabled = BorderStroke(1.dp, BorderSoft.copy(alpha = 0.3f))
 }
@@ -211,10 +228,13 @@ object KaiBorders {
 object KaiElevation {
     /** Subtle card elevation — soft border + faint overlay */
     val level1 = BorderStroke(1.dp, BorderSoft.copy(alpha = 0.8f))
+
     /** Raised panel elevation — soft border + visible overlay */
     val level2 = BorderStroke(1.dp, BorderSoft.copy(alpha = 1.0f))
+
     /** Interactive element elevation — accent border + glow overlay */
     val level3 = BorderStroke(1.dp, AccentPrimary.copy(alpha = 0.4f))
+
     /** Modal / dialog elevation — accent border + strong glow */
     val level4 = BorderStroke(1.dp, AccentPrimary.copy(alpha = 0.6f))
 }
@@ -236,7 +256,7 @@ fun Modifier.handCursor() = pointerHoverIcon(PointerIcon.Hand, overrideDescendan
 @Composable
 fun Modifier.glassmorphicSurface(
     shape: Shape = KaiShapes.card,
-    elevation: Boolean = true
+    elevation: Boolean = true,
 ): Modifier = this
     .clip(shape)
     .background(CardFill, shape)
@@ -246,7 +266,7 @@ fun Modifier.glassmorphicSurface(
             Modifier.border(KaiElevation.level1, shape)
         } else {
             Modifier
-        }
+        },
     )
 
 /** Glassmorphic card with hover/focus glow */
@@ -261,7 +281,7 @@ fun Modifier.glassmorphicCard(
     .background(CardFill, shape)
     .border(
         if (isFocused || isHovered) KaiBorders.focus else KaiBorders.soft,
-        shape
+        shape,
     )
     .then(
         if (isInteractive && (isFocused || isHovered)) {
@@ -270,7 +290,7 @@ fun Modifier.glassmorphicCard(
             Modifier.border(KaiElevation.level1, shape)
         } else {
             Modifier
-        }
+        },
     )
 
 /** Cyan glow modifier for active/primary elements.

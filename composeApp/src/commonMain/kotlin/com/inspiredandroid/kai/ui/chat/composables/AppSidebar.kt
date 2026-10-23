@@ -134,7 +134,7 @@ fun AppSidebar(
                 } else {
                     androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
                 },
-                com.inspiredandroid.kai.ui.settings.SettingsShapes.section
+                com.inspiredandroid.kai.ui.settings.SettingsShapes.section,
             )
             .padding(ChatSpacing.sm),
         verticalArrangement = Arrangement.spacedBy(ChatSpacing.xs),
@@ -281,7 +281,7 @@ private fun ConversationRow(
         border = if (isSelected) {
             androidx.compose.foundation.BorderStroke(
                 1.dp,
-                com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.4f)
+                com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.4f),
             )
         } else {
             null
@@ -404,7 +404,7 @@ private fun SidebarLink(
     isActive: Boolean = false,
 ) {
     val isOled = MaterialTheme.colorScheme.isOledFlavor
-    
+
     Surface(
         onClick = onClick,
         shape = ChatShapes.quickStartCard,
@@ -416,7 +416,7 @@ private fun SidebarLink(
         border = if (isActive) {
             androidx.compose.foundation.BorderStroke(
                 1.dp,
-                com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.4f)
+                com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.4f),
             )
         } else {
             null

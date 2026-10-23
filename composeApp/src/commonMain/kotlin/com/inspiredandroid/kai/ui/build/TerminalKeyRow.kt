@@ -21,18 +21,20 @@ import androidx.compose.material.icons.filled.Terminal
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.PaddingValues
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.onKeyEvent
-import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,6 +50,15 @@ import kai.composeapp.generated.resources.kai_build_terminal_key_left_content_de
 import kai.composeapp.generated.resources.kai_build_terminal_key_right_content_description
 import kai.composeapp.generated.resources.kai_build_terminal_key_up_content_description
 import org.jetbrains.compose.resources.stringResource
+import androidx.compose.foundation.border
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.semantics.contentDescription
 
 /** Navigation caps, in the order a keyboard lays them out. */
 private val ArrowCaps = listOf(
@@ -263,9 +274,11 @@ private fun KeyCapSurface(
         disabledContentColor = tint.copy(alpha = 0.5f),
     )
 
-    val semanticsModifier = contentDescription?.let { desc ->
-        androidx.compose.ui.semantics.SemanticsProperties.contentDescription.set(desc)
-    } ?: Modifier
+    val semanticsModifier = if (contentDescription != null) {
+        Modifier.semantics { this.contentDescription = contentDescription }
+    } else {
+        Modifier
+    }
 
     val focusRequester = remember { FocusRequester() }
     var isFocused by remember { mutableStateOf(false) }
@@ -285,7 +298,7 @@ private fun KeyCapSurface(
             }
             .onKeyEvent { event ->
                 when (event.key) {
-                    Key.Enter, Key.NumpadEnter, Key.Space -> {
+                    Key.Enter, Key.NumPadEnter, Key.Spacebar -> {
                         onClick()
                         true
                     }

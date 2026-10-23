@@ -1,6 +1,7 @@
 package com.inspiredandroid.kai.ui.components
 
 import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
@@ -15,7 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.inspiredandroid.kai.ui.AccentPrimary
-import androidx.compose.animation.core.RepeatMode
 
 /**
  * Cross-platform loading spinner styled for the Futuristic Midnight Glassmorphism design system.

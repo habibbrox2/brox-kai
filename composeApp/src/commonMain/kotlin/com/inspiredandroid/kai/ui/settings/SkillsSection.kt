@@ -27,8 +27,9 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TooltipBox
-import androidx.compose.material3.tooltip
+import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -39,6 +40,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -166,6 +169,7 @@ internal fun SkillsSection(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SkillCard(
     skill: SkillManifest,
@@ -199,7 +203,9 @@ private fun SkillCard(
                     }
                 }
                 TooltipBox(
+                    positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
                     tooltip = { Text(text = skill.description, style = MaterialTheme.typography.bodyMedium) },
+                    state = rememberTooltipState(),
                 ) {
                     Text(
                         text = skill.description,
@@ -423,6 +429,7 @@ private fun AddSkillDialog(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun RegistrySkillRow(
     entry: RegistrySkillEntry,
@@ -452,7 +459,9 @@ private fun RegistrySkillRow(
                     fontWeight = FontWeight.Medium,
                 )
                 TooltipBox(
+                    positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
                     tooltip = { Text(text = entry.description, style = MaterialTheme.typography.bodyMedium) },
+                    state = rememberTooltipState(),
                 ) {
                     Text(
                         text = entry.description,

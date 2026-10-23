@@ -35,14 +35,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import java.util.Locale
-import kotlinx.datetime.format.DateTimeFormatter
-import kotlinx.datetime.format.FormatStyle
 import com.inspiredandroid.kai.data.EmailAccount
 import com.inspiredandroid.kai.data.EmailSyncState
 import com.inspiredandroid.kai.data.HeartbeatLogEntry
@@ -55,8 +51,22 @@ import com.inspiredandroid.kai.ui.components.RefreshIconButton
 import com.inspiredandroid.kai.ui.components.SettingsListItem
 import com.inspiredandroid.kai.ui.handCursor
 import kai.composeapp.generated.resources.Res
+import kai.composeapp.generated.resources.cron_daily_at
+import kai.composeapp.generated.resources.cron_day_friday
+import kai.composeapp.generated.resources.cron_day_monday
+import kai.composeapp.generated.resources.cron_day_saturday
+import kai.composeapp.generated.resources.cron_day_sunday
+import kai.composeapp.generated.resources.cron_day_thursday
+import kai.composeapp.generated.resources.cron_day_tuesday
+import kai.composeapp.generated.resources.cron_day_wednesday
+import kai.composeapp.generated.resources.cron_monthly_on_day
+import kai.composeapp.generated.resources.cron_weekly_at
 import kai.composeapp.generated.resources.execution_log_status_fail
 import kai.composeapp.generated.resources.execution_log_status_ok
+import kai.composeapp.generated.resources.relative_time_days
+import kai.composeapp.generated.resources.relative_time_hours
+import kai.composeapp.generated.resources.relative_time_just_now
+import kai.composeapp.generated.resources.relative_time_minutes
 import kai.composeapp.generated.resources.settings_email
 import kai.composeapp.generated.resources.settings_email_description
 import kai.composeapp.generated.resources.settings_email_empty
@@ -106,14 +116,15 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import kotlinx.datetime.LocalDateTime
+import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import kotlin.math.roundToInt
 import kotlin.time.Clock
-import kotlin.time.Instant
 
 @Composable
 internal fun HeartbeatSection(
@@ -181,10 +192,10 @@ internal fun HeartbeatSection(
 
             var activeStart by remember(activeHoursStart) { mutableStateOf(activeHoursStart.toFloat()) }
             var activeEnd by remember(activeHoursEnd) { mutableStateOf(activeHoursEnd.toFloat()) }
-            val locale = LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()
-            val timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT, locale)
-            val startDisplay = LocalDateTime(2000, 1, 1, activeStart.roundToInt() % 24, 0).format(timeFormatter)
-            val endDisplay = LocalDateTime(2000, 1, 1, activeEnd.roundToInt() % 24, 0).format(timeFormatter)
+            val startHour = activeStart.roundToInt() % 24
+            val endHour = activeEnd.roundToInt() % 24
+            val startDisplay = "$startHour:00"
+            val endDisplay = "$endHour:00"
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -760,30 +771,30 @@ internal fun NotificationsSection(
 
 @Composable
 private fun formatPollRelative(diffMs: Long): String {
-    val locale = LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()
     val clamped = diffMs.coerceAtLeast(0L)
     val minutes = clamped / 60_000L
     val hours = minutes / 60L
     val days = hours / 24L
     return when {
         minutes < 1L ->
-            stringResource(Res.plurals.relative_time_just_now, 1)
+            pluralStringResource(Res.plurals.relative_time_just_now, 1, 1)
+
         minutes < 60L ->
-            stringResource(Res.plurals.relative_time_minutes, minutes, minutes)
+            pluralStringResource(Res.plurals.relative_time_minutes, minutes.toInt(), minutes)
+
         hours < 24L ->
-            stringResource(Res.plurals.relative_time_hours, hours, hours)
+            pluralStringResource(Res.plurals.relative_time_hours, hours.toInt(), hours)
+
         else ->
-            stringResource(Res.plurals.relative_time_days, days, days)
+            pluralStringResource(Res.plurals.relative_time_days, days.toInt(), days)
     }
 }
 
-@Composable
 private fun formatHeartbeatTime(epochMs: Long): String {
-    val locale = LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()
+    if (epochMs <= 0L) return "—"
     val instant = kotlinx.datetime.Instant.fromEpochMilliseconds(epochMs)
-    val zoned = instant.toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault())
-    val formatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT, locale)
-    return zoned.format(formatter)
+    val local = instant.toLocalDateTime(TimeZone.currentSystemDefault())
+    return "${local.day}/${local.monthNumber}/${local.year} ${local.hour}:${local.minute.toString().padStart(2, '0')}"
 }
 
 @Composable
@@ -804,10 +815,11 @@ internal fun describeCron(cron: String): String {
 
         isEveryWeekday -> {
             val days = dayOfWeek.split(",").mapNotNull { dayName(it.trim()) }
-            if (days.isNotEmpty())
+            if (days.isNotEmpty()) {
                 stringResource(Res.string.cron_weekly_at, days.joinToString(", "), timeStr)
-            else
+            } else {
                 cron
+            }
         }
 
         isEveryMonth ->
@@ -823,6 +835,7 @@ private fun formatCronTime(hour: String, minute: String): String? {
     return "$h:${m.toString().padStart(2, '0')}"
 }
 
+@Composable
 private fun dayName(day: String): String? = when (day) {
     "0", "7" -> stringResource(Res.string.cron_day_sunday)
     "1" -> stringResource(Res.string.cron_day_monday)

@@ -42,13 +42,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import com.inspiredandroid.kai.ui.AccentPrimary
 import com.inspiredandroid.kai.ui.chat.ChatShapes
 import com.inspiredandroid.kai.ui.chat.ChatSpacing
 import com.inspiredandroid.kai.ui.components.LogoAnimation
 import com.inspiredandroid.kai.ui.components.animatedGradientBorder
 import com.inspiredandroid.kai.ui.handCursor
 import com.inspiredandroid.kai.ui.isOledFlavor
-import com.inspiredandroid.kai.ui.AccentPrimary
 import kai.composeapp.generated.resources.Res
 import kai.composeapp.generated.resources.privacy_agree_prefix
 import kai.composeapp.generated.resources.privacy_policy
@@ -157,7 +157,7 @@ private fun QuickStartCard(
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
     val isOled = MaterialTheme.colorScheme.isOledFlavor
-    
+
     val cardBg = if (isOled) {
         com.inspiredandroid.kai.ui.CardFill
     } else {

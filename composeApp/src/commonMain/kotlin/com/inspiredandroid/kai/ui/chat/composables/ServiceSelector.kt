@@ -3,6 +3,7 @@ package com.inspiredandroid.kai.ui.chat.composables
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -30,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -38,8 +40,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
@@ -52,9 +57,9 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
 import androidx.compose.ui.window.PopupProperties
 import com.inspiredandroid.kai.data.ServiceEntry
-import com.inspiredandroid.kai.ui.settings.SettingsModel
 import com.inspiredandroid.kai.ui.handCursor
 import com.inspiredandroid.kai.ui.isOledFlavor
+import com.inspiredandroid.kai.ui.settings.SettingsModel
 import kai.composeapp.generated.resources.Res
 import kai.composeapp.generated.resources.settings_model_label
 import kai.composeapp.generated.resources.settings_model_loading
@@ -220,8 +225,8 @@ internal fun ServiceSelector(
                                 if (event.key == Key.Escape) {
                                     expanded = false
                                     true
-                                } else if (event.key == Key.Tab || event.key == Key.DpadDown || event.key == Key.DpadUp) {
-                                    val direction = if (event.key == Key.DpadUp) -1 else 1
+                                } else if (event.key == Key.Tab || event.key == Key.DirectionDown || event.key == Key.DirectionUp) {
+                                    val direction = if (event.key == Key.DirectionUp) -1 else 1
                                     focusedIndex = (focusedIndex + direction).coerceIn(0, focusableItemCount - 1)
                                     true
                                 } else {
@@ -258,7 +263,7 @@ internal fun ServiceSelector(
                                         },
                                         modifier = Modifier
                                             .focusable()
-                                            .onFocusChanged { focusedIndex = if (focused.isFocused) index else focusedIndex }
+                                            .onFocusChanged { focus -> focusedIndex = if (focus.isFocused) index else focusedIndex }
                                             .focusRequester(if (index == 0) popupFocusRequester else FocusRequester()),
                                     )
                                     itemIndex++
@@ -303,7 +308,7 @@ internal fun ServiceSelector(
                                         },
                                         modifier = Modifier
                                             .focusable()
-                                            .onFocusChanged { focusedIndex = if (focused.isFocused) index else focusedIndex }
+                                            .onFocusChanged { focus -> focusedIndex = if (focus.isFocused) index else focusedIndex }
                                             .focusRequester(if (index == 0 && models.isEmpty() && !isLoadingModels) popupFocusRequester else FocusRequester()),
                                     )
                                     itemIndex++

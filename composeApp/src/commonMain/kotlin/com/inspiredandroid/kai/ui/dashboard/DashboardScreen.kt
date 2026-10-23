@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
@@ -32,7 +33,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PaddingValues
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -47,7 +47,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.compose.ui.platform.LocalConfiguration
 import com.inspiredandroid.kai.BackIcon
 import com.inspiredandroid.kai.KaiBuildController
 import com.inspiredandroid.kai.SandboxController
@@ -55,29 +54,23 @@ import com.inspiredandroid.kai.ui.chat.ChatUiState
 import com.inspiredandroid.kai.ui.chat.ConversationSummary
 import com.inspiredandroid.kai.ui.components.CollectionEmptyState
 import com.inspiredandroid.kai.ui.components.OperationalStatus
-import com.inspiredandroid.kai.ui.components.OperationalStatusColors
 import com.inspiredandroid.kai.ui.components.StatusBadge
+import com.inspiredandroid.kai.ui.components.rememberOperationalStatusColors
 import com.inspiredandroid.kai.ui.handCursor
 import com.inspiredandroid.kai.ui.kaiAdaptiveCardBorder
 import com.inspiredandroid.kai.ui.kaiAdaptiveCardColors
 import com.inspiredandroid.kai.ui.settings.SettingsTab
-import java.util.Locale
 import kai.composeapp.generated.resources.Res
 import kai.composeapp.generated.resources.logo
-import kotlinx.datetime.format.DateTimeFormatter
-import kotlinx.datetime.format.DateTimeFormatterComposer
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 
-@Composable
-private fun formatDashboardDate(epochMillis: Long): String {
-    val locale = LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()
-    return try {
-        kotlinx.datetime.Instant.fromEpochMilliseconds(epochMillis)
-            .format(DateTimeFormatter.ofPattern("d MMM yyyy", locale))
-    } catch (_: Exception) {
-        ""
-    }
+private fun formatDashboardDate(epochMillis: Long): String = try {
+    kotlinx.datetime.Instant.fromEpochMilliseconds(epochMillis)
+        .toString()
+        .take(10)
+} catch (_: Exception) {
+    ""
 }
 
 @Composable
@@ -398,6 +391,7 @@ private fun DashboardActionCard(
     action: DashboardAction,
     modifier: Modifier = Modifier,
 ) {
+    val statusColors = rememberOperationalStatusColors()
     val container = if (action.isPrimary) {
         MaterialTheme.colorScheme.primary.copy(alpha = 0.14f)
     } else {
@@ -480,7 +474,7 @@ private fun DashboardActionCard(
                         Text(
                             text = action.disabledNote,
                             style = MaterialTheme.typography.labelSmall,
-                            color = OperationalStatusColors.needsSetup,
+                            color = statusColors.needsSetup,
                         )
                     }
                 }
@@ -533,7 +527,7 @@ private fun DashboardActionCard(
                         Text(
                             text = action.disabledNote,
                             style = MaterialTheme.typography.labelSmall,
-                            color = OperationalStatusColors.needsSetup,
+                            color = statusColors.needsSetup,
                         )
                     }
                 }

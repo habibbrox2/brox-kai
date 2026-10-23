@@ -19,14 +19,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.KeyboardType
-import androidx.compose.foundation.text.PasswordVisualTransformation
-import androidx.compose.foundation.text.ImeAction
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
@@ -51,9 +51,10 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TooltipBox
-import androidx.compose.material3.tooltip
+import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
@@ -67,18 +68,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withLink
@@ -170,10 +175,8 @@ import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableList
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import sh.calvin.reorderable.ReorderableItem
-import sh.calvin.reorderable.draggableHandle
+import sh.calvin.reorderable.rememberReorderableLazyListState
 import kotlin.math.roundToInt
 
 @Composable
@@ -636,29 +639,18 @@ internal fun ServicesContent(uiState: SettingsUiState, actions: SettingsActions)
 
     // LazyColumn with reordering support for better performance with many services
     val listState = rememberLazyListState()
-    var reorderFromIndex by remember { mutableStateOf(-1) }
-    var reorderToIndex by remember { mutableStateOf(-1) }
+    val reorderableState = rememberReorderableLazyListState(listState) { from, to ->
+        val ids = entries.map { it.instanceId }.toMutableList()
+        ids.add(to.index, ids.removeAt(from.index))
+        actions.onReorderServices(ids)
+    }
     LazyColumn(
         state = listState,
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(entries, key = { it.instanceId }) { entry ->
-            val index = entries.indexOf(entry)
-            val isDragging = index == reorderFromIndex
-            val dragHandle = if (entries.size >= 2) Modifier.draggableHandle() else Modifier
-            ReorderableItem(
-                onDragStart = { reorderFromIndex = index },
-                onDragEnd = { targetIndex ->
-                    reorderToIndex = targetIndex
-                    if (reorderFromIndex != reorderToIndex) {
-                        val ids = entries.map { it.instanceId }.toMutableList()
-                        ids.add(reorderToIndex, ids.removeAt(reorderFromIndex))
-                        actions.onReorderServices(ids)
-                    }
-                    reorderFromIndex = -1
-                    reorderToIndex = -1
-                },
-            ) {
+            ReorderableItem(reorderableState, key = entry.instanceId) { isDragging ->
+                val dragHandle = if (entries.size >= 2) Modifier.draggableHandle() else Modifier
                 ConfiguredServiceCardContent(
                     entry = entry,
                     isExpanded = uiState.expandedServiceId == entry.instanceId,
@@ -693,7 +685,7 @@ internal fun ServicesContent(uiState: SettingsUiState, actions: SettingsActions)
                 )
             }
         }
-        
+
         // Add service button and free tier as footer items
         item {
             if (uiState.availableServicesToAdd.isNotEmpty()) {
@@ -1021,7 +1013,9 @@ private fun ConfiguredServiceCardContent(
                     }
                     if (displayModelId != null) {
                         TooltipBox(
+                            positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
                             tooltip = { Text(text = displayModelId, style = MaterialTheme.typography.bodyMedium) },
+                            state = rememberTooltipState(),
                         ) {
                             Text(
                                 text = displayModelId,
@@ -1203,7 +1197,7 @@ private fun OpenAICompatibleSettings(
         },
         singleLine = true,
         keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Url,
+            keyboardType = KeyboardType.Uri,
             imeAction = ImeAction.Done,
         ),
     )
@@ -1500,9 +1494,8 @@ private fun LiteRTSettings(
 
     Spacer(Modifier.height(8.dp))
 
-    val locale = LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()
     Text(
-        text = stringResource(Res.string.litert_free_space, formatFileSize(freeSpaceBytes, locale)),
+        text = stringResource(Res.string.litert_free_space, formatFileSize(freeSpaceBytes)),
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
@@ -1568,9 +1561,8 @@ private fun LocalModelCard(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        val locale = LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()
                         Text(
-                            text = formatFileSize(model.sizeBytes, locale),
+                            text = formatFileSize(model.sizeBytes),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )

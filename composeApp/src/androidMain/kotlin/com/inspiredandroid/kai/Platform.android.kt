@@ -89,6 +89,17 @@ actual val currentPlatform: Platform = Platform.Mobile.Android
 
 actual val defaultUiScale: Float = 1.0f
 
+actual fun prefersReducedMotion(): Boolean = try {
+    val context: Context by inject(Context::class.java)
+    android.provider.Settings.Global.getFloat(
+        context.contentResolver,
+        android.provider.Settings.Global.ANIMATOR_DURATION_SCALE,
+        1f,
+    ) == 0f
+} catch (_: Exception) {
+    false
+}
+
 actual val isEmailSupported: Boolean = true
 
 // Evaluated lazily because we need the Koin-injected Context. Whether READ_SMS

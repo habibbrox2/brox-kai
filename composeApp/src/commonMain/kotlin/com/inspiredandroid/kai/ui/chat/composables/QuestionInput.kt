@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -36,6 +37,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,7 +53,6 @@ import androidx.compose.ui.input.key.isShiftPressed
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.TextRange
@@ -62,6 +63,7 @@ import com.inspiredandroid.kai.Platform
 import com.inspiredandroid.kai.currentPlatform
 import com.inspiredandroid.kai.data.ServiceEntry
 import com.inspiredandroid.kai.data.imageExtensions
+import com.inspiredandroid.kai.prefersReducedMotion
 import com.inspiredandroid.kai.skills.SkillManifest
 import com.inspiredandroid.kai.ui.gradientBrush
 import com.inspiredandroid.kai.ui.handCursor
@@ -123,7 +125,7 @@ internal fun TrailingIcon(
     isPulsing: Boolean = false,
     contentDescription: String,
 ) {
-    val prefersReducedMotion = LocalConfiguration.current.prefersReducedMotion
+    val prefersReducedMotion = prefersReducedMotion()
     val pulseModifier = if (isPulsing && !prefersReducedMotion) {
         val infiniteTransition = rememberInfiniteTransition()
         val pulseScale by infiniteTransition.animateFloat(
@@ -306,6 +308,8 @@ fun QuestionInput(
         }
 
         val focusRequester = remember { FocusRequester() }
+        // Upper bound for the composer field; the pill surface already caps total height.
+        val maxComposerHeight = 240.dp
 
         // Floating glassmorphic input pill
         val isOled = MaterialTheme.colorScheme.isOledFlavor
@@ -323,7 +327,7 @@ fun QuestionInput(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .padding(horizontal = 16.dp, vertical = 12.dp),
         ) {
             Surface(
                 modifier = Modifier

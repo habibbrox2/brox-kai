@@ -56,7 +56,9 @@ internal fun toSandboxPath(uri: String): String? {
                 rest
             }
         }
+
         uri.startsWith("/") -> uri
+
         else -> return null
     }
     if (!raw.startsWith("/")) return null

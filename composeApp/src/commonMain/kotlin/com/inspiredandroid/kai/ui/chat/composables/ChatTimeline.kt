@@ -26,13 +26,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.inspiredandroid.kai.BackIcon
@@ -82,7 +86,7 @@ fun ChatTimeline(
 
     val lastAssistantId = remember(uiState.history) { uiState.history.lastRenderedAssistant()?.id }
     // Scroll to bottom & speak only when a NEW assistant message is appended (not on clear, regenerate, etc.)
-    val lastScrollId by remember { mutableStateOf(lastAssistantId) }
+    var lastScrollId by remember { mutableStateOf(lastAssistantId) }
     LaunchedEffect(lastAssistantId) {
         if (lastScrollId == lastAssistantId) return@LaunchedEffect
         lastScrollId = lastAssistantId
@@ -111,7 +115,7 @@ fun ChatTimeline(
     val pairings = remember(uiState.history, uiState.isLoading) {
         val history = uiState.history
         val lastUserIdx = history.indexOfLast { it.role == History.Role.USER }
-        
+
         val frozen = history
             .withIndex()
             .filter { (_, h) -> h.role == History.Role.USER }
@@ -136,7 +140,7 @@ fun ChatTimeline(
                 )
             }
             .toMap()
-        
+
         val userIdByAssistant = history
             .withIndex()
             .filter { (_, h) -> h.role == History.Role.USER }
@@ -156,7 +160,7 @@ fun ChatTimeline(
                 originId to h.id
             }
             .toMap()
-        
+
         frozen to userIdByAssistant
     }
     val frozenByAssistantId = pairings.first
@@ -171,7 +175,7 @@ fun ChatTimeline(
 
     val (reasoningSegmentsByAssistantId, suppressedThinkingIds) = remember(uiState.history) {
         val history = uiState.history
-        
+
         val byAnswerId = history
             .withIndex()
             .filter { (_, e) ->
@@ -185,16 +189,16 @@ fun ChatTimeline(
                     .filter { it.role == History.Role.ASSISTANT && it.isThinking && it.content.isNotEmpty() }
                     .map { it.content }
                     .reversed()
-                
+
                 val combined = buildList {
                     addAll(thinkingPrefix)
                     e.reasoningContent?.takeIf { it.isNotBlank() }?.let { add(it) }
                 }
-                
+
                 if (combined.isNotEmpty()) e.id to combined.toImmutableList() else null
             }
             .toMap()
-        
+
         val suppressed = history
             .withIndex()
             .filter { (_, e) ->
@@ -205,7 +209,7 @@ fun ChatTimeline(
             }
             .map { (_, e) -> e.id }
             .toSet()
-        
+
         byAnswerId to suppressed
     }
 

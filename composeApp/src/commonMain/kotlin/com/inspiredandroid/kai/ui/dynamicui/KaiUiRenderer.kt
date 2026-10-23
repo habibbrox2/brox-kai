@@ -42,6 +42,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
@@ -201,11 +202,6 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.foundation.text.AutofillType
-import androidx.compose.foundation.text.ImeAction
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.KeyboardType
-import androidx.compose.foundation.text.PasswordVisualTransformation
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -216,18 +212,22 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.hideFromAccessibility
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
-import java.text.NumberFormat
-import java.util.Locale
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.inspiredandroid.kai.ui.KaiOutlinedTextField
@@ -638,17 +638,9 @@ private fun RenderTextInput(
                 "url" -> KeyboardType.Uri
                 else -> KeyboardType.Text
             },
-            imeAction = if (node.multiline == true) ImeAction.Newline else ImeAction.Done,
-            visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
+            imeAction = if (node.multiline == true) ImeAction.Default else ImeAction.Done,
         ),
-        autofillType = when (node.type) {
-            "email" -> AutofillType.Email
-            "password" -> AutofillType.Password
-            "username" -> AutofillType.Username
-            "new-password" -> AutofillType.NewPassword
-            "one-time-code" -> AutofillType.OneTimeCode
-            else -> AutofillType.Text
-        },
+        visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
     )
 }
 
@@ -671,16 +663,20 @@ private fun RenderCheckbox(
     ) {
         Checkbox(
             checked = checked,
-            onCheckedChange = if (isInteractive) { newChecked ->
-                formState[node.id] = newChecked.toString()
-            } else null,
+            onCheckedChange = if (isInteractive) {
+                { newChecked ->
+                    formState[node.id] = newChecked.toString()
+                }
+            } else {
+                null
+            },
             enabled = isInteractive,
             modifier = Modifier
                 .size(24.dp)
                 .semantics {
                     contentDescription = node.label
                     // Hide from accessibility since parent row merges descendants
-                    hidden = true
+                    hideFromAccessibility()
                 },
         )
         Text(
@@ -724,7 +720,7 @@ private fun RenderSelect(
                 .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
                 .handCursor()
                 .semantics {
-                    role = Role.ComboBox
+                    role = Role.DropdownList
                     contentDescription = if (selected.isNotEmpty()) {
                         "Selected: $selected. Double tap to open dropdown."
                     } else {
@@ -785,7 +781,7 @@ private fun RenderTable(node: TableNode) {
         Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .horizontalScroll(scrollState)
+            .horizontalScroll(scrollState),
     ) {
         if (node.headers.isNotEmpty()) {
             Row(Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
@@ -872,15 +868,19 @@ private fun RenderSwitch(
         )
         Switch(
             checked = checked,
-            onCheckedChange = if (isInteractive) { newChecked ->
-                formState[node.id] = newChecked.toString()
-            } else null,
+            onCheckedChange = if (isInteractive) {
+                { newChecked ->
+                    formState[node.id] = newChecked.toString()
+                }
+            } else {
+                null
+            },
             enabled = isInteractive,
             modifier = Modifier
                 .size(24.dp)
                 .semantics {
                     contentDescription = node.label
-                    hidden = true
+                    hideFromAccessibility()
                 },
         )
     }
@@ -927,7 +927,7 @@ private fun RenderSlider(
                 .fillMaxWidth()
                 .handCursor()
                 .semantics {
-                    role = Role.Slider
+                    role = Role.ValuePicker
                     contentDescription = "${node.label ?: "Slider"}: $valueDescription. Range $min to $max."
                 },
             colors = SliderDefaults.colors(
@@ -959,36 +959,22 @@ private fun RenderSlider(
     }
 }
 
-@Composable
 private fun formatSliderValue(value: Float, step: Float?): String {
-    val locale = LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()
-    return formatSliderValue(value, step, locale)
-}
-
-private fun formatSliderValue(value: Float, step: Float?, locale: Locale): String {
-    val nf = NumberFormat.getNumberInstance(locale)
-    nf.maximumFractionDigits = 6
-    nf.minimumFractionDigits = 0
     if (step != null && step > 0) {
         val rounded = kotlin.math.round(value / step) * step
         if (rounded == rounded.toLong().toFloat()) {
-            return nf.format(rounded.toLong())
+            return rounded.toLong().toString()
         }
-        // Determine decimal places from step (e.g. step=0.1 → 1 decimal)
         val stepStr = step.toString()
         val decimals = stepStr.substringAfter('.', "").trimEnd('0').length.coerceIn(1, 6)
-        nf.maximumFractionDigits = decimals
         var factor = 1f
         repeat(decimals) { factor *= 10f }
-        return nf.format(kotlin.math.round(rounded * factor) / factor)
+        return (kotlin.math.round(rounded * factor) / factor).toString()
     }
     return if (value == value.toLong().toFloat()) {
-        nf.format(value.toLong())
+        value.toLong().toString()
     } else {
-        nf.maximumFractionDigits = 2
-        nf.minimumFractionDigits = 0
-        val rounded = kotlin.math.round(value * 100.0f) / 100.0f
-        nf.format(rounded)
+        value.toString()
     }
 }
 
@@ -1002,8 +988,8 @@ private fun RenderRadioGroup(
     Column(
         Modifier
             .fillMaxWidth()
-            .semantics {
-                role = Role.RadioGroup
+            .semantics(mergeDescendants = false) {
+                // A radio group is exposed through its individual radio buttons.
             },
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
@@ -1029,10 +1015,14 @@ private fun RenderRadioGroup(
                 ) {
                     RadioButton(
                         selected = isSelected,
-                        onClick = if (isInteractive) { formState[node.id] = option } else null,
+                        onClick = if (isInteractive) {
+                            { formState[node.id] = option }
+                        } else {
+                            null
+                        },
                         enabled = isInteractive,
                         modifier = Modifier.semantics {
-                            hidden = true
+                            hideFromAccessibility()
                         },
                     )
                     Text(
@@ -1297,6 +1287,7 @@ private fun RenderIcon(node: IconNode) {
 @Composable
 private fun RenderCode(node: CodeNode) {
     val copyToClipboard = rememberCopyToClipboard()
+    val copyCodeDescription = stringResource(Res.string.kai_ui_code_copy)
     Surface(
         color = MaterialTheme.colorScheme.surfaceVariant,
         shape = RoundedCornerShape(8.dp),
@@ -1328,12 +1319,12 @@ private fun RenderCode(node: CodeNode) {
                     .align(Alignment.TopEnd)
                     .size(28.dp)
                     .clip(RoundedCornerShape(6.dp))
-                    .handCursor(),
-                contentDescription = stringResource(Res.string.kai_ui_code_copy),
+                    .handCursor()
+                    .semantics { contentDescription = copyCodeDescription },
             ) {
                 Icon(
                     imageVector = Icons.Filled.ContentCopy,
-                    contentDescription = stringResource(Res.string.kai_ui_code_copy),
+                    contentDescription = copyCodeDescription,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(16.dp),
                 )
@@ -1799,7 +1790,7 @@ private fun initializeFormState(node: KaiUiNode, formState: MutableMap<String, S
 
         is SwitchNode -> if (node.id !in formState) formState[node.id] = (node.checked ?: false).toString()
 
-        is SliderNode -> if (node.id !in formState) formState[node.id] = formatSliderValue(node.value ?: node.min ?: 0f, node.step, Locale.getDefault())
+        is SliderNode -> if (node.id !in formState) formState[node.id] = formatSliderValue(node.value ?: node.min ?: 0f, node.step)
 
         is RadioGroupNode -> node.selected?.let { if (node.id !in formState) formState[node.id] = it }
 

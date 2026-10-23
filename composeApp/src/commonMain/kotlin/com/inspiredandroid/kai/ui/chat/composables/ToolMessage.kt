@@ -28,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -35,7 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
@@ -43,6 +43,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.inspiredandroid.kai.prefersReducedMotion
 import kai.composeapp.generated.resources.Res
 import kai.composeapp.generated.resources.tools_count
 import kai.composeapp.generated.resources.waiting_brewing
@@ -112,39 +113,31 @@ internal fun PulsingStatusIndicator(
     modifier: Modifier = Modifier,
     isStatusOnly: Boolean = false,
 ) {
-    val prefersReducedMotion = LocalConfiguration.current.prefersReducedMotion
-    
-    val pulseScale by remember {
-        if (!prefersReducedMotion) {
-            val infiniteTransition = rememberInfiniteTransition()
-            infiniteTransition.animateFloat(
-                initialValue = 0.6f,
-                targetValue = 1.0f,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(durationMillis = 800, easing = FastOutSlowInEasing),
-                    repeatMode = RepeatMode.Reverse,
-                ),
-            )
-        } else {
-            // Static state for reduced motion
-            mutableStateOf(1.0f)
-        }
-    }
-    val pulseAlpha by remember {
-        if (!prefersReducedMotion) {
-            val infiniteTransition = rememberInfiniteTransition()
-            infiniteTransition.animateFloat(
-                initialValue = 0.4f,
-                targetValue = 1.0f,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(durationMillis = 800, easing = FastOutSlowInEasing),
-                    repeatMode = RepeatMode.Reverse,
-                ),
-            )
-        } else {
-            // Static state for reduced motion
-            mutableStateOf(1.0f)
-        }
+    val reducedMotion = prefersReducedMotion()
+
+    val infiniteTransition = if (reducedMotion) null else rememberInfiniteTransition(label = "toolStatusPulse")
+    val pulseScale: Float
+    val pulseAlpha: Float
+    if (infiniteTransition == null) {
+        pulseScale = 1.0f
+        pulseAlpha = 1.0f
+    } else {
+        pulseScale = infiniteTransition.animateFloat(
+            initialValue = 0.6f,
+            targetValue = 1.0f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(durationMillis = 800, easing = FastOutSlowInEasing),
+                repeatMode = RepeatMode.Reverse,
+            ),
+        ).value
+        pulseAlpha = infiniteTransition.animateFloat(
+            initialValue = 0.4f,
+            targetValue = 1.0f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(durationMillis = 800, easing = FastOutSlowInEasing),
+                repeatMode = RepeatMode.Reverse,
+            ),
+        ).value
     }
     val waitingTexts = remember {
         listOf(
@@ -153,22 +146,19 @@ internal fun PulsingStatusIndicator(
             Res.string.waiting_brewing,
         )
     }
-    val index by remember {
-        if (!prefersReducedMotion) {
-            val infiniteTransition = rememberInfiniteTransition(label = "waitingTextIndex", initialValue = 0)
-            infiniteTransition.animateInt(
-                initialValue = 0,
-                targetValue = waitingTexts.size,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(durationMillis = 3000, delayMillis = 0, easing = LinearEasing),
-                    repeatMode = RepeatMode.Restart,
-                ),
-                label = "textIndex"
-            )
-        } else {
-            // Static state for reduced motion
-            mutableStateOf(0)
-        }
+    val index: Int = if (reducedMotion) {
+        0
+    } else {
+        val progress = rememberInfiniteTransition(label = "waitingTextIndex").animateFloat(
+            initialValue = 0f,
+            targetValue = 1f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(durationMillis = 3000, delayMillis = 0, easing = LinearEasing),
+                repeatMode = RepeatMode.Restart,
+            ),
+            label = "textIndex",
+        ).value
+        (progress * waitingTexts.size).toInt().coerceIn(0, waitingTexts.size - 1)
     }
 
     Row(

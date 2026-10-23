@@ -53,10 +53,10 @@ data class DownloadsItem(
 ) {
     /** স्रोত enum - ডেটা কোথা থেকে এসেছে */
     enum class DownloadsSource {
-        DOWNLOAD_MANAGER,  // DownloadManager API থেকে
-        MEDIA_STORE,       // MediaStore (ইমেজ/ভিডিও/অডিও)
-        SAF,               // Storage Access Framework (user-selected)
-        UNKNOWN,           // অজানা সোর্স
+        DOWNLOAD_MANAGER, // DownloadManager API থেকে
+        MEDIA_STORE, // MediaStore (ইমেজ/ভিডিও/অডিও)
+        SAF, // Storage Access Framework (user-selected)
+        UNKNOWN, // অজানা সোর্স
     }
 
     /** সোর্সের মানব-পঠনযোগ্য নাম */
@@ -69,12 +69,10 @@ data class DownloadsItem(
         }
 
     /** ফাইলের আকার মানব-পঠনযোগ্য ফরম্যাটে */
-    fun humanReadableSize(): String {
-        return when {
-            sizeBytes < 1024 -> "${sizeBytes} B"
-            sizeBytes < 1024 * 1024 -> "${(sizeBytes / 1024).toString()} KB"
-            sizeBytes < 1024 * 1024 * 1024 -> "${sizeBytes / (1024.0 * 1024)} MB"
-            else -> "${sizeBytes / (1024.0 * 1024 * 1024)} GB"
-        }
+    fun humanReadableSize(): String = when {
+        sizeBytes < 1024 -> "$sizeBytes B"
+        sizeBytes < 1024 * 1024 -> "${(sizeBytes / 1024)} KB"
+        sizeBytes < 1024 * 1024 * 1024 -> "${sizeBytes / (1024.0 * 1024)} MB"
+        else -> "${sizeBytes / (1024.0 * 1024 * 1024)} GB"
     }
 }

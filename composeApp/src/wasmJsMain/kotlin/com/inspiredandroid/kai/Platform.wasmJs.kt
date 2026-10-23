@@ -41,6 +41,12 @@ actual val currentPlatform: Platform = Platform.Web
 
 actual val defaultUiScale: Float = 1.0f
 
+actual fun prefersReducedMotion(): Boolean = try {
+    kotlinx.browser.window.matchMedia("(prefers-reduced-motion: reduce)").matches
+} catch (_: Exception) {
+    false
+}
+
 actual val isEmailSupported: Boolean = false
 
 actual val isSmsSupported: Boolean = false

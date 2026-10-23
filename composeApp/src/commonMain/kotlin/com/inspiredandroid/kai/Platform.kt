@@ -44,6 +44,9 @@ expect val currentPlatform: Platform
 
 expect val defaultUiScale: Float
 
+/** True when the user has requested reduced motion (OS accessibility setting). */
+expect fun prefersReducedMotion(): Boolean
+
 expect fun getAppFilesDirectory(): String
 
 expect fun getAvailableTools(): List<Tool>

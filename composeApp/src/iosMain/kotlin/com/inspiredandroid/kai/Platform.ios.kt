@@ -51,6 +51,8 @@ actual val currentPlatform: Platform = Platform.Mobile.Ios
 
 actual val defaultUiScale: Float = 1.0f
 
+actual fun prefersReducedMotion(): Boolean = platform.UIKit.UIAccessibilityIsReduceMotionEnabled()
+
 actual val isEmailSupported: Boolean = true
 
 actual val isSmsSupported: Boolean = false

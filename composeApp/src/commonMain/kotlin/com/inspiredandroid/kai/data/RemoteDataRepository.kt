@@ -10,7 +10,6 @@ import com.inspiredandroid.kai.data.providers.buildOpenAIMessages
 import com.inspiredandroid.kai.data.providers.toResponsesInput
 import com.inspiredandroid.kai.email.EmailPoller
 import com.inspiredandroid.kai.formatFileSize
-import java.util.Locale
 import com.inspiredandroid.kai.getAvailableTools
 import com.inspiredandroid.kai.getPlatformToolDefinitions
 import com.inspiredandroid.kai.inference.DownloadError
@@ -430,7 +429,7 @@ class RemoteDataRepository(
                 val models = downloaded.map {
                     SettingsModel(
                         id = it.id,
-                        subtitle = "${it.displayName} (${formatFileSize(it.sizeBytes, Locale.getDefault())})",
+                        subtitle = "${it.displayName} (${formatFileSize(it.sizeBytes)})",
                         isSelected = it.id == selectedModelId,
                     )
                 }

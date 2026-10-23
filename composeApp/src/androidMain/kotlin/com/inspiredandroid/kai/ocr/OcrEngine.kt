@@ -2,21 +2,20 @@ package com.inspiredandroid.kai.ocr
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Rect as AndroidRect
-import com.google.mlkit.vision.common.InputImage
 import com.google.android.gms.tasks.Tasks
+import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.TextRecognizer
-import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.google.mlkit.vision.text.chinese.ChineseTextRecognizerOptions
 import com.google.mlkit.vision.text.devanagari.DevanagariTextRecognizerOptions
 import com.google.mlkit.vision.text.japanese.JapaneseTextRecognizerOptions
 import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import android.graphics.Rect as AndroidRect
 
-private fun AndroidRect?.toRect(): Rect =
-    if (this == null) Rect(0, 0, 0, 0) else Rect(left, top, right, bottom)
+private fun AndroidRect?.toRect(): Rect = if (this == null) Rect(0, 0, 0, 0) else Rect(left, top, right, bottom)
 
 /**
  * OCR Engine using ML Kit Text Recognition v2.
@@ -29,16 +28,14 @@ class OcrEngine(private val context: Context) {
     /**
      * Gets or creates a TextRecognizer for the specified language.
      */
-    private fun getRecognizer(language: OcrLanguage): TextRecognizer {
-        return recognizers.getOrPut(language) {
-            when (language) {
-                OcrLanguage.LATIN -> TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
-                OcrLanguage.CHINESE -> TextRecognition.getClient(ChineseTextRecognizerOptions.Builder().build())
-                OcrLanguage.DEVANAGARI -> TextRecognition.getClient(DevanagariTextRecognizerOptions.Builder().build())
-                OcrLanguage.JAPANESE -> TextRecognition.getClient(JapaneseTextRecognizerOptions.Builder().build())
-                OcrLanguage.KOREAN -> TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
-                OcrLanguage.AUTO -> TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
-            }
+    private fun getRecognizer(language: OcrLanguage): TextRecognizer = recognizers.getOrPut(language) {
+        when (language) {
+            OcrLanguage.LATIN -> TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+            OcrLanguage.CHINESE -> TextRecognition.getClient(ChineseTextRecognizerOptions.Builder().build())
+            OcrLanguage.DEVANAGARI -> TextRecognition.getClient(DevanagariTextRecognizerOptions.Builder().build())
+            OcrLanguage.JAPANESE -> TextRecognition.getClient(JapaneseTextRecognizerOptions.Builder().build())
+            OcrLanguage.KOREAN -> TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
+            OcrLanguage.AUTO -> TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
         }
     }
 

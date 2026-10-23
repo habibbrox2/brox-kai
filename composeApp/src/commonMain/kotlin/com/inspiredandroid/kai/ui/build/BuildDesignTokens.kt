@@ -9,6 +9,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.inspiredandroid.kai.build.BuildEnvironmentState
 import com.inspiredandroid.kai.build.BuildStep
+import com.inspiredandroid.kai.prefersReducedMotion
+import androidx.compose.runtime.remember
 
 /**
  * Build-specific design tokens for the Kai Build workspace (Plan 3, Phase 1).

@@ -1,6 +1,8 @@
 package com.inspiredandroid.kai.ui.components
 
 import androidx.compose.animation.core.EaseInOut
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -91,17 +94,17 @@ fun LogoAnimation(
             animation = tween(durationMillis = 900, easing = EaseInOut),
             repeatMode = RepeatMode.Reverse,
         ),
-        label = "logoPulse"
+        label = "logoPulse",
     )
 
     val kColor = if (MaterialTheme.colorScheme.background.luminance() > 0.5f) broxNavy else MarkBlueOnDark
 
     Canvas(modifier = modifier.size(size)) {
-        val breath = 1f - 0.04f * animatable.value
+        val breath = 1f - 0.04f * animatable
         val scale = this.size.height * 0.66f / MARK_HEIGHT * breath
         val centerX = this.size.width / 2f
         val centerY = this.size.height / 2f
-        val drift = this.size.width * 0.09f * animatable.value
+        val drift = this.size.width * 0.09f * animatable
 
         fun drawHalf(path: Path, color: Color, offsetX: Float) {
             withTransform({

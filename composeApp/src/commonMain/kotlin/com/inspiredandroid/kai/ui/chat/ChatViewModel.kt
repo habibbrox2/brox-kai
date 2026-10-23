@@ -29,6 +29,7 @@ import kai.composeapp.generated.resources.litert_no_model_warning
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
@@ -41,6 +42,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import kotlin.coroutines.CoroutineContext
@@ -219,16 +221,21 @@ class ChatViewModel(
 
     private fun askInternal(question: String?, uiSubmission: UiSubmission?) {
         // Atomic check-and-set to prevent concurrent requests (race on double-send)
-        val started = _state.update { current ->
-            if (current.isLoading) current else current.copy(
-                isLoading = true,
-                error = null,
-                showFreeProviderSuggestions = false,
-                files = persistentListOf(),
-                followUpSuggestions = persistentListOf(),
-            )
+        val before = _state.value
+        val started = _state.updateAndGet { current ->
+            if (current.isLoading) {
+                current
+            } else {
+                current.copy(
+                    isLoading = true,
+                    error = null,
+                    showFreeProviderSuggestions = false,
+                    files = persistentListOf(),
+                    followUpSuggestions = persistentListOf(),
+                )
+            }
         }
-        if (started.isLoading && !started.files.isEmpty()) return // another call already won
+        if (started === before) return // another call already won
 
         // Capture files before launching coroutine to avoid race with files being cleared
         val files = _state.value.files

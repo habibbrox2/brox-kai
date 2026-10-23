@@ -8,17 +8,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.gestures.OverscrollBehavior
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ImeAction
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -51,10 +50,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
@@ -78,6 +77,7 @@ import kai.composeapp.generated.resources.sandbox_files_delete_message_directory
 import kai.composeapp.generated.resources.sandbox_files_delete_message_file
 import kai.composeapp.generated.resources.sandbox_files_delete_title
 import kai.composeapp.generated.resources.sandbox_files_dialog_cancel
+import kai.composeapp.generated.resources.sandbox_files_dialog_cancel_rename
 import kai.composeapp.generated.resources.sandbox_files_editor_binary_warning
 import kai.composeapp.generated.resources.sandbox_files_editor_force_open_as_text
 import kai.composeapp.generated.resources.sandbox_files_editor_open_externally
@@ -347,7 +347,6 @@ private fun FileList(
         modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(vertical = 8.dp),
-        overscrollBehavior = OverscrollBehavior(),
     ) {
         items(state.entries, key = { it.path }) { entry ->
             FileRow(
@@ -405,9 +404,8 @@ private fun FileRow(
                         overflow = TextOverflow.Ellipsis,
                     )
                     if (!entry.isDirectory) {
-                        val locale = LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()
                         Text(
-                            text = formatFileSize(entry.sizeBytes, locale),
+                            text = formatFileSize(entry.sizeBytes),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -519,7 +517,7 @@ private fun EditorBody(
         is EditorState.TooLarge -> UnopenableFile(
             message = stringResource(
                 Res.string.sandbox_files_editor_too_large,
-                formatFileSize(editor.sizeBytes, LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()),
+                formatFileSize(editor.sizeBytes),
             ),
             path = editor.path,
             onOpenExternal = onOpenExternal,

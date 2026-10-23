@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -30,7 +31,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.gestures.OverscrollBehavior
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -41,7 +41,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PaddingValues
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -66,13 +65,22 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.isShiftPressed
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -426,12 +434,12 @@ private fun SettingsTabSelector(
             .padding(vertical = 8.dp)
             .onKeyEvent { event ->
                 when (event.key) {
-                    Key.DpadLeft, Key.Tab -> {
+                    Key.DirectionLeft, Key.Tab -> {
                         if (event.key == Key.Tab && event.isShiftPressed) {
                             focusedTabIndex = (focusedTabIndex - 1).coerceIn(0, tabs.size - 1)
                             onSelectTab(tabs[focusedTabIndex])
                             true
-                        } else if (event.key == Key.DpadLeft) {
+                        } else if (event.key == Key.DirectionLeft) {
                             focusedTabIndex = (focusedTabIndex - 1).coerceIn(0, tabs.size - 1)
                             onSelectTab(tabs[focusedTabIndex])
                             true
@@ -439,15 +447,18 @@ private fun SettingsTabSelector(
                             false
                         }
                     }
-                    Key.DpadRight -> {
+
+                    Key.DirectionRight -> {
                         focusedTabIndex = (focusedTabIndex + 1).coerceIn(0, tabs.size - 1)
                         onSelectTab(tabs[focusedTabIndex])
                         true
                     }
-                    Key.Enter, Key.NumpadEnter -> {
+
+                    Key.Enter, Key.NumPadEnter -> {
                         onSelectTab(tabs[focusedTabIndex])
                         true
                     }
+
                     else -> false
                 }
             },
@@ -455,14 +466,14 @@ private fun SettingsTabSelector(
         shape = com.inspiredandroid.kai.ui.settings.SettingsShapes.pill,
         border = androidx.compose.foundation.BorderStroke(
             1.dp,
-            if (isOled) com.inspiredandroid.kai.ui.BorderSoft else MaterialTheme.colorScheme.outlineVariant
+            if (isOled) com.inspiredandroid.kai.ui.BorderSoft else MaterialTheme.colorScheme.outlineVariant,
         ),
     ) {
         Row(
             modifier = Modifier
                 .padding(4.dp)
                 .onSizeChanged { viewportWidth = it.width }
-                .horizontalScroll(scrollState, overscrollBehavior = OverscrollBehavior()),
+                .horizontalScroll(scrollState),
         ) {
             tabs.forEachIndexed { index, tab ->
                 val isSelected = currentTab == tab
@@ -516,11 +527,14 @@ private fun SettingsTabSelector(
                                 focusedTabIndex = index
                             }
                         }
-                        .semantics { role = androidx.compose.ui.semantics.Role.Tab; selected = isSelected },
+                        .semantics {
+                            role = androidx.compose.ui.semantics.Role.Tab
+                            selected = isSelected
+                        },
                     colors = buttonColors,
                     shape = RoundedCornerShape(50),
                     border = border,
-                    contentPadding = androidx.compose.material3.PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                 ) {
                     Text(
                         text = when (tab) {
@@ -639,7 +653,7 @@ private fun LicensesDialog(onDismiss: () -> Unit) {
         text = {
             Text(
                 text = notices.orEmpty(),
-                modifier = Modifier.verticalScroll(rememberScrollState(), overscrollBehavior = OverscrollBehavior()),
+                modifier = Modifier.verticalScroll(rememberScrollState()),
                 style = MaterialTheme.typography.bodySmall,
                 fontFamily = FontFamily.Monospace,
             )

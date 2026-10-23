@@ -81,6 +81,7 @@ object SettingsSurfaces {
     /** Text colors */
     @Composable
     fun textPrimary(): Color = TextPrimary
+
     @Composable
     fun textSecondary(): Color = TextSecondary
 

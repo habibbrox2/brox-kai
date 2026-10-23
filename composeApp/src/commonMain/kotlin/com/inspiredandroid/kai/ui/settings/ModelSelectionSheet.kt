@@ -17,9 +17,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ImeAction
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.KeyboardType
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,8 +28,9 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.material3.tooltip
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -42,11 +41,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEvent
+import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -143,101 +146,102 @@ internal fun ModelSelection(
                         sheetFocusRequester.requestFocus()
                     }
                     var searchQuery by remember { mutableStateOf("") }
-                val hasFreeModels = remember(pickerModels) { pickerModels.any { it.isFreeTier } }
-                var freeFilterOnly by remember { mutableStateOf(false) }
-                // Reset free filter when the service has no free models.
-                LaunchedEffect(hasFreeModels) {
-                    if (!hasFreeModels) freeFilterOnly = false
-                }
-                val filteredModels = remember(pickerModels, searchQuery, freeFilterOnly) {
-                    pickerModels.filter { model ->
-                        val matchesFree = !freeFilterOnly || model.isFreeTier
-                        val matchesSearch = searchQuery.isBlank() ||
-                            model.id.contains(searchQuery, ignoreCase = true) ||
-                            model.subtitle.contains(searchQuery, ignoreCase = true) ||
-                            model.displayName?.contains(searchQuery, ignoreCase = true) == true
-                        matchesFree && matchesSearch
+                    val hasFreeModels = remember(pickerModels) { pickerModels.any { it.isFreeTier } }
+                    var freeFilterOnly by remember { mutableStateOf(false) }
+                    // Reset free filter when the service has no free models.
+                    LaunchedEffect(hasFreeModels) {
+                        if (!hasFreeModels) freeFilterOnly = false
                     }
-                }
-                if (pickerModels.size > 6) {
-                    KaiSearchField(
-                        query = searchQuery,
-                        onQueryChange = { searchQuery = it },
-                        placeholder = stringResource(Res.string.settings_model_search),
-                    )
-                }
-                var sortOption by remember { mutableStateOf(ModelSortOption.Score) }
-                val sortedModels = remember(filteredModels, sortOption, searchQuery) {
-                    val base = filteredModels.sortedWith(sortOption.comparator)
-                    if (searchQuery.isBlank()) {
-                        base
+                    val filteredModels = remember(pickerModels, searchQuery, freeFilterOnly) {
+                        pickerModels.filter { model ->
+                            val matchesFree = !freeFilterOnly || model.isFreeTier
+                            val matchesSearch = searchQuery.isBlank() ||
+                                model.id.contains(searchQuery, ignoreCase = true) ||
+                                model.subtitle.contains(searchQuery, ignoreCase = true) ||
+                                model.displayName?.contains(searchQuery, ignoreCase = true) == true
+                            matchesFree && matchesSearch
+                        }
+                    }
+                    if (pickerModels.size > 6) {
+                        KaiSearchField(
+                            query = searchQuery,
+                            onQueryChange = { searchQuery = it },
+                            placeholder = stringResource(Res.string.settings_model_search),
+                        )
+                    }
+                    var sortOption by remember { mutableStateOf(ModelSortOption.Score) }
+                    val sortedModels = remember(filteredModels, sortOption, searchQuery) {
+                        val base = filteredModels.sortedWith(sortOption.comparator)
+                        if (searchQuery.isBlank()) {
+                            base
+                        } else {
+                            base.sortedBy { model ->
+                                val name = model.displayName ?: model.id
+                                when {
+                                    name.contains(searchQuery, ignoreCase = true) -> 0
+                                    model.subtitle.contains(searchQuery, ignoreCase = true) -> 1
+                                    else -> 2
+                                }
+                            }
+                        }
+                    }
+                    Row(
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        ModelSortOption.entries.forEach { option ->
+                            FilterChip(
+                                selected = sortOption == option,
+                                onClick = { sortOption = option },
+                                label = { Text(stringResource(option.labelRes)) },
+                                modifier = Modifier.handCursor(),
+                            )
+                        }
+                        if (hasFreeModels) {
+                            FilterChip(
+                                selected = freeFilterOnly,
+                                onClick = { freeFilterOnly = !freeFilterOnly },
+                                label = { Text(stringResource(Res.string.model_filter_free)) },
+                                modifier = Modifier.handCursor(),
+                            )
+                        }
+                    }
+                    val gridState = rememberLazyGridState()
+                    LaunchedEffect(sortOption, freeFilterOnly) {
+                        gridState.requestScrollToItem(0)
+                    }
+                    if (sortedModels.isEmpty() && freeFilterOnly) {
+                        Text(
+                            text = stringResource(Res.string.model_free_empty),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(24.dp),
+                        )
                     } else {
-                        base.sortedBy { model ->
-                            val name = model.displayName ?: model.id
-                            when {
-                                name.contains(searchQuery, ignoreCase = true) -> 0
-                                model.subtitle.contains(searchQuery, ignoreCase = true) -> 1
-                                else -> 2
+                        Box {
+                            LazyVerticalGrid(
+                                GridCells.Adaptive(300.dp),
+                                state = gridState,
+                                contentPadding = PaddingValues(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                items(sortedModels, key = { it.id }) { model ->
+                                    ModelCard(
+                                        model = model,
+                                        isSelected = currentSelectedModel?.id == model.id,
+                                        onClick = {
+                                            onClick(model.id)
+                                            expanded = false
+                                        },
+                                    )
+                                }
                             }
+                            VerticalScrollbarForGrid(
+                                gridState = gridState,
+                                modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
+                            )
                         }
-                    }
-                }
-                Row(
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    ModelSortOption.entries.forEach { option ->
-                        FilterChip(
-                            selected = sortOption == option,
-                            onClick = { sortOption = option },
-                            label = { Text(stringResource(option.labelRes)) },
-                            modifier = Modifier.handCursor(),
-                        )
-                    }
-                    if (hasFreeModels) {
-                        FilterChip(
-                            selected = freeFilterOnly,
-                            onClick = { freeFilterOnly = !freeFilterOnly },
-                            label = { Text(stringResource(Res.string.model_filter_free)) },
-                            modifier = Modifier.handCursor(),
-                        )
-                    }
-                }
-                val gridState = rememberLazyGridState()
-                LaunchedEffect(sortOption, freeFilterOnly) {
-                    gridState.requestScrollToItem(0)
-                }
-                if (sortedModels.isEmpty() && freeFilterOnly) {
-                    Text(
-                        text = stringResource(Res.string.model_free_empty),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(24.dp),
-                    )
-                } else {
-                    Box {
-                        LazyVerticalGrid(
-                            GridCells.Adaptive(300.dp),
-                            state = gridState,
-                            contentPadding = PaddingValues(8.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            items(sortedModels, key = { it.id }) { model ->
-                                ModelCard(
-                                    model = model,
-                                    isSelected = currentSelectedModel?.id == model.id,
-                                    onClick = {
-                                        onClick(model.id)
-                                        expanded = false
-                                    },
-                                )
-                            }
-                        }
-                        VerticalScrollbarForGrid(
-                            gridState = gridState,
-                            modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
-                        )
                     }
                 }
             }
@@ -254,13 +258,14 @@ private enum class ModelSortOption(
     Ctx(Res.string.model_sort_context, compareByDescending<SettingsModel> { it.contextWindow }.thenBy { it.id }),
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ModelCard(model: SettingsModel, isSelected: Boolean, onClick: () -> Unit) {
     val displayName = model.displayName?.takeIf { it.isNotBlank() && it != model.id }
     val title = displayName ?: model.id
     val secondary = if (displayName == null && model.subtitle.isNotBlank()) model.subtitle else null
     val contextText = model.contextWindow?.let { formatContextWindow(it) }
-    val releaseText = model.releaseDate?.let { formatReleaseDate(it, LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()) }
+    val releaseText = model.releaseDate?.let { formatReleaseDate(it) }
     val detailText = listOfNotNull(releaseText, model.parameterCount, contextText)
         .joinToString("  ·  ").ifEmpty { null }
 
@@ -291,7 +296,9 @@ private fun ModelCard(model: SettingsModel, isSelected: Boolean, onClick: () -> 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 TooltipBox(
                     modifier = Modifier.weight(1f),
+                    positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
                     tooltip = { Text(text = title, style = MaterialTheme.typography.bodyMedium) },
+                    state = rememberTooltipState(),
                 ) {
                     Text(
                         text = title,
@@ -317,7 +324,9 @@ private fun ModelCard(model: SettingsModel, isSelected: Boolean, onClick: () -> 
             }
             secondary?.let {
                 TooltipBox(
+                    positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
                     tooltip = { Text(text = it, style = MaterialTheme.typography.bodyMedium) },
+                    state = rememberTooltipState(),
                 ) {
                     Text(
                         text = it,
