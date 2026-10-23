@@ -301,8 +301,7 @@ fun ChatTimeline(
                 }
             }
             // Show agent activity timeline for tool executions and agent actions
-            val hasAgentActivity = uiState.history.any {
-                it.role == History.Role.TOOL_EXECUTING ||
+            val hasAgentActivity = !uiState.isLoading && uiState.history.any {
                 it.role == History.Role.TOOL ||
                 (it.role == History.Role.ASSISTANT && it.toolCalls?.isNotEmpty() == true)
             }
