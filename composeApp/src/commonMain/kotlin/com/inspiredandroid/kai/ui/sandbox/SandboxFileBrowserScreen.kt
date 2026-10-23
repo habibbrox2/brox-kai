@@ -704,7 +704,7 @@ private fun RenameDialog(
         },
         dismissButton = {
             TextButton(onClick = onDismiss, modifier = Modifier.handCursor()) {
-                Text(stringResource(Res.string.sandbox_files_dialog_cancel))
+                Text(stringResource(Res.string.sandbox_files_dialog_cancel_rename))
             }
         },
     )

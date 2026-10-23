@@ -438,6 +438,13 @@
     <string name="settings_sandbox_cancel">Cancel</string>
     <string name="settings_sandbox_disk_usage">%1$d\u00A0MB</string>
 
+    <!-- Descriptive cancel labels for confirm dialogs (tell the user what is being cancelled) -->
+    <string name="kai_build_projects_cancel_uninstall">Cancel uninstall</string>
+    <string name="kai_build_projects_cancel_rename">Cancel rename</string>
+    <string name="kai_build_projects_cancel_delete">Cancel delete</string>
+    <string name="kai_build_projects_cancel_create">Cancel create</string>
+    <string name="sandbox_files_dialog_cancel_rename">Cancel rename</string>
+
     <!-- Gallery Search Tool -->
     <string name="tool_gallery_search_name">Gallery Search</string>
     <string name="tool_gallery_search_description">Search authorized gallery/media with filters and pagination</string>

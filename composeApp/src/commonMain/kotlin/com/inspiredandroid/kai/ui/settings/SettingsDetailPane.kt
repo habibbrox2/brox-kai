@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -133,16 +132,17 @@ fun SettingsDetailPane(
                     }
                 }
             }
-
-            Spacer(Modifier.height(16.dp))
+            item {
+                Spacer(Modifier.height(16.dp))
+            }
         }
 
             Spacer(Modifier.weight(1f))
 
             BottomInfo()
         }
-        VerticalScrollbarForScroll(
-            scrollState = settingsScrollState,
+        VerticalScrollbarForList(
+            listState = settingsListState,
             modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
         )
     }

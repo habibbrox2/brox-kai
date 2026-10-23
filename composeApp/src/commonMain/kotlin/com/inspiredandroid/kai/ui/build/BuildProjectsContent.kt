@@ -81,7 +81,6 @@ import kai.composeapp.generated.resources.sandbox_files_rename_error_collision
 import kai.composeapp.generated.resources.sandbox_files_rename_error_invalid
 import kai.composeapp.generated.resources.sandbox_files_rename_label
 import kai.composeapp.generated.resources.sandbox_files_rename_title
-import kai.composeapp.generated.resources.settings_sandbox_cancel
 import kotlinx.collections.immutable.ImmutableList
 import org.jetbrains.compose.resources.stringResource
 
@@ -287,7 +286,7 @@ internal fun BuildProjectsContent(
                 TextButton(
                     onClick = { showUninstall = false },
                     modifier = Modifier.handCursor(),
-                ) { Text(stringResource(Res.string.settings_sandbox_cancel)) }
+                ) { Text(stringResource(Res.string.kai_build_projects_cancel_uninstall)) }
             },
         )
     }
@@ -393,7 +392,7 @@ private fun RenameProjectDialog(
         },
         dismissButton = {
             TextButton(onClick = onDismiss, modifier = Modifier.handCursor()) {
-                Text(stringResource(Res.string.settings_sandbox_cancel))
+                Text(stringResource(Res.string.kai_build_projects_cancel_rename))
             }
         },
     )
@@ -432,7 +431,7 @@ private fun DeleteProjectDialog(
         },
         dismissButton = {
             TextButton(onClick = onDismiss, modifier = Modifier.handCursor()) {
-                Text(stringResource(Res.string.settings_sandbox_cancel))
+                Text(stringResource(Res.string.kai_build_projects_cancel_delete))
             }
         },
     )
@@ -573,7 +572,7 @@ internal fun CreateProjectDialog(
         },
         dismissButton = {
             TextButton(onClick = onDismiss, modifier = Modifier.handCursor()) {
-                Text(stringResource(Res.string.settings_sandbox_cancel))
+                Text(stringResource(Res.string.kai_build_projects_cancel_create))
             }
         },
     )

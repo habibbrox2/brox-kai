@@ -108,6 +108,7 @@ import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.LocalDateTime
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import kotlin.math.roundToInt
@@ -180,8 +181,10 @@ internal fun HeartbeatSection(
 
             var activeStart by remember(activeHoursStart) { mutableStateOf(activeHoursStart.toFloat()) }
             var activeEnd by remember(activeHoursEnd) { mutableStateOf(activeHoursEnd.toFloat()) }
-            val startDisplay = "${activeStart.roundToInt() % 24}:00"
-            val endDisplay = "${activeEnd.roundToInt() % 24}:00"
+            val locale = LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()
+            val timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT, locale)
+            val startDisplay = LocalDateTime(2000, 1, 1, activeStart.roundToInt() % 24, 0).format(timeFormatter)
+            val endDisplay = LocalDateTime(2000, 1, 1, activeEnd.roundToInt() % 24, 0).format(timeFormatter)
 
             Row(
                 modifier = Modifier.fillMaxWidth(),

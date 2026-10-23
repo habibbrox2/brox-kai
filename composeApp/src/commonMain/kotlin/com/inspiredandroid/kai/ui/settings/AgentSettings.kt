@@ -85,11 +85,7 @@ import kai.composeapp.generated.resources.settings_task_details_status
 import kai.composeapp.generated.resources.settings_task_details_trigger
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.offsetAt
-import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.stringResource
-import kotlin.time.Instant
 
 @Composable
 internal fun AgentContent(uiState: SettingsUiState, actions: SettingsActions) {
@@ -496,13 +492,7 @@ private fun ScheduledTaskList(
 
                     TaskTrigger.CRON -> "${task.status} - ${task.cron?.let { describeCron(it) } ?: "cron"}"
 
-                    TaskTrigger.TIME -> {
-                        val instant = Instant.fromEpochMilliseconds(task.scheduledAtEpochMs)
-                        val zone = TimeZone.currentSystemDefault()
-                        val scheduledTime = instant.toLocalDateTime(zone)
-                        val offset = zone.offsetAt(instant)
-                        "${task.status} - $scheduledTime $offset"
-                    }
+                    TaskTrigger.TIME -> "${task.status} - ${formatTaskInstant(task.scheduledAtEpochMs)}"
                 }
                 SettingsListItem(
                     title = task.description,
