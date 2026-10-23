@@ -149,6 +149,7 @@ internal fun TrailingIcon(
     }
     Box(
         modifier = modifier
+            .defaultMinSize(minHeight = 48.dp, minWidth = 48.dp)
             .size(42.dp)
             .clip(CircleShape)
             .background(com.inspiredandroid.kai.ui.AccentPrimary, CircleShape)
@@ -174,6 +175,7 @@ internal fun CircleIconButton(
 ) {
     Box(
         modifier = modifier
+            .defaultMinSize(minHeight = 48.dp, minWidth = 48.dp)
             .size(42.dp)
             .clip(CircleShape)
             .clickable { onClick() }

@@ -43,7 +43,7 @@ fun KaiChip(
     }
     val shape = RoundedCornerShape(8.dp)
     val border = BorderStroke(1.dp, borderColor)
-    val sizeModifier = modifier.defaultMinSize(minHeight = 38.dp)
+    val sizeModifier = modifier.defaultMinSize(minHeight = 48.dp)
 
     val chipContent: @Composable () -> Unit = {
         Box(
