@@ -218,8 +218,17 @@ class ChatViewModel(
     }
 
     private fun askInternal(question: String?, uiSubmission: UiSubmission?) {
-        // Prevent concurrent requests
-        if (_state.value.isLoading) return
+        // Atomic check-and-set to prevent concurrent requests (race on double-send)
+        val started = _state.update { current ->
+            if (current.isLoading) current else current.copy(
+                isLoading = true,
+                error = null,
+                showFreeProviderSuggestions = false,
+                files = persistentListOf(),
+                followUpSuggestions = persistentListOf(),
+            )
+        }
+        if (started.isLoading && !started.files.isEmpty()) return // another call already won
 
         // Capture files before launching coroutine to avoid race with files being cleared
         val files = _state.value.files
@@ -227,15 +236,6 @@ class ChatViewModel(
         val (strippedQuestion, activeSkillId) = parseSkillInvocation(question)
 
         currentJob = viewModelScope.launch(backgroundDispatcher) {
-            _state.update {
-                it.copy(
-                    isLoading = true,
-                    error = null,
-                    showFreeProviderSuggestions = false,
-                    files = persistentListOf(),
-                    followUpSuggestions = persistentListOf(),
-                )
-            }
             // Android 17+ blocks LAN traffic without the local network permission — without
             // asking first, requests to self-hosted servers silently never leave the device.
             if (!ensureLocalNetworkPermission()) {
@@ -581,12 +581,19 @@ class ChatViewModel(
     }
 
     private fun deleteConversation(id: String) {
-        commitPendingConversationDeletion()
+        // If there's already a pending deletion, commit it first (don't silently discard).
+        // This avoids the race where deleting A then B within 4s leaves A undeleted but
+        // only B's undo works.
+        if (_state.value.pendingConversationDeletion != null) {
+            commitPendingConversationDeletion()
+        }
         _state.update { it.copy(pendingConversationDeletion = id) }
         pendingConversationDeleteJob = viewModelScope.launch(backgroundDispatcher) {
             delay(4.seconds)
             dataRepository.deleteConversation(id)
-            _state.update { it.copy(pendingConversationDeletion = null) }
+            _state.update {
+                if (it.pendingConversationDeletion == id) it.copy(pendingConversationDeletion = null) else it
+            }
         }
     }
 
@@ -619,7 +626,14 @@ class ChatViewModel(
     }
 
     override fun onCleared() {
-        commitPendingConversationDeletion()
+        // viewModelScope is cancelled before onCleared runs; use a background coroutine
+        // with its own scope so the pending deletion actually completes.
+        if (_state.value.pendingConversationDeletion != null) {
+            val pendingId = _state.value.pendingConversationDeletion!!
+            CoroutineScope(backgroundDispatcher).launch {
+                dataRepository.deleteConversation(pendingId)
+            }
+        }
         // The scheduler lives longer than this ViewModel (it's a singleton driving the
         // Android foreground service). Reset the predicate so the daemon path keeps
         // running without a stale reference to a dead state flow. The foreground-visible

@@ -122,7 +122,7 @@ fun KaiBuildScreen(
     // A dashboard resume link (Plan 6) opens the project once its environment
     // is ready; a stale link (project or Debian gone) is dropped instead of
     // showing a broken terminal.
-    var pendingProject by rememberSaveable { mutableStateOf(initialProject) }
+    var pendingProject by rememberSaveable(initialProject) { mutableStateOf(initialProject) }
     LaunchedEffect(state.build) {
         val pending = pendingProject ?: return@LaunchedEffect
         if (state.build.isReady) {
@@ -222,6 +222,24 @@ internal fun KaiBuildScreenContent(
                         onMouse = actions.sendMouse,
                         onResize = actions.resizeTerminal,
                     )
+
+                    else -> {
+                        // No live session yet (race during close / project opened without
+                        // a started session): kick one off instead of leaving the area blank.
+                        LaunchedEffect(project) {
+                            actions.startSession(null)
+                        }
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                text = "Starting session…",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
                 }
             } else {
                 // Centralized width policy (Plan 3, Phase 6): the hub centers with a

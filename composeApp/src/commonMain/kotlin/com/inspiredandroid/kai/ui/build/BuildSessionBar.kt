@@ -1,5 +1,7 @@
 package com.inspiredandroid.kai.ui.build
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -15,14 +17,18 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PaddingValues
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,7 +36,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
@@ -72,11 +81,58 @@ internal fun BuildSessionBar(
 ) {
     var showNewMenu by remember { mutableStateOf(false) }
 
+    // Focus management for session tabs
+    val tabCount = sessions.size + 1 // sessions + files tab
+    val tabFocusRequesters = remember { List(tabCount) { FocusRequester() } }
+    var focusedTabIndex by remember { mutableStateOf(0) }
+
+    // Determine initial focused index based on selection
+    LaunchedEffect(filesSelected, activeSessionId, sessions) {
+        if (filesSelected) {
+            focusedTabIndex = sessions.size // files tab is last
+        } else {
+            focusedTabIndex = sessions.indexOfFirst { it.id == activeSessionId }.coerceAtLeast(0)
+        }
+    }
+
     Row(
-        modifier = modifier.fillMaxWidth().padding(horizontal = 4.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 4.dp)
+            .onKeyEvent { event ->
+                when (event.key) {
+                    Key.DpadLeft -> {
+                        focusedTabIndex = (focusedTabIndex - 1).coerceIn(0, tabCount - 1)
+                        if (focusedTabIndex < sessions.size) {
+                            onSelectSession(sessions[focusedTabIndex].id)
+                        } else {
+                            onSelectFiles()
+                        }
+                        true
+                    }
+                    Key.DpadRight -> {
+                        focusedTabIndex = (focusedTabIndex + 1).coerceIn(0, tabCount - 1)
+                        if (focusedTabIndex < sessions.size) {
+                            onSelectSession(sessions[focusedTabIndex].id)
+                        } else {
+                            onSelectFiles()
+                        }
+                        true
+                    }
+                    Key.Enter, Key.NumpadEnter -> {
+                        if (focusedTabIndex < sessions.size) {
+                            onSelectSession(sessions[focusedTabIndex].id)
+                        } else {
+                            onSelectFiles()
+                        }
+                        true
+                    }
+                    else -> false
+                }
+            },
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        IconButton(onClick = onBack, modifier = Modifier.size(40.dp).handCursor()) {
+        IconButton(onClick = onBack, modifier = Modifier.size(48.dp).handCursor()) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = stringResource(Res.string.kai_build_back_content_description),
@@ -101,13 +157,16 @@ internal fun BuildSessionBar(
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            sessions.forEach { session ->
+            sessions.forEachIndexed { index, session ->
                 SessionTab(
                     session = session,
                     numbered = sessions.size > 1,
                     selected = !filesSelected && session.id == activeSessionId,
                     onSelect = { onSelectSession(session.id) },
                     onClose = { onCloseSession(session.id) },
+                    focusRequester = tabFocusRequesters[index],
+                    isFocused = focusedTabIndex == index,
+                    onFocus = { focusedTabIndex = index },
                 )
             }
             // Pinned: the project's files are always there, unlike a session.
@@ -115,6 +174,9 @@ internal fun BuildSessionBar(
                 label = stringResource(Res.string.kai_build_files_tab),
                 selected = filesSelected,
                 onSelect = onSelectFiles,
+                focusRequester = tabFocusRequesters[sessions.size],
+                isFocused = focusedTabIndex == sessions.size,
+                onFocus = { focusedTabIndex = sessions.size },
             )
         }
 
@@ -131,7 +193,7 @@ internal fun BuildSessionBar(
         Box {
             IconButton(
                 onClick = { showNewMenu = true },
-                modifier = Modifier.size(40.dp).handCursor(),
+                modifier = Modifier.size(48.dp).handCursor(),
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -169,6 +231,9 @@ private fun SessionTab(
     selected: Boolean,
     onSelect: () -> Unit,
     onClose: () -> Unit,
+    focusRequester: FocusRequester,
+    isFocused: Boolean,
+    onFocus: () -> Unit,
 ) {
     val base = BuildAgents.get(session.agentId)?.title ?: stringResource(Res.string.kai_build_session_shell)
     val label = if (numbered) "$base ${session.number}" else base
@@ -186,8 +251,11 @@ private fun SessionTab(
         // Running/idle is only carried by color for sighted users; make it audible
         // (Plan 3, Phase 6).
         description = if (session.busy) "$label, running" else "$label, idle",
+        focusRequester = focusRequester,
+        isFocused = isFocused,
+        onFocus = onFocus,
     ) {
-        IconButton(onClick = onClose, modifier = Modifier.size(28.dp).handCursor()) {
+        IconButton(onClick = onClose, modifier = Modifier.size(48.dp).handCursor()) {
             Icon(
                 imageVector = Icons.Default.Close,
                 contentDescription = stringResource(
@@ -213,29 +281,64 @@ private fun TabPill(
     },
     description: String? = null,
     trailing: @Composable (() -> Unit)? = null,
+    focusRequester: FocusRequester = remember { FocusRequester() },
+    isFocused: Boolean = false,
+    onFocus: () -> Unit = {},
 ) {
     val shape = RoundedCornerShape(50)
     // `selected` the parameter shadows the semantics property of the same name,
     // so capture it first and assign through `this.selected`.
     val isSelected = selected
-    Surface(
+
+    val buttonColors = ButtonDefaults.buttonColors(
+        containerColor = when {
+            selected -> MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+            isFocused -> MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+            else -> Color.Transparent
+        },
+        contentColor = contentColor,
+    )
+
+    val border = when {
+        selected -> BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.3f))
+        isFocused -> BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.5f))
+        else -> null
+    }
+
+    Button(
+        onClick = onSelect,
         modifier = Modifier
             .clip(shape)
-            .clickable(onClick = onSelect)
             .handCursor()
+            .focusRequester(focusRequester)
+            .onFocusChanged { focused ->
+                if (focused.isFocused) onFocus()
+            }
+            .onKeyEvent { event ->
+                when (event.key) {
+                    Key.Enter, Key.NumpadEnter -> {
+                        onSelect()
+                        true
+                    }
+                    else -> false
+                }
+            }
             .semantics {
                 role = Role.Tab
                 this.selected = isSelected
                 if (description != null) contentDescription = description
             },
+        colors = buttonColors,
         shape = shape,
-        color = if (selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.2f) else Color.Transparent,
+        border = border,
+        contentPadding = PaddingValues(
+            start = 12.dp,
+            end = if (selected && trailing != null) 2.dp else 12.dp,
+            top = 8.dp,
+            bottom = 8.dp,
+        ),
     ) {
         Row(
-            modifier = Modifier.padding(
-                start = 12.dp,
-                end = if (selected && trailing != null) 2.dp else 12.dp,
-            ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
@@ -244,7 +347,6 @@ private fun TabPill(
                 color = contentColor,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(vertical = 8.dp),
             )
             if (selected && trailing != null) trailing()
         }

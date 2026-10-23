@@ -13,9 +13,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.unit.dp
 import com.inspiredandroid.kai.ui.AccentPrimary
 import com.inspiredandroid.kai.ui.BorderSoft
@@ -49,10 +53,26 @@ fun KaiDialog(
     val colorScheme = MaterialTheme.colorScheme
     val isOled = colorScheme.background == com.inspiredandroid.kai.ui.OledBlack
 
+    val dialogFocusRequester = remember { FocusRequester() }
+
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .padding(24.dp),
+            .padding(24.dp)
+            .focusRequester(dialogFocusRequester)
+            .onKeyEvent { event ->
+                if (event.key == Key.Escape) {
+                    onDismissRequest()
+                    true
+                } else {
+                    false
+                }
+            }
+            .onFocusChanged { focused ->
+                if (focused.isFocused) {
+                    dialogFocusRequester.requestFocus()
+                }
+            },
         shape = KaiShapes.section,
         color = if (isOled) CardFill else SurfaceRaised,
         border = BorderStroke(1.dp, BorderSoft),
@@ -62,6 +82,11 @@ fun KaiDialog(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(16.dp),
         ) {
+            // Request focus when dialog opens
+            LaunchedEffect(Unit) {
+                dialogFocusRequester.requestFocus()
+            }
+
             title?.let { titleText ->
                 Text(
                     text = titleText,

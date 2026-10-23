@@ -383,7 +383,7 @@ private fun ToolItem(
 
             Switch(
                 checked = tool.isEnabled,
-                onCheckedChange = onToggle,
+                onCheckedChange = null,
                 colors = androidx.compose.material3.SwitchDefaults.colors(
                     checkedThumbColor = com.inspiredandroid.kai.ui.AccentPrimary,
                     checkedTrackColor = com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.3f),

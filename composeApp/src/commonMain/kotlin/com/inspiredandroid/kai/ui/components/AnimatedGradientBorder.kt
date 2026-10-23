@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.inspiredandroid.kai.ui.gradientMagenta
@@ -31,14 +32,21 @@ fun Modifier.animatedGradientBorder(
     borderWidth: Dp = 2.dp,
     backgroundColor: Color? = null,
 ): Modifier {
-    val infiniteTransition = rememberInfiniteTransition()
-    val progress by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 2000, easing = LinearEasing),
-        ),
-    )
+    val prefersReducedMotion = LocalConfiguration.current.prefersReducedMotion
+    val progress by remember { mutableStateOf(0f) }
+    
+    if (!prefersReducedMotion) {
+        val infiniteTransition = rememberInfiniteTransition()
+        val animatedProgress by infiniteTransition.animateFloat(
+            initialValue = 0f,
+            targetValue = 1f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(durationMillis = 2000, easing = LinearEasing),
+            ),
+        )
+        // Update the mutable state from the animation
+        androidx.compose.runtime.SideEffect { progress = animatedProgress }
+    }
     // Reuse the same color-stops array across frames; only the pair positions
     // are mutated per frame so no allocations happen in the animated draw loop.
     val colorStops = remember {

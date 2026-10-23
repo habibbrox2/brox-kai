@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -34,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
@@ -110,23 +112,40 @@ internal fun PulsingStatusIndicator(
     modifier: Modifier = Modifier,
     isStatusOnly: Boolean = false,
 ) {
-    val infiniteTransition = rememberInfiniteTransition()
-    val pulseScale by infiniteTransition.animateFloat(
-        initialValue = 0.6f,
-        targetValue = 1.0f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 800, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse,
-        ),
-    )
-    val pulseAlpha by infiniteTransition.animateFloat(
-        initialValue = 0.4f,
-        targetValue = 1.0f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 800, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse,
-        ),
-    )
+    val prefersReducedMotion = LocalConfiguration.current.prefersReducedMotion
+    
+    val pulseScale by remember {
+        if (!prefersReducedMotion) {
+            val infiniteTransition = rememberInfiniteTransition()
+            infiniteTransition.animateFloat(
+                initialValue = 0.6f,
+                targetValue = 1.0f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(durationMillis = 800, easing = FastOutSlowInEasing),
+                    repeatMode = RepeatMode.Reverse,
+                ),
+            )
+        } else {
+            // Static state for reduced motion
+            mutableStateOf(1.0f)
+        }
+    }
+    val pulseAlpha by remember {
+        if (!prefersReducedMotion) {
+            val infiniteTransition = rememberInfiniteTransition()
+            infiniteTransition.animateFloat(
+                initialValue = 0.4f,
+                targetValue = 1.0f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(durationMillis = 800, easing = FastOutSlowInEasing),
+                    repeatMode = RepeatMode.Reverse,
+                ),
+            )
+        } else {
+            // Static state for reduced motion
+            mutableStateOf(1.0f)
+        }
+    }
     val waitingTexts = remember {
         listOf(
             Res.string.waiting_thinking,
@@ -134,11 +153,21 @@ internal fun PulsingStatusIndicator(
             Res.string.waiting_brewing,
         )
     }
-    var index by remember { mutableIntStateOf(0) }
-    LaunchedEffect(Unit) {
-        while (true) {
-            delay(3.seconds)
-            index = (index + 1) % waitingTexts.size
+    val index by remember {
+        if (!prefersReducedMotion) {
+            val infiniteTransition = rememberInfiniteTransition(label = "waitingTextIndex", initialValue = 0)
+            infiniteTransition.animateInt(
+                initialValue = 0,
+                targetValue = waitingTexts.size,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(durationMillis = 3000, delayMillis = 0, easing = LinearEasing),
+                    repeatMode = RepeatMode.Restart,
+                ),
+                label = "textIndex"
+            )
+        } else {
+            // Static state for reduced motion
+            mutableStateOf(0)
         }
     }
 

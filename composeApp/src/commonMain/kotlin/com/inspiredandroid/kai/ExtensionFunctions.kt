@@ -1,5 +1,7 @@
 package com.inspiredandroid.kai
 
+import java.text.NumberFormat
+import java.util.Locale
 import kotlin.time.Instant
 
 /**
@@ -20,7 +22,12 @@ private val shortMonthNames = listOf(
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 )
 
-fun formatReleaseDate(iso: String): String {
+/**
+ * Formats a release date string (ISO format like "2025-03" or "2025-09-29")
+ * into a localized "MMM yyyy" format using the provided locale.
+ * Falls back to the input string if parsing fails.
+ */
+fun formatReleaseDate(iso: String, locale: Locale = Locale.getDefault()): String {
     val firstDash = iso.indexOf('-')
     if (firstDash < 1) return iso
     val secondDash = iso.indexOf('-', firstDash + 1)
@@ -28,14 +35,28 @@ fun formatReleaseDate(iso: String): String {
     val monthStr = if (secondDash > 0) iso.substring(firstDash + 1, secondDash) else iso.substring(firstDash + 1)
     val month = monthStr.toIntOrNull() ?: return iso
     if (month !in 1..12) return iso
-    return "${shortMonthNames[month - 1]} $year"
+    // Use locale-aware month name
+    val calendar = java.util.Calendar.getInstance(locale)
+    calendar.set(java.util.Calendar.YEAR, year)
+    calendar.set(java.util.Calendar.MONTH, month - 1)
+    calendar.set(java.util.Calendar.DAY_OF_MONTH, 1)
+    return java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM, locale).format(calendar.time)
 }
 
-fun formatFileSize(bytes: Long): String = when {
-    bytes >= 1_000_000_000 -> "${(bytes / 100_000_000).toDouble() / 10} GB"
-    bytes >= 1_000_000 -> "${bytes / 1_000_000} MB"
-    bytes >= 1_000 -> "${bytes / 1_000} KB"
-    else -> "$bytes B"
+/**
+ * Formats a file size in bytes to a human-readable string using the provided locale.
+ * Uses localized number formatting for decimal separators.
+ */
+fun formatFileSize(bytes: Long, locale: Locale = Locale.getDefault()): String {
+    val nf = NumberFormat.getInstance(locale)
+    nf.maximumFractionDigits = 1
+    nf.minimumFractionDigits = 0
+    return when {
+        bytes >= 1_000_000_000 -> "${nf.format(bytes / 100_000_000.0 / 10)} GB"
+        bytes >= 1_000_000 -> "${nf.format(bytes / 1_000_000)} MB"
+        bytes >= 1_000 -> "${nf.format(bytes / 1_000)} KB"
+        else -> "${nf.format(bytes.toDouble())} B"
+    }
 }
 
 fun String.smartTruncate(maxLength: Int): String {

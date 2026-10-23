@@ -32,6 +32,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.inspiredandroid.kai.BackIcon
@@ -79,7 +80,12 @@ fun ChatTimeline(
     val listState = rememberLazyListState()
     val componentScope = rememberCoroutineScope()
 
-    LaunchedEffect(uiState.history.size) {
+    val lastAssistantId = remember(uiState.history) { uiState.history.lastRenderedAssistant()?.id }
+    // Scroll to bottom & speak only when a NEW assistant message is appended (not on clear, regenerate, etc.)
+    val lastScrollId by remember { mutableStateOf(lastAssistantId) }
+    LaunchedEffect(lastAssistantId) {
+        if (lastScrollId == lastAssistantId) return@LaunchedEffect
+        lastScrollId = lastAssistantId
         val history = uiState.history
         if (history.isNotEmpty()) {
             listState.requestScrollToItem(history.lastIndex)
@@ -101,36 +107,57 @@ fun ChatTimeline(
             }
         }
     }
-
-    val lastAssistantId = remember(uiState.history) { uiState.history.lastRenderedAssistant()?.id }
+    // Compute frozen submissions + user-to-assistant mapping without mutating state during composition
     val pairings = remember(uiState.history, uiState.isLoading) {
         val history = uiState.history
         val lastUserIdx = history.indexOfLast { it.role == History.Role.USER }
-        val frozen = mutableMapOf<String, FrozenSubmission>()
-        val userIdByAssistant = mutableMapOf<String, String>()
-        for ((i, h) in history.withIndex()) {
-            if (h.role != History.Role.USER) continue
-            val sub = h.uiSubmission ?: continue
-            val originId = (i - 1 downTo 0).firstNotNullOfOrNull { j ->
-                history[j].takeIf {
-                    it.role == History.Role.ASSISTANT &&
-                        it.content.isNotEmpty() && !it.isThinking &&
-                        it.content == sub.sourceContent
-                }?.id
-            } ?: (i - 1 downTo 0).firstNotNullOfOrNull { j ->
-                history[j].takeIf {
-                    it.role == History.Role.ASSISTANT &&
-                        it.content.isNotEmpty() && !it.isThinking
-                }?.id
-            } ?: continue
-            frozen[originId] = FrozenSubmission(
-                values = sub.values,
-                pressedEvent = sub.pressedEvent,
-                isPending = uiState.isLoading && i == lastUserIdx,
-            )
-            userIdByAssistant[originId] = h.id
-        }
-        frozen.toMap() to userIdByAssistant.toMap()
+        
+        val frozen = history
+            .withIndex()
+            .filter { (_, h) -> h.role == History.Role.USER }
+            .mapNotNull { (i, h) ->
+                val sub = h.uiSubmission ?: return@mapNotNull null
+                val originId = (i - 1 downTo 0).firstNotNullOfOrNull { j ->
+                    history[j].takeIf {
+                        it.role == History.Role.ASSISTANT &&
+                            it.content.isNotEmpty() && !it.isThinking &&
+                            it.content == sub.sourceContent
+                    }?.id
+                } ?: (i - 1 downTo 0).firstNotNullOfOrNull { j ->
+                    history[j].takeIf {
+                        it.role == History.Role.ASSISTANT &&
+                            it.content.isNotEmpty() && !it.isThinking
+                    }?.id
+                } ?: return@mapNotNull null
+                originId to FrozenSubmission(
+                    values = sub.values,
+                    pressedEvent = sub.pressedEvent,
+                    isPending = uiState.isLoading && i == lastUserIdx,
+                )
+            }
+            .toMap()
+        
+        val userIdByAssistant = history
+            .withIndex()
+            .filter { (_, h) -> h.role == History.Role.USER }
+            .mapNotNull { (i, h) ->
+                val originId = (i - 1 downTo 0).firstNotNullOfOrNull { j ->
+                    history[j].takeIf {
+                        it.role == History.Role.ASSISTANT &&
+                            it.content.isNotEmpty() && !it.isThinking &&
+                            it.content == (h.uiSubmission?.sourceContent ?: "")
+                    }?.id
+                } ?: (i - 1 downTo 0).firstNotNullOfOrNull { j ->
+                    history[j].takeIf {
+                        it.role == History.Role.ASSISTANT &&
+                            it.content.isNotEmpty() && !it.isThinking
+                    }?.id
+                } ?: return@mapNotNull null
+                originId to h.id
+            }
+            .toMap()
+        
+        frozen to userIdByAssistant
     }
     val frozenByAssistantId = pairings.first
     val userIdByAssistantId = pairings.second
@@ -143,52 +170,42 @@ fun ChatTimeline(
     }
 
     val (reasoningSegmentsByAssistantId, suppressedThinkingIds) = remember(uiState.history) {
-        val byAnswerId = mutableMapOf<String, ImmutableList<String>>()
-        val suppressed = mutableSetOf<String>()
-        val pending = mutableListOf<String>()
-        val pendingThinkingIds = mutableListOf<String>()
-        for (entry in uiState.history) {
-            when {
-                entry.role == History.Role.USER -> {
-                    pending.clear()
-                    pendingThinkingIds.clear()
-                }
-
-                entry.role == History.Role.ASSISTANT &&
-                    entry.isThinking &&
-                    entry.content.isNotEmpty() -> {
-                    pending.add(entry.content)
-                    pendingThinkingIds.add(entry.id)
-                }
-
-                entry.role == History.Role.ASSISTANT &&
-                    !entry.isThinking &&
-                    entry.content.isNotEmpty() -> {
-                    val combined = buildList {
-                        addAll(pending)
-                        entry.reasoningContent?.takeIf { it.isNotBlank() }?.let { add(it) }
-                    }
-                    if (combined.isNotEmpty()) byAnswerId[entry.id] = combined.toImmutableList()
-                    suppressed.addAll(pendingThinkingIds)
-                    pending.clear()
-                    pendingThinkingIds.clear()
-                }
-
-                entry.role == History.Role.ASSISTANT &&
-                    entry.toolCalls != null -> {
-                    entry.reasoningContent
-                        ?.takeIf { it.isNotBlank() }
-                        ?.let { pending.add(it) }
-                }
+        val history = uiState.history
+        
+        val byAnswerId = history
+            .withIndex()
+            .filter { (_, e) ->
+                e.role == History.Role.ASSISTANT &&
+                    !e.isThinking &&
+                    e.content.isNotEmpty()
             }
-        }
-        if (pendingThinkingIds.isNotEmpty()) {
-            val lastId = pendingThinkingIds.last()
-            byAnswerId[lastId] = pending.toImmutableList()
-            for (i in 0 until pendingThinkingIds.size - 1) {
-                suppressed.add(pendingThinkingIds[i])
+            .mapNotNull { (i, e) ->
+                val thinkingPrefix = history
+                    .take(i)
+                    .filter { it.role == History.Role.ASSISTANT && it.isThinking && it.content.isNotEmpty() }
+                    .map { it.content }
+                    .reversed()
+                
+                val combined = buildList {
+                    addAll(thinkingPrefix)
+                    e.reasoningContent?.takeIf { it.isNotBlank() }?.let { add(it) }
+                }
+                
+                if (combined.isNotEmpty()) e.id to combined.toImmutableList() else null
             }
-        }
+            .toMap()
+        
+        val suppressed = history
+            .withIndex()
+            .filter { (_, e) ->
+                e.role == History.Role.ASSISTANT && e.isThinking && e.content.isNotEmpty()
+            }
+            .filterIndexed { idx, (i, _) ->
+                history.drop(i + 1).any { it.role == History.Role.ASSISTANT && !it.isThinking && it.content.isNotEmpty() }
+            }
+            .map { (_, e) -> e.id }
+            .toSet()
+        
         byAnswerId to suppressed
     }
 
@@ -201,7 +218,10 @@ fun ChatTimeline(
 
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         LazyColumn(
-            modifier = Modifier.fillMaxWidth().widthIn(max = 760.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .widthIn(max = 760.dp)
+                .semantics { liveRegion = LiveRegionMode.Polite },
             state = listState,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {

@@ -26,6 +26,8 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.tooltip
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -195,13 +198,17 @@ private fun SkillCard(
                         )
                     }
                 }
-                Text(
-                    text = skill.description,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = if (expanded) Int.MAX_VALUE else 2,
-                    overflow = TextOverflow.Ellipsis,
-                )
+                TooltipBox(
+                    tooltip = { Text(text = skill.description, style = MaterialTheme.typography.bodyMedium) },
+                ) {
+                    Text(
+                        text = skill.description,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = if (expanded) Int.MAX_VALUE else 2,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
             }
 
             // Built-in skills ship in the app and cannot be uninstalled — hide the remove action for them.
@@ -264,7 +271,8 @@ private fun AddSkillDialog(
             Column(
                 modifier = Modifier
                     .verticalScroll(scrollState)
-                    .padding(16.dp),
+                    .padding(16.dp)
+                    .semantics { liveRegion = LiveRegionMode.Polite },
             ) {
                 Text(
                     text = stringResource(Res.string.settings_skills_add),
@@ -443,13 +451,17 @@ private fun RegistrySkillRow(
                     color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Medium,
                 )
-                Text(
-                    text = entry.description,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                )
+                TooltipBox(
+                    tooltip = { Text(text = entry.description, style = MaterialTheme.typography.bodyMedium) },
+                ) {
+                    Text(
+                        text = entry.description,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
                 Text(
                     text = entry.sourceName,
                     style = MaterialTheme.typography.labelSmall,

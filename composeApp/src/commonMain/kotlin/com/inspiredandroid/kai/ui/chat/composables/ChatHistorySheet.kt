@@ -49,6 +49,7 @@ import com.inspiredandroid.kai.ui.chat.ConversationSummary
 import com.inspiredandroid.kai.ui.components.VerticalScrollbarForList
 import com.inspiredandroid.kai.ui.components.animatedGradientBorder
 import com.inspiredandroid.kai.ui.handCursor
+import java.util.Locale
 import kai.composeapp.generated.resources.Res
 import kai.composeapp.generated.resources.chat_history_delete_content_description
 import kai.composeapp.generated.resources.chat_history_empty
@@ -58,20 +59,10 @@ import kai.composeapp.generated.resources.ic_history
 import kai.composeapp.generated.resources.snackbar_conversation_deleted
 import kai.composeapp.generated.resources.snackbar_undo
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.datetime.format
-import kotlinx.datetime.format.DateTimeComponents.Companion.Format
-import kotlinx.datetime.format.MonthNames
-import kotlinx.datetime.format.char
+import kotlinx.datetime.format.DateTimeFormatter
+import androidx.compose.ui.platform.LocalConfiguration
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
-
-private val dateFormat = Format {
-    day()
-    char(' ')
-    monthName(MonthNames.ENGLISH_ABBREVIATED)
-    char(' ')
-    year()
-}
 
 @Composable
 internal fun ChatHistorySheet(
@@ -89,6 +80,7 @@ internal fun ChatHistorySheet(
         val snackbarHostState = remember { SnackbarHostState() }
         val deletedMessage = stringResource(Res.string.snackbar_conversation_deleted)
         val undoLabel = stringResource(Res.string.snackbar_undo)
+        val pendingDeletionState = rememberUpdatedState(pendingConversationDeletion)
 
         LaunchedEffect(pendingConversationDeletion) {
             if (pendingConversationDeletion == null) return@LaunchedEffect
@@ -98,7 +90,9 @@ internal fun ChatHistorySheet(
                 actionLabel = undoLabel,
                 duration = SnackbarDuration.Short,
             )
-            if (result == SnackbarResult.ActionPerformed) {
+            // Only undo the deletion we actually showed; if a newer deletion is
+            // already pending, the snackbar action is stale and must be ignored.
+            if (result == SnackbarResult.ActionPerformed && pendingDeletionState.value == pendingConversationDeletion) {
                 actions.undoDeleteConversation()
             }
         }
@@ -236,8 +230,13 @@ internal fun ChatHistorySheet(
     }
 }
 
-private fun formatDate(epochMillis: Long): String = try {
-    kotlin.time.Instant.fromEpochMilliseconds(epochMillis).format(dateFormat)
-} catch (_: Exception) {
-    ""
+@Composable
+private fun formatDate(epochMillis: Long): String {
+    val locale = LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()
+    return try {
+        kotlinx.datetime.Instant.fromEpochMilliseconds(epochMillis)
+            .format(DateTimeFormatter.ofPattern("d MMM yyyy", locale))
+    } catch (_: Exception) {
+        ""
+    }
 }

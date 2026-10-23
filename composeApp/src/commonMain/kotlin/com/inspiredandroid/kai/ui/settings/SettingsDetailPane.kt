@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -17,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.unit.dp
 import com.inspiredandroid.kai.linux.LinuxDistro
 import com.inspiredandroid.kai.ui.components.VerticalScrollbarForScroll
@@ -56,7 +59,12 @@ fun SettingsDetailPane(
                 Modifier.widthIn(max = maxContentWidth).fillMaxWidth().padding(horizontal = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                when (uiState.currentTab) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .semantics { liveRegion = LiveRegionMode.Polite },
+                ) {
+                    when (uiState.currentTab) {
                     SettingsTab.General -> {
                         SettingsOverview(uiState = uiState, sandboxInstalled = sandboxState.sandboxInstalled)
                         Spacer(Modifier.height(SettingsSpacing.md))
@@ -64,19 +72,32 @@ fun SettingsDetailPane(
                     }
 
                     SettingsTab.Agent -> {
-                        AgentContent(uiState = uiState, actions = actions)
+                        // Use LazyColumn for Agent tab which can have many items
+                        LazyColumn(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                        ) {
+                            item { AgentContent(uiState = uiState, actions = actions) }
+                        }
                     }
 
                     SettingsTab.Services -> {
+                        // ServicesContent already handles its own virtualization
                         ServicesContent(uiState = uiState, actions = actions)
                     }
 
                     SettingsTab.Tools -> {
-                        ToolsTabContent(
-                            uiState = uiState,
-                            actions = actions,
-                            sandboxState = sandboxState,
-                        )
+                        // Use LazyColumn for Tools tab which can have many items
+                        LazyColumn(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                        ) {
+                            item { ToolsTabContent(
+                                uiState = uiState,
+                                actions = actions,
+                                sandboxState = sandboxState,
+                            ) }
+                        }
                     }
 
                     SettingsTab.Integrations -> {
@@ -108,9 +129,10 @@ fun SettingsDetailPane(
                         AccountPlanContent(uiState = uiState)
                     }
                 }
-
-                Spacer(Modifier.height(16.dp))
             }
+
+            Spacer(Modifier.height(16.dp))
+        }
 
             Spacer(Modifier.weight(1f))
 

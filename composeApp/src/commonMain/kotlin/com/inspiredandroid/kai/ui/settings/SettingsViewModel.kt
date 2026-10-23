@@ -273,10 +273,12 @@ class SettingsViewModel(
     fun onScreenVisible() {
         if (!hasCheckedInitialConnection) {
             hasCheckedInitialConnection = true
-            checkAllConnections()
             connectEnabledMcpServers()
             fetchSponsors()
         }
+        // Re-validate service/MCP connection status on every visit so stale
+        // statuses don't persist after the user fixes a key or network issue.
+        checkAllConnections()
         // Re-read notification listener state every time the screen becomes visible:
         // the user may have toggled access in system settings while we were backgrounded.
         if (isNotificationsSupported) {
@@ -625,20 +627,23 @@ class SettingsViewModel(
 
     private fun onToggleSms(enabled: Boolean) {
         if (enabled && !dataRepository.hasSmsPermission()) {
-            // Ask for the OS permission first; only flip the toggle on if it's granted.
-            viewModelScope.launch(backgroundDispatcher) {
+            // Permission prompts must run on the main thread; keep only the I/O
+            // work below on the background dispatcher.
+            viewModelScope.launch {
                 val granted = dataRepository.requestSmsPermission()
                 _state.update { it.copy(smsPermissionGranted = granted, isSmsEnabled = granted) }
                 if (granted) {
-                    dataRepository.setSmsEnabled(true)
-                    // First poll seeds lastSeenId to the current inbox max, so the AI
-                    // isn't drowned in historical messages on opt-in.
-                    dataRepository.pollSms()
-                    _state.update {
-                        it.copy(
-                            smsSyncState = dataRepository.getSmsSyncState(),
-                            smsPendingCount = dataRepository.getPendingSmsCount(),
-                        )
+                    viewModelScope.launch(backgroundDispatcher) {
+                        dataRepository.setSmsEnabled(true)
+                        // First poll seeds lastSeenId to the current inbox max, so the AI
+                        // isn't drowned in historical messages on opt-in.
+                        dataRepository.pollSms()
+                        _state.update {
+                            it.copy(
+                                smsSyncState = dataRepository.getSmsSyncState(),
+                                smsPendingCount = dataRepository.getPendingSmsCount(),
+                            )
+                        }
                     }
                 }
             }
@@ -671,10 +676,16 @@ class SettingsViewModel(
 
     private fun onToggleSmsSend(enabled: Boolean) {
         if (enabled && !dataRepository.hasSmsSendPermission()) {
-            viewModelScope.launch(backgroundDispatcher) {
+            // Permission prompts must run on the main thread; keep only the I/O
+            // work below on the background dispatcher.
+            viewModelScope.launch {
                 val granted = dataRepository.requestSmsSendPermission()
                 _state.update { it.copy(smsSendPermissionGranted = granted, isSmsSendEnabled = granted) }
-                if (granted) dataRepository.setSmsSendEnabled(true)
+                if (granted) {
+                    viewModelScope.launch(backgroundDispatcher) {
+                        dataRepository.setSmsSendEnabled(true)
+                    }
+                }
             }
         } else {
             dataRepository.setSmsSendEnabled(enabled)
@@ -1164,42 +1175,44 @@ class SettingsViewModel(
 
     private fun validateConnectionWithStatus(instanceId: String, service: Service) {
         updateConnectionStatus(instanceId, ConnectionStatus.Checking)
-        viewModelScope.launch(backgroundDispatcher) {
-            // Android 17+ blocks LAN traffic without the local network permission, so ask
-            // before probing — otherwise the check fails with a misleading connection error.
+        // Permission prompts must run on the main thread; keep the network I/O
+        // work below on the background dispatcher.
+        viewModelScope.launch {
             val baseUrl = dataRepository.getInstanceBaseUrl(instanceId, service)
             if (isLocalNetworkUrl(baseUrl) && !localNetworkPermissionController.requestPermission()) {
                 updateConnectionStatus(instanceId, ConnectionStatus.ErrorLocalNetworkDenied)
                 return@launch
             }
-            try {
-                dataRepository.validateConnection(service, instanceId)
-                if (service.isOnDevice && dataRepository.getLocalDownloadedModels().isEmpty()) {
-                    updateConnectionStatus(instanceId, ConnectionStatus.Unknown)
-                } else {
-                    updateConnectionStatus(instanceId, ConnectionStatus.Connected)
+            viewModelScope.launch(backgroundDispatcher) {
+                try {
+                    dataRepository.validateConnection(service, instanceId)
+                    if (service.isOnDevice && dataRepository.getLocalDownloadedModels().isEmpty()) {
+                        updateConnectionStatus(instanceId, ConnectionStatus.Unknown)
+                    } else {
+                        updateConnectionStatus(instanceId, ConnectionStatus.Connected)
+                    }
+                    refreshInstanceModels(instanceId)
+                } catch (e: Exception) {
+                    val status = when (e) {
+                        is OpenAICompatibleInvalidApiKeyException, is GeminiInvalidApiKeyException, is AnthropicInvalidApiKeyException ->
+                            ConnectionStatus.ErrorInvalidKey
+
+                        is OpenAICompatibleQuotaExhaustedException, is AnthropicInsufficientCreditsException ->
+                            ConnectionStatus.ErrorQuotaExhausted
+
+                        is OpenAICompatibleRateLimitExceededException, is GeminiRateLimitExceededException, is AnthropicRateLimitExceededException ->
+                            ConnectionStatus.ErrorRateLimited
+
+                        is AnthropicOverloadedException ->
+                            ConnectionStatus.Error
+
+                        is OpenAICompatibleConnectionException ->
+                            ConnectionStatus.ErrorConnectionFailed
+
+                        else -> ConnectionStatus.Error
+                    }
+                    updateConnectionStatus(instanceId, status)
                 }
-                refreshInstanceModels(instanceId)
-            } catch (e: Exception) {
-                val status = when (e) {
-                    is OpenAICompatibleInvalidApiKeyException, is GeminiInvalidApiKeyException, is AnthropicInvalidApiKeyException ->
-                        ConnectionStatus.ErrorInvalidKey
-
-                    is OpenAICompatibleQuotaExhaustedException, is AnthropicInsufficientCreditsException ->
-                        ConnectionStatus.ErrorQuotaExhausted
-
-                    is OpenAICompatibleRateLimitExceededException, is GeminiRateLimitExceededException, is AnthropicRateLimitExceededException ->
-                        ConnectionStatus.ErrorRateLimited
-
-                    is AnthropicOverloadedException ->
-                        ConnectionStatus.Error
-
-                    is OpenAICompatibleConnectionException ->
-                        ConnectionStatus.ErrorConnectionFailed
-
-                    else -> ConnectionStatus.Error
-                }
-                updateConnectionStatus(instanceId, status)
             }
         }
     }

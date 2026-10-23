@@ -17,6 +17,9 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ImeAction
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.KeyboardType
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,7 +29,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.tooltip
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,9 +41,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEvent
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.inspiredandroid.kai.formatContextWindow
 import com.inspiredandroid.kai.formatReleaseDate
 import com.inspiredandroid.kai.ui.KaiOutlinedTextField
@@ -103,13 +114,35 @@ internal fun ModelSelection(
             )
         }
         if (expanded) {
+            val sheetFocusRequester = remember { FocusRequester() }
             ModalBottomSheet(
                 sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
                 onDismissRequest = {
                     expanded = false
                 },
             ) {
-                var searchQuery by remember { mutableStateOf("") }
+                Column(
+                    modifier = Modifier
+                        .focusRequester(sheetFocusRequester)
+                        .onKeyEvent { event ->
+                            if (event.key == Key.Escape) {
+                                expanded = false
+                                true
+                            } else {
+                                false
+                            }
+                        }
+                        .onFocusChanged { focused ->
+                            if (focused.isFocused) {
+                                sheetFocusRequester.requestFocus()
+                            }
+                        },
+                ) {
+                    // Request focus when sheet opens
+                    LaunchedEffect(Unit) {
+                        sheetFocusRequester.requestFocus()
+                    }
+                    var searchQuery by remember { mutableStateOf("") }
                 val hasFreeModels = remember(pickerModels) { pickerModels.any { it.isFreeTier } }
                 var freeFilterOnly by remember { mutableStateOf(false) }
                 // Reset free filter when the service has no free models.
@@ -208,6 +241,9 @@ internal fun ModelSelection(
                     }
                 }
             }
+                    }
+                }
+            }
         }
     }
 }
@@ -227,7 +263,7 @@ private fun ModelCard(model: SettingsModel, isSelected: Boolean, onClick: () -> 
     val title = displayName ?: model.id
     val secondary = if (displayName == null && model.subtitle.isNotBlank()) model.subtitle else null
     val contextText = model.contextWindow?.let { formatContextWindow(it) }
-    val releaseText = model.releaseDate?.let { formatReleaseDate(it) }
+    val releaseText = model.releaseDate?.let { formatReleaseDate(it, LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()) }
     val detailText = listOfNotNull(releaseText, model.parameterCount, contextText)
         .joinToString("  ·  ").ifEmpty { null }
 
@@ -256,14 +292,19 @@ private fun ModelCard(model: SettingsModel, isSelected: Boolean, onClick: () -> 
             modifier = Modifier.padding(16.dp),
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    color = primaryColor,
+                TooltipBox(
                     modifier = Modifier.weight(1f),
-                )
+                    tooltip = { Text(text = title, style = MaterialTheme.typography.bodyMedium) },
+                ) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = primaryColor,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
                 if (model.isFreeTier) {
                     Spacer(Modifier.width(8.dp))
                     FreeTierBadge(isSelected = isSelected)
@@ -278,13 +319,17 @@ private fun ModelCard(model: SettingsModel, isSelected: Boolean, onClick: () -> 
                 }
             }
             secondary?.let {
-                Text(
-                    text = it,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = secondaryColor,
-                )
+                TooltipBox(
+                    tooltip = { Text(text = it, style = MaterialTheme.typography.bodyMedium) },
+                ) {
+                    Text(
+                        text = it,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = secondaryColor,
+                    )
+                }
             }
             detailText?.let {
                 Spacer(Modifier.height(6.dp))

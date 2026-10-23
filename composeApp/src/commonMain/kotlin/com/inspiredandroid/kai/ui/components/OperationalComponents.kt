@@ -15,6 +15,9 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -60,16 +63,17 @@ enum class OperationalStatus {
 }
 
 /** One color ramp for every operational badge so status colors never diverge. */
-object OperationalStatusColors {
-    val connected: Color = Color(0xFF16C60C)
-    val connecting: Color = Color(0xFF00BCD4)
-    val disabled: Color = Color(0xFF8899A6)
-    val installing: Color = Color(0xFF00BCD4)
-    val needsSetup: Color = Color(0xFFFFB74D)
-    val error: Color = Color(0xFFE74856)
-    val active: Color = Color(0xFF16C60C)
-    val ready: Color = Color(0xFF16C60C)
-
+@Immutable
+data class OperationalStatusColors(
+    val connected: Color,
+    val connecting: Color,
+    val disabled: Color,
+    val installing: Color,
+    val needsSetup: Color,
+    val error: Color,
+    val active: Color,
+    val ready: Color,
+) {
     fun forStatus(status: OperationalStatus): Color = when (status) {
         OperationalStatus.Connected -> connected
         OperationalStatus.Connecting -> connecting
@@ -79,6 +83,23 @@ object OperationalStatusColors {
         OperationalStatus.Error -> error
         OperationalStatus.Active -> active
         OperationalStatus.Ready -> ready
+    }
+}
+
+@Composable
+fun rememberOperationalStatusColors(): OperationalStatusColors {
+    val colorScheme = MaterialTheme.colorScheme
+    return remember(colorScheme) {
+        OperationalStatusColors(
+            connected = colorScheme.tertiary,
+            connecting = colorScheme.primary,
+            disabled = colorScheme.onSurfaceVariant,
+            installing = colorScheme.primary,
+            needsSetup = colorScheme.secondary,
+            error = colorScheme.error,
+            active = colorScheme.tertiary,
+            ready = colorScheme.tertiary,
+        )
     }
 }
 
@@ -93,7 +114,8 @@ fun StatusBadge(
     status: OperationalStatus,
     modifier: Modifier = Modifier,
 ) {
-    val color = OperationalStatusColors.forStatus(status)
+    val colors = rememberOperationalStatusColors()
+    val color = colors.forStatus(status)
     Row(
         modifier = modifier.semantics {
             contentDescription = "Status: $label"

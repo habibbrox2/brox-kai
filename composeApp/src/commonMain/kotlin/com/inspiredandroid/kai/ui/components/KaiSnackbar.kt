@@ -17,14 +17,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.inspiredandroid.kai.ui.AccentPrimary
-import com.inspiredandroid.kai.ui.BorderSoft
-import com.inspiredandroid.kai.ui.DangerAlert
 import com.inspiredandroid.kai.ui.KaiShapes
 import com.inspiredandroid.kai.ui.KaiTypography
-import com.inspiredandroid.kai.ui.SuccessGreen
-import com.inspiredandroid.kai.ui.TextPrimary
-import com.inspiredandroid.kai.ui.WarningAmber
 
 /** Color configuration for a KaiSnackbar variant. */
 private data class SnackbarColors(
@@ -91,27 +85,27 @@ private fun snackbarColors(
 ): SnackbarColors = when (variant) {
     SnackbarVariant.Success ->
         SnackbarColors(
-            background = SuccessGreen,
-            text = TextPrimary,
-            border = SuccessGreen,
+            background = colorScheme.tertiaryContainer,
+            text = colorScheme.onTertiaryContainer,
+            border = colorScheme.tertiary,
         )
     SnackbarVariant.Warning ->
         SnackbarColors(
-            background = WarningAmber,
-            text = TextPrimary,
-            border = WarningAmber,
+            background = colorScheme.secondaryContainer,
+            text = colorScheme.onSecondaryContainer,
+            border = colorScheme.secondary,
         )
     SnackbarVariant.Error ->
         SnackbarColors(
-            background = DangerAlert,
-            text = TextPrimary,
-            border = DangerAlert,
+            background = colorScheme.errorContainer,
+            text = colorScheme.onErrorContainer,
+            border = colorScheme.error,
         )
     SnackbarVariant.Info ->
         SnackbarColors(
-            background = AccentPrimary,
-            text = colorScheme.onPrimary,
-            border = AccentPrimary,
+            background = colorScheme.primaryContainer,
+            text = colorScheme.onPrimaryContainer,
+            border = colorScheme.primary,
         )
 }
 

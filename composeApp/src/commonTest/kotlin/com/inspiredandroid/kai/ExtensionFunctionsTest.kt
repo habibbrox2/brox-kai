@@ -1,10 +1,13 @@
 package com.inspiredandroid.kai
 
+import java.util.Locale
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 class ExtensionFunctionsTest {
+
+    private val testLocale = Locale.US
 
     @Test
     fun `formatContextWindow renders millions`() {
@@ -25,18 +28,18 @@ class ExtensionFunctionsTest {
 
     @Test
     fun `formatReleaseDate accepts year-month`() {
-        assertEquals("Mar 2025", formatReleaseDate("2025-03"))
+        assertEquals("Mar 2025", formatReleaseDate("2025-03", testLocale))
     }
 
     @Test
     fun `formatReleaseDate accepts full iso date`() {
-        assertEquals("Sep 2025", formatReleaseDate("2025-09-29"))
+        assertEquals("Sep 2025", formatReleaseDate("2025-09-29", testLocale))
     }
 
     @Test
     fun `formatReleaseDate falls back on invalid input`() {
-        assertEquals("not-a-date", formatReleaseDate("not-a-date"))
-        assertEquals("2025-13", formatReleaseDate("2025-13"))
+        assertEquals("not-a-date", formatReleaseDate("not-a-date", testLocale))
+        assertEquals("2025-13", formatReleaseDate("2025-13", testLocale))
     }
 
     @Test
@@ -55,26 +58,26 @@ class ExtensionFunctionsTest {
 
     @Test
     fun `formatFileSize handles bytes correctly`() {
-        assertEquals("0 B", formatFileSize(0))
-        assertEquals("999 B", formatFileSize(999))
+        assertEquals("0 B", formatFileSize(0, testLocale))
+        assertEquals("999 B", formatFileSize(999, testLocale))
     }
 
     @Test
     fun `formatFileSize handles kilobytes correctly`() {
-        assertEquals("1 KB", formatFileSize(1000))
-        assertEquals("999 KB", formatFileSize(999_999))
+        assertEquals("1 KB", formatFileSize(1000, testLocale))
+        assertEquals("999 KB", formatFileSize(999_999, testLocale))
     }
 
     @Test
     fun `formatFileSize handles megabytes correctly`() {
-        assertEquals("1 MB", formatFileSize(1_000_000))
-        assertEquals("999 MB", formatFileSize(999_999_999))
+        assertEquals("1 MB", formatFileSize(1_000_000, testLocale))
+        assertEquals("999 MB", formatFileSize(999_999_999, testLocale))
     }
 
     @Test
     fun `formatFileSize handles gigabytes correctly`() {
-        assertEquals("1.0 GB", formatFileSize(1_000_000_000))
-        assertEquals("1.5 GB", formatFileSize(1_500_000_000))
+        assertEquals("1.0 GB", formatFileSize(1_000_000_000, testLocale))
+        assertEquals("1.5 GB", formatFileSize(1_500_000_000, testLocale))
     }
 
     @Test

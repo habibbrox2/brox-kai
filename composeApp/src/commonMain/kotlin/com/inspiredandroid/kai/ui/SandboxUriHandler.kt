@@ -43,9 +43,19 @@ internal class SandboxAwareUriHandler(
  * escapes (e.g. `%20`) are decoded so the resolved path matches the real file.
  */
 internal fun toSandboxPath(uri: String): String? {
-    val raw = when {
-        uri.startsWith("file://") -> uri.removePrefix("file://")
-        uri.startsWith("file:") -> uri.removePrefix("file:")
+    val raw: String = when {
+        uri.startsWith("file:") -> {
+            val rest = uri.removePrefix("file:")
+            if (rest.startsWith("//")) {
+                // Strip the authority (//host) so file:///path and file://host/path
+                // both resolve to an absolute sandbox path.
+                val afterAuthority = rest.removePrefix("//")
+                val slashIdx = afterAuthority.indexOf('/')
+                if (slashIdx >= 0) afterAuthority.substring(slashIdx) else return null
+            } else {
+                rest
+            }
+        }
         uri.startsWith("/") -> uri
         else -> return null
     }

@@ -9,6 +9,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.ImeAction
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.KeyboardType
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -26,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
@@ -89,12 +94,42 @@ fun CodeEditorScreen(
                     .fillMaxSize()
                     .verticalScroll(scroll)
                     .horizontalScroll(rememberScrollState())
-                    .padding(12.dp),
+                    .padding(12.dp)
+                    .semantics {
+                        role = Role.TextField
+                        contentDescription = "Code editor, enter code here"
+                    },
                 textStyle = TextStyle(
                     fontFamily = FontFamily.Monospace,
                     color = MaterialTheme.colorScheme.onBackground,
+                    fontFeatureSettings = "tnum",
                 ),
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.None,
+                ),
+                decorationBox = { innerTextField ->
+                    androidx.compose.foundation.layout.Box(
+                        modifier = Modifier.fillMaxSize(),
+                    ) {
+                        if (text.isEmpty()) {
+                            Text(
+                                text = "Enter code here...",
+                                style = TextStyle(
+                                    fontFamily = FontFamily.Monospace,
+                                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f),
+                                    fontFeatureSettings = "tnum",
+                                ),
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(12.dp)
+                                    .align(androidx.compose.ui.Alignment.TopStart),
+                            )
+                        }
+                        innerTextField()
+                    }
+                },
             )
         }
     }

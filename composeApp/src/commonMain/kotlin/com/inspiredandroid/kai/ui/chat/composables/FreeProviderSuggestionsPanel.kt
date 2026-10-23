@@ -78,32 +78,34 @@ internal fun FreeProviderSuggestionsPanel(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             freeProviderSuggestions.forEach { suggestion ->
-                Surface(
-                    modifier = Modifier
-                        .handCursor()
-                        .clip(RoundedCornerShape(50))
-                        .clickable { uriHandler.openUri(suggestion.signupUrl) },
-                    shape = RoundedCornerShape(50),
-                    color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-                        verticalAlignment = Alignment.CenterVertically,
+                key(suggestion.service.id) {
+                    Surface(
+                        modifier = Modifier
+                            .handCursor()
+                            .clip(RoundedCornerShape(50))
+                            .clickable { uriHandler.openUri(suggestion.signupUrl) },
+                        shape = RoundedCornerShape(50),
+                        color = MaterialTheme.colorScheme.surfaceContainerHigh,
                     ) {
-                        Icon(
-                            imageVector = vectorResource(suggestion.service.icon),
-                            contentDescription = null,
-                            modifier = Modifier.size(16.dp),
-                            tint = MaterialTheme.colorScheme.onSurface,
-                        )
-                        Spacer(Modifier.width(6.dp))
-                        Text(
-                            text = suggestion.service.displayName,
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
+                        Row(
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Icon(
+                                imageVector = vectorResource(suggestion.service.icon),
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp),
+                                tint = MaterialTheme.colorScheme.onSurface,
+                            )
+                            Spacer(Modifier.width(6.dp))
+                            Text(
+                                text = suggestion.service.displayName,
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
                     }
                 }
             }

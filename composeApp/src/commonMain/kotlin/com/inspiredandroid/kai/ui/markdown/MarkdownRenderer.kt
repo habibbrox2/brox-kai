@@ -21,6 +21,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -150,7 +151,11 @@ private fun ParagraphBlock(block: Paragraph) {
         AsyncImage(
             model = img.src,
             contentDescription = img.alt,
-            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(300.dp)
+                .padding(vertical = 4.dp),
+            contentScale = ContentScale.Crop,
         )
         return
     }

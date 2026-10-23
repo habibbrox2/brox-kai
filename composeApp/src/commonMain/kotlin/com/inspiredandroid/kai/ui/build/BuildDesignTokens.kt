@@ -1,6 +1,8 @@
 package com.inspiredandroid.kai.ui.build
 
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
@@ -63,13 +65,28 @@ fun BuildEnvironmentState.toStatusKind(): BuildStatusKind = when (this) {
 }
 
 /** Color ramp for the four terminal/workflow statuses plus neutral idle. */
-object BuildStatusColors {
-    val idle: Color = Color(0xFF8899A6)
-    val running: Color = Color(0xFF00BCD4)
-    val success: Color = Color(0xFF16C60C)
-    val warning: Color = Color(0xFFFFB74D)
-    val failed: Color = Color(0xFFE74856)
+@Composable
+fun rememberBuildStatusColors(): BuildStatusColors {
+    val colorScheme = MaterialTheme.colorScheme
+    return remember(colorScheme) {
+        BuildStatusColors(
+            idle = colorScheme.onSurfaceVariant,
+            running = colorScheme.primary,
+            success = colorScheme.tertiary,
+            warning = colorScheme.secondary,
+            failed = colorScheme.error,
+        )
+    }
+}
 
+@Immutable
+data class BuildStatusColors(
+    val idle: Color,
+    val running: Color,
+    val success: Color,
+    val warning: Color,
+    val failed: Color,
+) {
     fun forKind(kind: BuildStatusKind): Color = when (kind) {
         BuildStatusKind.Idle -> idle
         BuildStatusKind.Running -> running

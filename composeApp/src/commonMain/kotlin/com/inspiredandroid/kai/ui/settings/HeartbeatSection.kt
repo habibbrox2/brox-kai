@@ -35,10 +35,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import java.util.Locale
+import kotlinx.datetime.format.DateTimeFormatter
+import kotlinx.datetime.format.FormatStyle
 import com.inspiredandroid.kai.data.EmailAccount
 import com.inspiredandroid.kai.data.EmailSyncState
 import com.inspiredandroid.kai.data.HeartbeatLogEntry
@@ -751,25 +755,35 @@ internal fun NotificationsSection(
     }
 }
 
+@Composable
 private fun formatPollRelative(diffMs: Long): String {
+    val locale = LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()
     val clamped = diffMs.coerceAtLeast(0L)
     val minutes = clamped / 60_000L
     val hours = minutes / 60L
     val days = hours / 24L
     return when {
-        minutes < 1L -> "just now"
-        minutes < 60L -> "${minutes}m ago"
-        hours < 24L -> "${hours}h ago"
-        else -> "${days}d ago"
+        minutes < 1L ->
+            stringResource(Res.plurals.relative_time_just_now, 1)
+        minutes < 60L ->
+            stringResource(Res.plurals.relative_time_minutes, minutes, minutes)
+        hours < 24L ->
+            stringResource(Res.plurals.relative_time_hours, hours, hours)
+        else ->
+            stringResource(Res.plurals.relative_time_days, days, days)
     }
 }
 
+@Composable
 private fun formatHeartbeatTime(epochMs: Long): String {
-    val instant = Instant.fromEpochMilliseconds(epochMs)
-    val local = instant.toLocalDateTime(TimeZone.currentSystemDefault())
-    return "${local.day} ${local.month.name.take(3).lowercase().replaceFirstChar { it.uppercase() }} ${local.hour}:${local.minute.toString().padStart(2, '0')}"
+    val locale = LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()
+    val instant = kotlinx.datetime.Instant.fromEpochMilliseconds(epochMs)
+    val zoned = instant.toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault())
+    val formatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT, locale)
+    return zoned.format(formatter)
 }
 
+@Composable
 internal fun describeCron(cron: String): String {
     val parts = cron.trim().split("\\s+".toRegex())
     if (parts.size != 5) return cron
@@ -782,14 +796,19 @@ internal fun describeCron(cron: String): String {
     val timeStr = formatCronTime(hour, minute) ?: return cron
 
     return when {
-        isEveryDay -> "Daily at $timeStr"
+        isEveryDay ->
+            stringResource(Res.string.cron_daily_at, timeStr)
 
         isEveryWeekday -> {
             val days = dayOfWeek.split(",").mapNotNull { dayName(it.trim()) }
-            if (days.isNotEmpty()) "Every ${days.joinToString(", ")} at $timeStr" else cron
+            if (days.isNotEmpty())
+                stringResource(Res.string.cron_weekly_at, days.joinToString(", "), timeStr)
+            else
+                cron
         }
 
-        isEveryMonth -> "Monthly on day $dayOfMonth at $timeStr"
+        isEveryMonth ->
+            stringResource(Res.string.cron_monthly_on_day, dayOfMonth, timeStr)
 
         else -> cron
     }
@@ -802,20 +821,20 @@ private fun formatCronTime(hour: String, minute: String): String? {
 }
 
 private fun dayName(day: String): String? = when (day) {
-    "0", "7" -> "Sun"
-    "1" -> "Mon"
-    "2" -> "Tue"
-    "3" -> "Wed"
-    "4" -> "Thu"
-    "5" -> "Fri"
-    "6" -> "Sat"
-    "MON" -> "Mon"
-    "TUE" -> "Tue"
-    "WED" -> "Wed"
-    "THU" -> "Thu"
-    "FRI" -> "Fri"
-    "SAT" -> "Sat"
-    "SUN" -> "Sun"
+    "0", "7" -> stringResource(Res.string.cron_day_sunday)
+    "1" -> stringResource(Res.string.cron_day_monday)
+    "2" -> stringResource(Res.string.cron_day_tuesday)
+    "3" -> stringResource(Res.string.cron_day_wednesday)
+    "4" -> stringResource(Res.string.cron_day_thursday)
+    "5" -> stringResource(Res.string.cron_day_friday)
+    "6" -> stringResource(Res.string.cron_day_saturday)
+    "MON" -> stringResource(Res.string.cron_day_monday)
+    "TUE" -> stringResource(Res.string.cron_day_tuesday)
+    "WED" -> stringResource(Res.string.cron_day_wednesday)
+    "THU" -> stringResource(Res.string.cron_day_thursday)
+    "FRI" -> stringResource(Res.string.cron_day_friday)
+    "SAT" -> stringResource(Res.string.cron_day_saturday)
+    "SUN" -> stringResource(Res.string.cron_day_sunday)
     else -> null
 }
 
@@ -828,9 +847,11 @@ private fun PresetSlider(
     formatValue: @Composable (Int) -> String,
     onValueChanged: (Int) -> Unit,
 ) {
-    val initialPos = presets.indexOf(currentValue).takeIf { it >= 0 }?.toFloat() ?: fallbackIndex.toFloat()
+    if (presets.isEmpty()) return
+    val initialPos = presets.indexOf(currentValue).takeIf { it >= 0 }?.toFloat() ?: fallbackIndex.coerceIn(0, presets.lastIndex).toFloat()
     var sliderValue by remember(currentValue) { mutableStateOf(initialPos) }
-    val currentPreset = presets[sliderValue.roundToInt()]
+    val safeIndex = sliderValue.roundToInt().coerceIn(0, presets.lastIndex)
+    val currentPreset = presets[safeIndex]
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -854,7 +875,7 @@ private fun PresetSlider(
         value = sliderValue,
         onValueChange = { sliderValue = it },
         onValueChangeFinished = {
-            onValueChanged(presets[sliderValue.roundToInt()])
+            onValueChanged(presets[sliderValue.roundToInt().coerceIn(0, presets.lastIndex)])
         },
         valueRange = 0f..(presets.size - 1).toFloat(),
         steps = presets.size - 2,

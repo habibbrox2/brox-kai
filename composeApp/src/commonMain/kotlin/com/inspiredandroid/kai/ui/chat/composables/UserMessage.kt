@@ -88,7 +88,7 @@ internal fun UserMessage(
                     if (imageBitmap != null) {
                         Image(
                             bitmap = imageBitmap,
-                            contentDescription = null,
+                            contentDescription = "Image attachment",
                             modifier = Modifier
                                 .widthIn(max = 200.dp)
                                 .clip(RoundedCornerShape(8.dp))
@@ -105,27 +105,29 @@ internal fun UserMessage(
                         verticalArrangement = Arrangement.spacedBy(ChatSpacing.xs),
                     ) {
                         for (att in others) {
-                            val chipColors = SuggestionChipDefaults.suggestionChipColors(
-                                containerColor = if (isOled) {
-                                    com.inspiredandroid.kai.ui.CardFill
-                                } else {
-                                    MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-                                },
-                                labelColor = MaterialTheme.colorScheme.onSurface,
-                            )
-                            SuggestionChip(
-                                onClick = {},
-                                colors = chipColors,
-                                icon = {
-                                    Icon(
-                                        modifier = Modifier.size(ChatSpacing.lg),
-                                        painter = painterResource(Res.drawable.ic_file),
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onSurface,
-                                    )
-                                },
-                                label = { Text(truncateFileName(att.fileName ?: att.mimeType)) },
-                            )
+                            key("${att.fileName ?: att.mimeType}_${att.data.take(8)}") {
+                                val chipColors = SuggestionChipDefaults.suggestionChipColors(
+                                    containerColor = if (isOled) {
+                                        com.inspiredandroid.kai.ui.CardFill
+                                    } else {
+                                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                                    },
+                                    labelColor = MaterialTheme.colorScheme.onSurface,
+                                )
+                                SuggestionChip(
+                                    onClick = {},
+                                    colors = chipColors,
+                                    icon = {
+                                        Icon(
+                                            modifier = Modifier.size(ChatSpacing.lg),
+                                            painter = painterResource(Res.drawable.ic_file),
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.onSurface,
+                                        )
+                                    },
+                                    label = { Text(truncateFileName(att.fileName ?: att.mimeType)) },
+                                )
+                            }
                         }
                     }
                     if (message.isNotEmpty()) {

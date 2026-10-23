@@ -51,6 +51,7 @@ import androidx.compose.ui.input.key.isShiftPressed
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.TextRange
@@ -120,8 +121,10 @@ internal fun TrailingIcon(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     isPulsing: Boolean = false,
+    contentDescription: String,
 ) {
-    val pulseModifier = if (isPulsing) {
+    val prefersReducedMotion = LocalConfiguration.current.prefersReducedMotion
+    val pulseModifier = if (isPulsing && !prefersReducedMotion) {
         val infiniteTransition = rememberInfiniteTransition()
         val pulseScale by infiniteTransition.animateFloat(
             initialValue = 0.92f,
@@ -160,7 +163,7 @@ internal fun TrailingIcon(
         Icon(
             vectorResource(icon),
             modifier = Modifier.size(32.dp).then(pulseModifier),
-            contentDescription = null,
+            contentDescription = contentDescription,
             tint = com.inspiredandroid.kai.ui.OledBlack,
         )
     }
@@ -172,6 +175,7 @@ internal fun CircleIconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     tint: Color = MaterialTheme.colorScheme.onSurfaceVariant,
+    contentDescription: String,
 ) {
     Box(
         modifier = modifier
@@ -185,7 +189,7 @@ internal fun CircleIconButton(
         Icon(
             imageVector = icon,
             modifier = Modifier.size(24.dp),
-            contentDescription = null,
+            contentDescription = contentDescription,
             tint = tint,
         )
     }
@@ -251,31 +255,33 @@ fun QuestionInput(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 for (file in files) {
-                    val icon = if (file.extension.lowercase() in imageExtensions) {
-                        Res.drawable.ic_image
-                    } else {
-                        Res.drawable.ic_file
-                    }
-                    SuggestionChip(
-                        modifier = Modifier.handCursor(),
-                        onClick = { removeFile(file) },
-                        icon = {
-                            Icon(
-                                modifier = Modifier.size(16.dp),
-                                painter = painterResource(icon),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onBackground,
-                            )
-                        },
-                        label = {
-                            DisableSelection {
-                                Text(
-                                    modifier = Modifier.handCursor(),
-                                    text = truncateFileName(file.name),
+                    key(file.name) {
+                        val icon = if (file.extension.lowercase() in imageExtensions) {
+                            Res.drawable.ic_image
+                        } else {
+                            Res.drawable.ic_file
+                        }
+                        SuggestionChip(
+                            modifier = Modifier.handCursor(),
+                            onClick = { removeFile(file) },
+                            icon = {
+                                Icon(
+                                    modifier = Modifier.size(16.dp),
+                                    painter = painterResource(icon),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onBackground,
                                 )
-                            }
-                        },
-                    )
+                            },
+                            label = {
+                                DisableSelection {
+                                    Text(
+                                        modifier = Modifier.handCursor(),
+                                        text = truncateFileName(file.name),
+                                    )
+                                }
+                            },
+                        )
+                    }
                 }
             }
         }
@@ -300,10 +306,6 @@ fun QuestionInput(
         }
 
         val focusRequester = remember { FocusRequester() }
-        // The cap is expressed in dp but bounds a number of text lines, so it has to
-        // grow with the font scale — otherwise the composer shows a single line of
-        // what the user is typing at the largest accessibility font size.
-        val maxComposerHeight = 120.dp * LocalDensity.current.fontScale
 
         // Floating glassmorphic input pill
         val isOled = MaterialTheme.colorScheme.isOledFlavor
@@ -324,7 +326,9 @@ fun QuestionInput(
                 .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
             Surface(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 120.dp),
                 color = inputPillBg,
                 shape = RoundedCornerShape(28.dp),
                 border = BorderStroke(
@@ -365,9 +369,18 @@ fun QuestionInput(
                                 )
                             }
                             if (isLoading) {
-                                TrailingIcon(icon = Res.drawable.ic_stop, onClick = cancel, isPulsing = true)
+                                TrailingIcon(
+                                    icon = Res.drawable.ic_stop,
+                                    onClick = cancel,
+                                    isPulsing = true,
+                                    contentDescription = "Cancel generation",
+                                )
                             } else if (textState.text.isNotBlank()) {
-                                TrailingIcon(icon = Res.drawable.ic_up, onClick = { submitQuestion() })
+                                TrailingIcon(
+                                    icon = Res.drawable.ic_up,
+                                    onClick = { submitQuestion() },
+                                    contentDescription = "Send question",
+                                )
                             }
                         }
                     },
@@ -383,6 +396,7 @@ fun QuestionInput(
                                 onClick = { filePickerLauncher.launch() },
                                 modifier = Modifier.padding(start = 7.dp),
                                 tint = MaterialTheme.colorScheme.onBackground,
+                                contentDescription = "Attach file",
                             )
                         }
                     } else {

@@ -1,5 +1,6 @@
 package com.inspiredandroid.kai.ui.build
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -17,14 +18,21 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Terminal
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.PaddingValues
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,11 +57,11 @@ private val ArrowCaps = listOf(
     Triple(TerminalKey.Right, TerminalArrowRight, Res.string.kai_build_terminal_key_right_content_description),
 )
 
-private val KeyCapHeight = 34.dp
-private val KeyCapMinWidth = 40.dp
+private val KeyCapHeight = 48.dp
+private val KeyCapMinWidth = 48.dp
 
 /** Icon caps hold one glyph, so they can be squarer than the lettered ones. */
-private val IconKeyCapMinWidth = 38.dp
+private val IconKeyCapMinWidth = 48.dp
 
 /** Enter is the row's action key and gets the width to say so. */
 private val EnterKeyCapMinWidth = 52.dp
@@ -184,7 +192,13 @@ private fun KeyCap(
     modifier: Modifier = Modifier,
     active: Boolean = false,
 ) {
-    KeyCapSurface(enabled = enabled, onClick = onClick, modifier = modifier, active = active) { tint ->
+    KeyCapSurface(
+        enabled = enabled,
+        onClick = onClick,
+        modifier = modifier,
+        active = active,
+        contentDescription = label,
+    ) { tint ->
         Text(text = label, style = monoStyle(KeyCapFontSize, tint))
     }
 }
@@ -206,6 +220,7 @@ private fun IconKeyCap(
         modifier = modifier,
         accent = accent,
         minWidth = minWidth,
+        contentDescription = contentDescription,
     ) { tint ->
         Icon(
             imageVector = icon,
@@ -216,7 +231,6 @@ private fun IconKeyCap(
     }
 }
 
-/** The cap itself: colors for the three states, and the tint its content draws with. */
 @Composable
 private fun KeyCapSurface(
     enabled: Boolean,
@@ -225,6 +239,7 @@ private fun KeyCapSurface(
     active: Boolean = false,
     accent: Boolean = false,
     minWidth: Dp = KeyCapMinWidth,
+    contentDescription: String? = null,
     content: @Composable (tint: Color) -> Unit,
 ) {
     val tint = when {
@@ -241,18 +256,61 @@ private fun KeyCapSurface(
         else -> Color(0xFF262626)
     }
 
+    val buttonColors = ButtonDefaults.buttonColors(
+        containerColor = container,
+        contentColor = tint,
+        disabledContainerColor = container.copy(alpha = 0.5f),
+        disabledContentColor = tint.copy(alpha = 0.5f),
+    )
+
+    val semanticsModifier = contentDescription?.let { desc ->
+        androidx.compose.ui.semantics.SemanticsProperties.contentDescription.set(desc)
+    } ?: Modifier
+
+    val focusRequester = remember { FocusRequester() }
+    var isFocused by remember { mutableStateOf(false) }
+
+    // Focus ring color - visible when focused
+    val focusRingColor = AnsiPalette[10]
+
     Box(
         modifier = modifier
             .height(KeyCapHeight)
             .defaultMinSize(minWidth = minWidth)
-            // Clip before the ripple so pressing a cap lights up the cap, not its bounding box.
             .clip(KeyCapShape)
-            .background(container)
-            .handCursor()
-            .clickable(enabled = enabled, onClick = onClick)
-            .padding(horizontal = 8.dp),
-        contentAlignment = Alignment.Center,
+            .focusRequester(focusRequester)
+            .focusable()
+            .onFocusChanged { focused ->
+                isFocused = focused.isFocused
+            }
+            .onKeyEvent { event ->
+                when (event.key) {
+                    Key.Enter, Key.NumpadEnter, Key.Space -> {
+                        onClick()
+                        true
+                    }
+                    else -> false
+                }
+            }
+            .border(
+                if (isFocused && enabled) BorderStroke(2.dp, focusRingColor) else BorderStroke(0.dp, Color.Transparent),
+                KeyCapShape,
+            )
+            .padding(horizontal = 8.dp)
+            .then(semanticsModifier),
     ) {
-        content(tint)
+        Button(
+            onClick = onClick,
+            enabled = enabled,
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(KeyCapShape)
+                .handCursor(),
+            colors = buttonColors,
+            shape = KeyCapShape,
+            contentPadding = PaddingValues(0.dp),
+        ) {
+            content(tint)
+        }
     }
 }

@@ -48,6 +48,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
@@ -97,6 +98,7 @@ internal fun monoStyle(size: TextUnit, color: Color = Color.Unspecified) = TextS
     fontFamily = FontFamily.Monospace,
     fontSize = size,
     color = color,
+    fontFeatureSettings = "tnum",
 )
 
 @Composable
@@ -300,7 +302,8 @@ fun TerminalContent(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
+                    .semantics { liveRegion = LiveRegionMode.Polite },
                 state = listState,
             ) {
                 if (outputLines.isEmpty()) {
@@ -313,6 +316,7 @@ fun TerminalContent(
                 }
                 items(
                     items = outputLines,
+                    key = { it.id },
                     contentType = { it::class },
                 ) { line ->
                     when (line) {
@@ -403,6 +407,7 @@ fun TerminalContent(
                 ),
                 enabled = isInputEnabled,
                 textStyle = monoStyle(14.sp, colors.text),
+                label = { Text("Command input", style = monoStyle(12.sp, colors.dimText)) },
                 placeholder = {
                     Text(
                         text = stringResource(Res.string.terminal_input_placeholder),

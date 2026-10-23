@@ -1,4 +1,8 @@
+@file:OptIn(kotlin.uuid.ExperimentalUuidApi::class)
+
 package com.inspiredandroid.kai.ui.dynamicui
+
+import kotlin.uuid.Uuid
 
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -104,7 +108,10 @@ internal fun JsonObject.readNullableString(key: String): String? {
 internal fun JsonObject.readId(): String? = readNullableString("id")
 
 /** For interactive nodes where `id: String` is non-nullable. Absent → `""`. */
-internal fun JsonObject.readRequiredId(): String = readString("id")
+internal fun JsonObject.readRequiredId(): String {
+    val id = readString("id")
+    return if (id.isBlank()) "auto_${Uuid.random()}" else id
+}
 
 /**
  * Read a boolean field. Accepts:

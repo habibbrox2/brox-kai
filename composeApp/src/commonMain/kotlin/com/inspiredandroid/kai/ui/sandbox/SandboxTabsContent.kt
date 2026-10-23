@@ -1,5 +1,7 @@
 package com.inspiredandroid.kai.ui.sandbox
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -14,12 +16,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PaddingValues
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,7 +32,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
@@ -242,38 +250,38 @@ private fun SessionChipRow(viewModel: SandboxSessionViewModel) {
     ) {
         tabs.forEach { tab ->
             val isSelected = tab.id == selectedId
-            Surface(
-                modifier = Modifier
-                    .handCursor()
-                    .clip(RoundedCornerShape(50))
-                    .clickable { viewModel.selectSession(tab.id) }
-                    .semantics {
-                        role = Role.Tab
-                        selected = isSelected
-                    },
-                shape = RoundedCornerShape(50),
-                color = if (isSelected) {
+            val label = stringResource(
+                if (tab.isTerminal) {
+                    Res.string.sandbox_session_chip_temporary
+                } else {
+                    Res.string.sandbox_session_chip_session
+                },
+            )
+
+            val buttonColors = ButtonDefaults.buttonColors(
+                containerColor = if (isSelected) {
                     MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
                 } else {
                     Color.Transparent
                 },
+                contentColor = if (isSelected) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
+            )
+
+            Button(
+                onClick = { viewModel.selectSession(tab.id) },
+                modifier = Modifier
+                    .handCursor()
+                    .semantics { role = Role.Tab; selected = isSelected },
+                colors = buttonColors,
+                shape = RoundedCornerShape(50),
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp),
             ) {
                 Text(
-                    text = stringResource(
-                        if (tab.isTerminal) {
-                            Res.string.sandbox_session_chip_temporary
-                        } else {
-                            Res.string.sandbox_session_chip_session
-                        },
-                    ),
-                    // 8dp vertical for a more comfortable touch target (Plan 4,
-                    // Phase 4); the chip only appears with two or more sessions.
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-                    color = if (isSelected) {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant
-                    },
+                    text = label,
                     style = MaterialTheme.typography.labelMedium,
                     maxLines = 1,
                 )
@@ -287,44 +295,108 @@ private fun SandboxSubTabSelector(
     currentTab: SandboxSubTab,
     onSelectTab: (SandboxSubTab) -> Unit,
 ) {
+    val tabs = SandboxSubTab.entries
+    val scrollState = rememberScrollState()
+    val tabFocusRequesters = remember { tabs.map { _ -> FocusRequester() } }
+    var focusedTabIndex by remember { mutableStateOf(tabs.indexOf(currentTab).coerceAtLeast(0)) }
+
+    LaunchedEffect(currentTab) {
+        focusedTabIndex = tabs.indexOf(currentTab).coerceAtLeast(0)
+    }
+
     Row(
-        modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(4.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(scrollState)
+            .padding(4.dp)
+            .onKeyEvent { event ->
+                when (event.key) {
+                    Key.DpadLeft -> {
+                        focusedTabIndex = (focusedTabIndex - 1).coerceIn(0, tabs.size - 1)
+                        onSelectTab(tabs[focusedTabIndex])
+                        true
+                    }
+                    Key.DpadRight -> {
+                        focusedTabIndex = (focusedTabIndex + 1).coerceIn(0, tabs.size - 1)
+                        onSelectTab(tabs[focusedTabIndex])
+                        true
+                    }
+                    Key.Enter, Key.NumpadEnter -> {
+                        onSelectTab(tabs[focusedTabIndex])
+                        true
+                    }
+                    else -> false
+                }
+            },
     ) {
-        SandboxSubTab.entries.forEach { tab ->
+        tabs.forEachIndexed { index, tab ->
             val isSelected = currentTab == tab
-            Surface(
+            val isFocused = focusedTabIndex == index
+
+            val label = when (tab) {
+                SandboxSubTab.Terminal -> stringResource(Res.string.settings_sandbox_subtab_terminal)
+                SandboxSubTab.Files -> stringResource(Res.string.settings_sandbox_subtab_files)
+                SandboxSubTab.Packages -> stringResource(Res.string.settings_sandbox_subtab_packages)
+            }
+
+            val buttonColors = ButtonDefaults.buttonColors(
+                containerColor = when {
+                    isSelected -> MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+                    isFocused -> MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                    else -> Color.Transparent
+                },
+                contentColor = if (isSelected) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
+            )
+
+            val border = when {
+                isSelected -> BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.3f))
+                isFocused -> BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.5f))
+                else -> null
+            }
+
+            Button(
+                onClick = { onSelectTab(tab) },
                 modifier = Modifier
                     .handCursor()
-                    .clip(RoundedCornerShape(50))
-                    .clickable { onSelectTab(tab) }
-                    .semantics {
-                        role = Role.Tab
-                        selected = isSelected
-                    },
+                    .focusRequester(tabFocusRequesters[index])
+                    .onFocusChanged { focused ->
+                        if (focused.isFocused) {
+                            focusedTabIndex = index
+                        }
+                    }
+                    .onKeyEvent { event ->
+                        when (event.key) {
+                            Key.DpadLeft -> {
+                                focusedTabIndex = (focusedTabIndex - 1).coerceIn(0, tabs.size - 1)
+                                onSelectTab(tabs[focusedTabIndex])
+                                true
+                            }
+                            Key.DpadRight -> {
+                                focusedTabIndex = (focusedTabIndex + 1).coerceIn(0, tabs.size - 1)
+                                onSelectTab(tabs[focusedTabIndex])
+                                true
+                            }
+                            Key.Enter, Key.NumpadEnter -> {
+                                onSelectTab(tabs[focusedTabIndex])
+                                true
+                            }
+                            else -> false
+                        }
+                    }
+                    .semantics { role = Role.Tab; selected = isSelected },
+                colors = buttonColors,
                 shape = RoundedCornerShape(50),
-                color = if (isSelected) {
-                    MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
-                } else {
-                    Color.Transparent
-                },
+                border = border,
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
             ) {
                 Text(
-                    text = when (tab) {
-                        SandboxSubTab.Terminal -> stringResource(Res.string.settings_sandbox_subtab_terminal)
-                        SandboxSubTab.Files -> stringResource(Res.string.settings_sandbox_subtab_files)
-                        SandboxSubTab.Packages -> stringResource(Res.string.settings_sandbox_subtab_packages)
-                    },
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                    // Only the selected tab is primary (and bold); unselected reads
-                    // as secondary so the active tab is visible at a glance
-                    // (Plan 4, Phase 4 — previously every tab was primary).
-                    color = if (isSelected) {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant
-                    },
-                    fontWeight = if (isSelected) FontWeight.SemiBold else null,
+                    text = label,
                     style = MaterialTheme.typography.labelLarge,
+                    fontWeight = if (isSelected) FontWeight.SemiBold else null,
                     maxLines = 1,
                 )
             }

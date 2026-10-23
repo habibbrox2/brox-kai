@@ -22,6 +22,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.KeyboardType
+import androidx.compose.foundation.text.PasswordVisualTransformation
+import androidx.compose.foundation.text.ImeAction
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
@@ -45,6 +50,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.tooltip
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -60,12 +67,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -161,7 +170,10 @@ import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableList
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
-import sh.calvin.reorderable.ReorderableColumn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.draggableHandle
 import kotlin.math.roundToInt
 
 @Composable
@@ -622,17 +634,31 @@ internal fun ServicesContent(uiState: SettingsUiState, actions: SettingsActions)
         Spacer(Modifier.height(12.dp))
     }
 
-    ReorderableColumn(
-        list = entries,
-        onSettle = { fromIndex, toIndex ->
-            val ids = entries.map { it.instanceId }.toMutableList()
-            ids.add(toIndex, ids.removeAt(fromIndex))
-            actions.onReorderServices(ids)
-        },
+    // LazyColumn with reordering support for better performance with many services
+    val listState = rememberLazyListState()
+    var reorderFromIndex by remember { mutableStateOf(-1) }
+    var reorderToIndex by remember { mutableStateOf(-1) }
+    LazyColumn(
+        state = listState,
         verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) { _, entry, isDragging ->
-        key(entry.instanceId) {
-            ReorderableItem {
+    ) {
+        items(entries, key = { it.instanceId }) { entry ->
+            val index = entries.indexOf(entry)
+            val isDragging = index == reorderFromIndex
+            val dragHandle = if (entries.size >= 2) Modifier.draggableHandle() else Modifier
+            ReorderableItem(
+                onDragStart = { reorderFromIndex = index },
+                onDragEnd = { targetIndex ->
+                    reorderToIndex = targetIndex
+                    if (reorderFromIndex != reorderToIndex) {
+                        val ids = entries.map { it.instanceId }.toMutableList()
+                        ids.add(reorderToIndex, ids.removeAt(reorderFromIndex))
+                        actions.onReorderServices(ids)
+                    }
+                    reorderFromIndex = -1
+                    reorderToIndex = -1
+                },
+            ) {
                 ConfiguredServiceCardContent(
                     entry = entry,
                     isExpanded = uiState.expandedServiceId == entry.instanceId,
@@ -644,7 +670,7 @@ internal fun ServicesContent(uiState: SettingsUiState, actions: SettingsActions)
                     onChangeCustomModelId = { id -> actions.onChangeCustomModelId(entry.instanceId, id) },
                     onRemove = { actions.onRemoveService(entry.instanceId) },
                     isDragging = isDragging,
-                    dragHandleModifier = if (entries.size >= 2) Modifier.draggableHandle() else null,
+                    dragHandleModifier = dragHandle,
                     localAvailableModels = uiState.localAvailableModels,
                     localImportedModels = uiState.localImportedModels,
                     totalDeviceMemoryBytes = uiState.totalDeviceMemoryBytes,
@@ -667,24 +693,28 @@ internal fun ServicesContent(uiState: SettingsUiState, actions: SettingsActions)
                 )
             }
         }
-    }
-
-    if (uiState.availableServicesToAdd.isNotEmpty()) {
-        Spacer(Modifier.height(12.dp))
-        OutlinedButton(onClick = { showAddServiceSheet = true }, modifier = Modifier.handCursor()) {
-            Text(stringResource(Res.string.settings_add_service))
+        
+        // Add service button and free tier as footer items
+        item {
+            if (uiState.availableServicesToAdd.isNotEmpty()) {
+                Spacer(Modifier.height(12.dp))
+                OutlinedButton(onClick = { showAddServiceSheet = true }, modifier = Modifier.handCursor()) {
+                    Text(stringResource(Res.string.settings_add_service))
+                }
+            }
+        }
+        item {
+            // Free tier card (always at bottom)
+            Spacer(Modifier.height(16.dp))
+            FreeSettings(
+                showFallbackToggle = entries.isNotEmpty(),
+                isFreeFallbackEnabled = uiState.isFreeFallbackEnabled,
+                onToggleFreeFallback = actions.onToggleFreeFallback,
+                currentSponsors = uiState.currentSponsors,
+                pastSponsors = uiState.pastSponsors,
+            )
         }
     }
-
-    // Free tier card (always at bottom)
-    Spacer(Modifier.height(16.dp))
-    FreeSettings(
-        showFallbackToggle = entries.isNotEmpty(),
-        isFreeFallbackEnabled = uiState.isFreeFallbackEnabled,
-        onToggleFreeFallback = actions.onToggleFreeFallback,
-        currentSponsors = uiState.currentSponsors,
-        pastSponsors = uiState.pastSponsors,
-    )
 
     // Add service bottom sheet
     if (showAddServiceSheet) {
@@ -932,7 +962,8 @@ private fun ConfiguredServiceCardContent(
             .kaiAdaptiveCardSurface()
             .fillMaxWidth()
             .clickable { onExpand() }
-            .handCursor(),
+            .handCursor()
+            .semantics { liveRegion = LiveRegionMode.Polite },
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             // Header row
@@ -989,13 +1020,17 @@ private fun ConfiguredServiceCardContent(
                         else -> null
                     }
                     if (displayModelId != null) {
-                        Text(
-                            text = displayModelId,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
+                        TooltipBox(
+                            tooltip = { Text(text = displayModelId, style = MaterialTheme.typography.bodyMedium) },
+                        ) {
+                            Text(
+                                text = displayModelId,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
                     }
                 }
 
@@ -1105,6 +1140,7 @@ private fun ServiceSettings(
         onChangeApiKey = onChangeApiKey,
         labelText = stringResource(Res.string.settings_api_key_label),
         testTag = testTag,
+        isPassword = true,
     )
 
     Spacer(Modifier.height(8.dp))
@@ -1166,6 +1202,10 @@ private fun OpenAICompatibleSettings(
             )
         },
         singleLine = true,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Url,
+            imeAction = ImeAction.Done,
+        ),
     )
     if (baseUrl.isNotBlank()) {
         Text(
@@ -1183,6 +1223,7 @@ private fun OpenAICompatibleSettings(
         onChangeApiKey = onChangeApiKey,
         labelText = stringResource(Res.string.settings_api_key_optional_label),
         singleLine = true,
+        isPassword = true,
     )
 
     Spacer(Modifier.height(8.dp))
@@ -1459,8 +1500,9 @@ private fun LiteRTSettings(
 
     Spacer(Modifier.height(8.dp))
 
+    val locale = LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()
     Text(
-        text = stringResource(Res.string.litert_free_space, formatFileSize(freeSpaceBytes)),
+        text = stringResource(Res.string.litert_free_space, formatFileSize(freeSpaceBytes, locale)),
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
@@ -1526,8 +1568,9 @@ private fun LocalModelCard(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
+                        val locale = LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()
                         Text(
-                            text = formatFileSize(model.sizeBytes),
+                            text = formatFileSize(model.sizeBytes, locale),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -1746,6 +1789,7 @@ private fun ApiKeyField(
     labelText: String,
     testTag: String? = null,
     singleLine: Boolean = false,
+    isPassword: Boolean = true,
 ) {
     KaiClearableTextField(
         modifier = if (testTag != null) Modifier.testTag(testTag) else Modifier,
@@ -1758,5 +1802,10 @@ private fun ApiKeyField(
             )
         },
         singleLine = singleLine,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Done,
+        ),
+        visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
     )
 }

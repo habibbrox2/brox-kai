@@ -197,6 +197,11 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.foundation.text.AutofillType
+import androidx.compose.foundation.text.ImeAction
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.KeyboardType
+import androidx.compose.foundation.text.PasswordVisualTransformation
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -207,11 +212,19 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.semantics
+import java.text.NumberFormat
+import java.util.Locale
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.inspiredandroid.kai.ui.KaiOutlinedTextField
 import com.inspiredandroid.kai.ui.components.KaiChip
@@ -263,6 +276,8 @@ fun KaiUiRenderer(
 
     LaunchedEffect(node, frozen?.values) {
         try {
+            formState.clear()
+            toggleState.clear()
             initializeFormState(node, formState)
             frozen?.values?.let { formState.putAll(it) }
         } catch (_: Exception) {
@@ -283,7 +298,10 @@ fun KaiUiRenderer(
     CompositionLocalProvider(LocalFrozenSubmission provides frozen) {
         if (wrapInCard) {
             Card(
-                modifier = modifier.fillMaxWidth().wrapContentHeight(),
+                modifier = modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .semantics { liveRegion = LiveRegionMode.Polite },
                 colors = kaiAdaptiveCardColors(),
                 border = kaiAdaptiveCardBorder(),
             ) {
@@ -299,7 +317,12 @@ fun KaiUiRenderer(
             }
         } else {
             CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onBackground) {
-                Column(modifier = modifier.fillMaxWidth().wrapContentHeight()) {
+                Column(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .semantics { liveRegion = LiveRegionMode.Polite },
+                ) {
                     RenderNode(
                         node = node,
                         isInteractive = isInteractive,
@@ -592,6 +615,7 @@ private fun RenderTextInput(
     isInteractive: Boolean,
     formState: SnapshotStateMap<String, String>,
 ) {
+    val isPassword = node.type == "password"
     KaiOutlinedTextField(
         value = formState[node.id] ?: "",
         onValueChange = { formState[node.id] = it },
@@ -600,6 +624,25 @@ private fun RenderTextInput(
         enabled = isInteractive,
         singleLine = node.multiline != true,
         modifier = Modifier.fillMaxWidth(),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = when (node.type) {
+                "email" -> KeyboardType.Email
+                "number" -> KeyboardType.Number
+                "phone" -> KeyboardType.Phone
+                "url" -> KeyboardType.Uri
+                else -> KeyboardType.Text
+            },
+            imeAction = if (node.multiline == true) ImeAction.Newline else ImeAction.Done,
+            visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
+        ),
+        autofillType = when (node.type) {
+            "email" -> AutofillType.Email
+            "password" -> AutofillType.Password
+            "username" -> AutofillType.Username
+            "new-password" -> AutofillType.NewPassword
+            "one-time-code" -> AutofillType.OneTimeCode
+            else -> AutofillType.Text
+        },
     )
 }
 
@@ -610,35 +653,41 @@ private fun RenderCheckbox(
     formState: SnapshotStateMap<String, String>,
 ) {
     val checked = formState[node.id]?.toBooleanStrictOrNull() ?: false
-    val toggle = { formState[node.id] = (!checked).toString() }
-    val interactionSource = remember { MutableInteractionSource() }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .handCursor()
-            .then(
-                if (isInteractive) {
-                    Modifier.clickable(
-                        interactionSource = interactionSource,
-                        indication = null,
-                        onClick = toggle,
-                    )
-                } else {
-                    Modifier
-                },
-            ),
+            .fillMaxWidth()
+            .semantics(mergeDescendants = true) {
+                role = Role.Checkbox
+                stateDescription = if (checked) "Checked" else "Unchecked"
+            }
+            .handCursor(),
     ) {
         Checkbox(
             checked = checked,
-            onCheckedChange = null,
+            onCheckedChange = if (isInteractive) { newChecked ->
+                formState[node.id] = newChecked.toString()
+            } else null,
             enabled = isInteractive,
-            modifier = Modifier.indication(
-                interactionSource = interactionSource,
-                indication = ripple(bounded = false, radius = 20.dp),
-            ),
-            interactionSource = interactionSource,
+            modifier = Modifier
+                .size(24.dp)
+                .semantics {
+                    contentDescription = node.label
+                    // Hide from accessibility since parent row merges descendants
+                    hidden = true
+                },
         )
-        Text(node.label, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(start = 8.dp))
+        Text(
+            text = node.label,
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier
+                .padding(start = 12.dp)
+                .fillMaxWidth()
+                .clickable(enabled = isInteractive, onClickLabel = null) {
+                    formState[node.id] = (!checked).toString()
+                }
+                .handCursor(),
+        )
     }
 }
 
@@ -664,7 +713,18 @@ private fun RenderSelect(
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             enabled = isInteractive,
             shape = RoundedCornerShape(12.dp),
-            modifier = Modifier.fillMaxWidth().menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable).handCursor(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+                .handCursor()
+                .semantics {
+                    role = Role.ComboBox
+                    contentDescription = if (selected.isNotEmpty()) {
+                        "Selected: $selected. Double tap to open dropdown."
+                    } else {
+                        "No selection. Double tap to open dropdown."
+                    }
+                },
         )
         ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             for (option in node.options) {
@@ -714,7 +774,13 @@ private fun RenderTable(node: TableNode) {
         node.rows.maxOfOrNull { it.size } ?: 0,
     )
     if (columnCount == 0) return
-    Column(Modifier.fillMaxWidth().wrapContentHeight()) {
+    val scrollState = rememberScrollState()
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .horizontalScroll(scrollState)
+    ) {
         if (node.headers.isNotEmpty()) {
             Row(Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
                 for (index in 0 until columnCount) {
@@ -775,35 +841,39 @@ private fun RenderSwitch(
     formState: SnapshotStateMap<String, String>,
 ) {
     val checked = formState[node.id]?.toBooleanStrictOrNull() ?: false
-    val toggle = { formState[node.id] = (!checked).toString() }
-    val interactionSource = remember { MutableInteractionSource() }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .handCursor()
-            .then(
-                if (isInteractive) {
-                    Modifier.clickable(
-                        interactionSource = interactionSource,
-                        indication = null,
-                        onClick = toggle,
-                    )
-                } else {
-                    Modifier
-                },
-            ),
+            .semantics(mergeDescendants = true) {
+                role = Role.Switch
+                stateDescription = if (checked) "On" else "Off"
+            }
+            .handCursor(),
     ) {
         Text(
             text = node.label,
             style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = 12.dp)
+                .clickable(enabled = isInteractive, onClickLabel = null) {
+                    formState[node.id] = (!checked).toString()
+                }
+                .handCursor(),
         )
         Switch(
             checked = checked,
-            onCheckedChange = null,
+            onCheckedChange = if (isInteractive) { newChecked ->
+                formState[node.id] = newChecked.toString()
+            } else null,
             enabled = isInteractive,
-            interactionSource = interactionSource,
+            modifier = Modifier
+                .size(24.dp)
+                .semantics {
+                    contentDescription = node.label
+                    hidden = true
+                },
         )
     }
 }
@@ -818,6 +888,7 @@ private fun RenderSlider(
     val max = node.max ?: 100f
     val step = node.step
     val currentValue = formState[node.id]?.toFloatOrNull() ?: (node.value ?: min)
+    val valueDescription = formatSliderValue(currentValue, step)
 
     Column(Modifier.fillMaxWidth()) {
         if (node.label != null) {
@@ -827,7 +898,7 @@ private fun RenderSlider(
             ) {
                 Text(node.label, style = MaterialTheme.typography.bodyLarge)
                 Text(
-                    text = formatSliderValue(currentValue, step),
+                    text = valueDescription,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary,
                 )
@@ -844,8 +915,13 @@ private fun RenderSlider(
             valueRange = min..max,
             steps = steps.coerceAtLeast(0),
             enabled = isInteractive,
-            modifier = Modifier.fillMaxWidth()
-                .handCursor(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .handCursor()
+                .semantics {
+                    role = Role.Slider
+                    contentDescription = "${node.label ?: "Slider"}: $valueDescription. Range $min to $max."
+                },
             colors = SliderDefaults.colors(
                 thumbColor = MaterialTheme.colorScheme.primary,
                 activeTrackColor = MaterialTheme.colorScheme.primary,
@@ -875,24 +951,36 @@ private fun RenderSlider(
     }
 }
 
+@Composable
 private fun formatSliderValue(value: Float, step: Float?): String {
+    val locale = LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()
+    return formatSliderValue(value, step, locale)
+}
+
+private fun formatSliderValue(value: Float, step: Float?, locale: Locale): String {
+    val nf = NumberFormat.getNumberInstance(locale)
+    nf.maximumFractionDigits = 6
+    nf.minimumFractionDigits = 0
     if (step != null && step > 0) {
         val rounded = kotlin.math.round(value / step) * step
         if (rounded == rounded.toLong().toFloat()) {
-            return rounded.toLong().toString()
+            return nf.format(rounded.toLong())
         }
         // Determine decimal places from step (e.g. step=0.1 → 1 decimal)
         val stepStr = step.toString()
         val decimals = stepStr.substringAfter('.', "").trimEnd('0').length.coerceIn(1, 6)
+        nf.maximumFractionDigits = decimals
         var factor = 1f
         repeat(decimals) { factor *= 10f }
-        return (kotlin.math.round(rounded * factor) / factor).toString()
+        return nf.format(kotlin.math.round(rounded * factor) / factor)
     }
     return if (value == value.toLong().toFloat()) {
-        value.toLong().toString()
+        nf.format(value.toLong())
     } else {
+        nf.maximumFractionDigits = 2
+        nf.minimumFractionDigits = 0
         val rounded = kotlin.math.round(value * 100.0f) / 100.0f
-        rounded.toString()
+        nf.format(rounded)
     }
 }
 
@@ -904,7 +992,11 @@ private fun RenderRadioGroup(
 ) {
     val selected = formState[node.id] ?: ""
     Column(
-        Modifier.fillMaxWidth(),
+        Modifier
+            .fillMaxWidth()
+            .semantics {
+                role = Role.RadioGroup
+            },
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         if (node.label != null) {
@@ -916,38 +1008,33 @@ private fun RenderRadioGroup(
         }
         for (option in node.options) {
             key(option) {
-                val interactionSource = remember { MutableInteractionSource() }
+                val isSelected = selected == option
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
                         .handCursor()
-                        .then(
-                            if (isInteractive) {
-                                Modifier.clickable(
-                                    interactionSource = interactionSource,
-                                    indication = null,
-                                    onClick = { formState[node.id] = option },
-                                )
-                            } else {
-                                Modifier
-                            },
-                        ),
+                        .semantics(mergeDescendants = true) {
+                            role = Role.RadioButton
+                            stateDescription = if (isSelected) "Selected" else "Not selected"
+                        },
                 ) {
                     RadioButton(
-                        selected = selected == option,
-                        onClick = null,
+                        selected = isSelected,
+                        onClick = if (isInteractive) { formState[node.id] = option } else null,
                         enabled = isInteractive,
-                        modifier = Modifier.indication(
-                            interactionSource = interactionSource,
-                            indication = ripple(bounded = false, radius = 20.dp),
-                        ),
-                        interactionSource = interactionSource,
+                        modifier = Modifier.semantics {
+                            hidden = true
+                        },
                     )
                     Text(
                         text = option,
                         style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(start = 8.dp),
+                        modifier = Modifier
+                            .padding(start = 12.dp)
+                            .fillMaxWidth()
+                            .clickable(enabled = isInteractive, onClickLabel = null) { formState[node.id] = option }
+                            .handCursor(),
                     )
                 }
             }
@@ -1219,19 +1306,22 @@ private fun RenderCode(node: CodeNode) {
                 }
                 Text(
                     text = node.code,
-                    style = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace),
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontFamily = FontFamily.Monospace,
+                        fontFeatureSettings = "tnum",
+                    ),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.horizontalScroll(rememberScrollState()).padding(end = 32.dp),
                 )
             }
-            Box(
+            IconButton(
+                onClick = { copyToClipboard(node.code) },
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .size(28.dp)
                     .clip(RoundedCornerShape(6.dp))
-                    .handCursor()
-                    .clickable { copyToClipboard(node.code) },
-                contentAlignment = Alignment.Center,
+                    .handCursor(),
+                contentDescription = stringResource(Res.string.kai_ui_code_copy),
             ) {
                 Icon(
                     imageVector = Icons.Filled.ContentCopy,
@@ -1695,7 +1785,7 @@ private fun initializeFormState(node: KaiUiNode, formState: MutableMap<String, S
 
         is SwitchNode -> if (node.id !in formState) formState[node.id] = (node.checked ?: false).toString()
 
-        is SliderNode -> if (node.id !in formState) formState[node.id] = formatSliderValue(node.value ?: node.min ?: 0f, node.step)
+        is SliderNode -> if (node.id !in formState) formState[node.id] = formatSliderValue(node.value ?: node.min ?: 0f, node.step, Locale.getDefault())
 
         is RadioGroupNode -> node.selected?.let { if (node.id !in formState) formState[node.id] = it }
 

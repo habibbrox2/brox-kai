@@ -35,7 +35,8 @@ fun BuildStatusPill(
     kind: BuildStatusKind,
     modifier: Modifier = Modifier,
 ) {
-    val color = BuildStatusColors.forKind(kind)
+    val colors = rememberBuildStatusColors()
+    val color = colors.forKind(kind)
     Surface(
         modifier = modifier.semantics {
             contentDescription = "Status: $label"
@@ -76,7 +77,8 @@ fun BuildProgressBlock(
     subtitle: String? = null,
     progress: Float? = null,
 ) {
-    val color = BuildStatusColors.forKind(kind)
+    val colors = rememberBuildStatusColors()
+    val color = colors.forKind(kind)
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = BuildShapes.card,

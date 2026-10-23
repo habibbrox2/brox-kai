@@ -166,7 +166,6 @@ object KaiUiParser {
                     lastSig = c
                 }
             }
-            if (stack.isEmpty()) return result.toString()
         }
 
         // Unclosed JSON — trim trailing incomplete content and then close open structures.

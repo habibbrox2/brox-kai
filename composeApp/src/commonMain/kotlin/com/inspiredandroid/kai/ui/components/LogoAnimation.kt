@@ -1,7 +1,8 @@
 package com.inspiredandroid.kai.ui.components
 
-import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.EaseInOut
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.size
@@ -82,13 +83,16 @@ fun LogoAnimation(
     modifier: Modifier = Modifier,
     size: Dp = 52.dp,
 ) {
-    val animatable = remember { Animatable(0f) }
-    LaunchedEffect(Unit) {
-        while (true) {
-            animatable.animateTo(1f, tween(900, easing = EaseInOut))
-            animatable.animateTo(0f, tween(900, easing = EaseInOut))
-        }
-    }
+    val infiniteTransition = rememberInfiniteTransition(label = "logoAnimation")
+    val animatable by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 900, easing = EaseInOut),
+            repeatMode = RepeatMode.Reverse,
+        ),
+        label = "logoPulse"
+    )
 
     val kColor = if (MaterialTheme.colorScheme.background.luminance() > 0.5f) broxNavy else MarkBlueOnDark
 

@@ -33,11 +33,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import java.util.Locale
+import kotlinx.datetime.format.DateTimeFormatter
+import kotlinx.datetime.format.FormatStyle
 import com.inspiredandroid.kai.data.HeartbeatLogEntry
 import com.inspiredandroid.kai.data.MemoryEntry
 import com.inspiredandroid.kai.data.ScheduledTask
@@ -658,6 +662,7 @@ private fun TaskDetailRow(label: String, value: String) {
 }
 
 @Composable
+@Composable
 private fun ExecutionLogRow(success: Boolean, timestampEpochMs: Long, message: String?) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
@@ -697,12 +702,12 @@ private fun EmptyLogText(text: String) {
     )
 }
 
+@Composable
 private fun formatTaskInstant(epochMs: Long): String {
     if (epochMs <= 0L) return "—"
-    val instant = Instant.fromEpochMilliseconds(epochMs)
-    val zone = TimeZone.currentSystemDefault()
-    val local = instant.toLocalDateTime(zone)
-    val month = local.month.name.take(3).lowercase().replaceFirstChar { it.uppercase() }
-    val minute = local.minute.toString().padStart(2, '0')
-    return "${local.day} $month ${local.year} ${local.hour}:$minute"
+    val locale = LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()
+    val instant = kotlinx.datetime.Instant.fromEpochMilliseconds(epochMs)
+    val zoned = instant.toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault())
+    val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, locale)
+    return zoned.format(formatter)
 }

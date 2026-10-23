@@ -19,7 +19,7 @@
     <string name="settings_model_loading">Loading models…</string>
     <string name="settings_model_search">Search models…</string>
     <string name="settings_custom_model_label">Custom model</string>
-    <string name="settings_custom_model_hint">Enter a model id supported by your server, even if it is not listed above.</string>
+    <string name="settings_custom_model_hint">Enter a model ID supported by your server, even if it is not listed above.</string>
     <string name="toggle_speech_output_content_description">Toggle speech output</string>
     <string name="settings_content_description">Settings</string>
     <string name="bot_message_speech_content_description">Speech</string>
@@ -34,7 +34,7 @@
     <string name="settings_business_partnerships_description">Want to feature your company logo or discuss a strategic partnership?</string>
     <string name="settings_contact_sponsorship">Contact for Strategic Sponsorship</string>
     <string name="settings_base_url_label">Server URL</string>
-    <string name="settings_status_checking">Checking connection...</string>
+    <string name="settings_status_checking">Checking connection…</string>
     <string name="settings_status_connected">Connected</string>
     <string name="settings_status_error">Connection failed</string>
     <string name="settings_status_error_invalid_key">Invalid API key</string>
@@ -46,7 +46,7 @@
     <string name="error_local_network_permission">Local network access is required to reach your server. Allow it in system settings and try again.</string>
     <string name="error_openai_compatible_connection">Cannot connect to server. Make sure the server is running.</string>
     <string name="error_openai_compatible_model_not_found">Model not found. Please select a different model.</string>
-    <string name="settings_openai_compatible_setup_ollama">Setup your local Ollama instance:</string>
+    <string name="settings_openai_compatible_setup_ollama">Set up your local Ollama instance:</string>
     <string name="settings_openai_compatible_or_other_service">or any other compatible service:</string>
     <string name="settings_openai_compatible_providers">providers</string>
     <string name="new_chat_content_description">New chat</string>
@@ -183,7 +183,7 @@
     <string name="settings_daemon_mode">Daemon Mode</string>
     <string name="settings_daemon_mode_description">Keep Brox Kai 2.0 running in the background so scheduled tasks execute even when the app is not in the foreground.</string>
     <string name="settings_heartbeat">Heartbeat</string>
-    <string name="settings_heartbeat_description">Periodic self-checks that let the AI review memories and tasks without user input. Runs every %1$d minutes during active hours.</string>
+    <string name="settings_heartbeat_description">Periodic self-checks that let the AI review memories and tasks without user input. Runs every %1$d\u00A0minutes during active hours.</string>
     <string name="settings_heartbeat_interval">Interval</string>
     <string name="settings_heartbeat_active_hours">Active Hours</string>
     <string name="settings_heartbeat_prompt_label">Heartbeat Prompt</string>
@@ -194,10 +194,10 @@
     <string name="settings_heartbeat_model">Model</string>
     <string name="settings_heartbeat_model_default">Default</string>
     <string name="settings_email">Email</string>
-    <string name="settings_email_description">Connect email accounts for reading and replying. Use the chat to say "connect my email". Emails are polled in the background and picked up by the heartbeat.</string>
-    <string name="settings_email_empty">No email accounts connected. Say "connect my email" in the chat to get started.</string>
+    <string name="settings_email_description">Connect email accounts for reading and replying. Use the chat to say “connect my email”. Emails are polled in the background and picked up by the heartbeat.</string>
+    <string name="settings_email_empty">No email accounts connected. Say “connect my email” in the chat to get started.</string>
     <string name="settings_email_remove">Remove account</string>
-    <string name="settings_email_poll_interval">Poll every %1$d minutes</string>
+    <string name="settings_email_poll_interval">Poll every %1$d\u00A0minutes</string>
     <string name="settings_email_poll_never">Never</string>
     <string name="settings_email_queued">%1$d queued for heartbeat</string>
     <string name="settings_email_last_poll">Last successful poll %1$s</string>
@@ -207,7 +207,7 @@
     <string name="settings_sms_description">Incoming SMS are polled in the background and picked up by the heartbeat.</string>
     <string name="settings_sms_permission_required">Grant the SMS permission to enable this feature.</string>
     <string name="settings_sms_permission_button">Grant permission</string>
-    <string name="settings_sms_poll_interval">Poll every %1$d minutes</string>
+    <string name="settings_sms_poll_interval">Poll every %1$d\u00A0minutes</string>
     <string name="settings_sms_queued">%1$d SMS queued for heartbeat</string>
     <string name="settings_sms_last_poll">Last successful poll %1$s</string>
     <string name="settings_sms_poll_failed">Last poll failed %1$s</string>
@@ -345,7 +345,7 @@
     <string name="interactive_ui_parsing_failed">UI parsing failed, trying again…</string>
     <string name="conversation_untitled">Untitled</string>
     <string name="error_unsupported_file_type">This file type is not supported. You can attach images, text files, and PDFs.</string>
-    <string name="error_file_too_large">File is too large. Text files must be under 100 KB.</string>
+    <string name="error_file_too_large">File is too large. Text files must be under 100\u00A0KB.</string>
     <string name="error_image_too_large">Image is too large. Try a smaller image.</string>
     <string name="error_context_window_exceeded">Context window too large for fallback service. Try starting a new chat or using a model with a larger context window.</string>
     <string name="error_insufficient_credits">Insufficient credits</string>
@@ -362,7 +362,7 @@
     <string name="settings_sandbox_description">Install a Linux environment so the AI can run shell commands, scripts, and tools on your behalf. Runs securely inside the app.</string>
     <string name="settings_sandbox_distro_title">Distribution</string>
     <string name="settings_sandbox_distro_debian">Debian 12</string>
-    <string name="settings_sandbox_distro_debian_detail">Recommended · ~150 MB · shared with Kai Build</string>
+    <string name="settings_sandbox_distro_debian_detail">Recommended · ~150\u00A0MB · shared with Kai Build</string>
     <string name="settings_sandbox_distro_debian_installed">Installed · shared with Kai Build</string>
     <string name="settings_sandbox_distro_alpine">Alpine Linux</string>
     <string name="settings_sandbox_distro_alpine_detail">Smaller · ~4 MB · Kai Build installs its own Debian</string>
@@ -436,7 +436,7 @@
     <string name="settings_sandbox_uninstall_confirm">All data in the Linux sandbox will be lost. Are you sure you want to uninstall?</string>
     <string name="settings_sandbox_uninstall_confirm_shared">All data in the Linux sandbox will be lost, and Kai Build loses its Linux too — it uses the same one. Your projects are kept. Are you sure you want to uninstall?</string>
     <string name="settings_sandbox_cancel">Cancel</string>
-    <string name="settings_sandbox_disk_usage">%1$d MB</string>
+    <string name="settings_sandbox_disk_usage">%1$d\u00A0MB</string>
 
     <!-- Gallery Search Tool -->
     <string name="tool_gallery_search_name">Gallery Search</string>
@@ -454,7 +454,7 @@
     <string name="terminal_input_placeholder">enter command…</string>
     <string name="terminal_run_content_description">Run</string>
     <string name="terminal_stop_content_description">Stop</string>
-    <string name="default_soul">You're not a chatbot. You're a personal assistant who grows with your user.\n\n## How to Be\n\n**Be genuinely helpful.** Skip the "Great question!" and "I'd be happy to help!" — just help. Actions speak louder than filler words.\n\n**Have opinions.** You're allowed to disagree, prefer things, or find stuff interesting. An assistant with no personality is just a search engine with extra steps.\n\n**Be resourceful.** Try to figure it out from context and your memories before asking. Come back with answers, not questions.\n\n**Be concise.** Short and clear by default. Go deeper when the topic calls for it.\n\n## Boundaries\n\n- Respect privacy. Don't repeat sensitive information unnecessarily.\n- When in doubt about an action, ask first.\n- Be honest when you don't know something.</string>
+    <string name="default_soul">You're not a chatbot. You're a personal assistant who grows with your user.\n\n## How to Be\n\n**Be genuinely helpful.** Skip the “Great question!” and “I'd be happy to help!” — just help. Actions speak louder than filler words.\n\n**Have opinions.** You're allowed to disagree, prefer things, or find stuff interesting. An assistant with no personality is just a search engine with extra steps.\n\n**Be resourceful.** Try to figure it out from context and your memories before asking. Come back with answers, not questions.\n\n**Be concise.** Short and clear by default. Go deeper when the topic calls for it.\n\n## Boundaries\n\n- Respect privacy. Don't repeat sensitive information unnecessarily.\n- When in doubt about an action, ask first.\n- Be honest when you don't know something.</string>
     <string name="settings_reorder_content_description">Reorder</string>
     <string name="model_sort_date">Date</string>
     <string name="model_sort_score">Score</string>
@@ -467,7 +467,7 @@
     <string name="kai_build_exit_content_description">Exit Kai Build</string>
     <string name="kai_build_back_content_description">Back to projects</string>
     <string name="kai_build_setup_title">Set up Linux (Beta)</string>
-    <string name="kai_build_setup_description">Kai Build is in beta. Debian Bookworm runs under proot inside this app, with curl, git, wget, python3, and other essentials included. The first install downloads about 100 MB and needs network access.</string>
+    <string name="kai_build_setup_description">Kai Build is in beta. Debian Bookworm runs under proot inside this app, with curl, git, wget, python3, and other essentials included. The first install downloads about 100\u00A0MB and needs network access.</string>
     <string name="kai_build_setup_agents_title">Coding agents</string>
     <string name="kai_build_setup_agents_description">Pick the CLIs to install on the fresh system. You can add the others later.</string>
     <string name="kai_build_setup_install">Install Debian</string>
@@ -544,4 +544,34 @@
     <!-- Result Summarization Tool -->
     <string name="tool_summarize_result_name">Summarize Result</string>
     <string name="tool_summarize_result_description">Generate human-readable summary of tool results</string>
+
+    <!-- Relative time strings -->
+    <plurals name="relative_time_just_now">
+        <item quantity="one">just now</item>
+        <item quantity="other">just now</item>
+    </plurals>
+    <plurals name="relative_time_minutes">
+        <item quantity="one">%1$d\u00A0minute ago</item>
+        <item quantity="other">%1$d\u00A0minutes ago</item>
+    </plurals>
+    <plurals name="relative_time_hours">
+        <item quantity="one">%1$d\u00A0hour ago</item>
+        <item quantity="other">%1$d\u00A0hours ago</item>
+    </plurals>
+    <plurals name="relative_time_days">
+        <item quantity="one">%1$d\u00A0day ago</item>
+        <item quantity="other">%1$d\u00A0days ago</item>
+    </plurals>
+
+    <!-- Cron description strings -->
+    <string name="cron_daily_at">Daily at %1$s</string>
+    <string name="cron_weekly_at">Every %1$s at %2$s</string>
+    <string name="cron_monthly_on_day">Monthly on day %1$s at %2$s</string>
+    <string name="cron_day_sunday">Sun</string>
+    <string name="cron_day_monday">Mon</string>
+    <string name="cron_day_tuesday">Tue</string>
+    <string name="cron_day_wednesday">Wed</string>
+    <string name="cron_day_thursday">Thu</string>
+    <string name="cron_day_friday">Fri</string>
+    <string name="cron_day_saturday">Sat</string>
 </resources>

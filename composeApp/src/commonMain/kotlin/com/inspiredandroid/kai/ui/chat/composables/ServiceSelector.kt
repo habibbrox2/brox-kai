@@ -37,7 +37,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
@@ -89,6 +92,11 @@ internal fun ServiceSelector(
     LaunchedEffect(expanded) {
         if (expanded) currentOnLoadModels()
     }
+
+    // Focus management for popup items
+    val popupFocusRequester = remember { FocusRequester() }
+    val focusableItemCount = (if (models.isNotEmpty()) models.size else 0) + services.size
+    var focusedIndex by remember { mutableStateOf(0) }
 
     Box {
         if (showLabel) {
@@ -196,7 +204,7 @@ internal fun ServiceSelector(
 
             Popup(
                 onDismissRequest = { expanded = false },
-                properties = PopupProperties(focusable = false),
+                properties = PopupProperties(focusable = true),
                 popupPositionProvider = remember(spacingPx) { AnchorAbovePositionProvider(spacingPx) },
             ) {
                 BoxWithConstraints {
@@ -207,19 +215,40 @@ internal fun ServiceSelector(
                         border = popupBorder,
                         tonalElevation = if (isOled) 3.dp else 0.dp,
                         shadowElevation = if (isOled) 8.dp else 0.dp,
+                        modifier = Modifier
+                            .onKeyEvent { event ->
+                                if (event.key == Key.Escape) {
+                                    expanded = false
+                                    true
+                                } else if (event.key == Key.Tab || event.key == Key.DpadDown || event.key == Key.DpadUp) {
+                                    val direction = if (event.key == Key.DpadUp) -1 else 1
+                                    focusedIndex = (focusedIndex + direction).coerceIn(0, focusableItemCount - 1)
+                                    true
+                                } else {
+                                    false
+                                }
+                            }
+                            .onFocusChanged { focused ->
+                                if (focused.isFocused) {
+                                    focusedIndex = 0
+                                }
+                            },
                     ) {
                         Column(
                             modifier = Modifier
                                 .heightIn(max = maxMenuHeight)
                                 .verticalScroll(rememberScrollState())
-                                .padding(vertical = 4.dp),
+                                .padding(vertical = 4.dp)
+                                .focusRequester(popupFocusRequester),
                         ) {
+                            var itemIndex = 0
                             // Models of the active service: the model that is loaded and the
                             // alternatives the user can switch to.
                             if (models.isNotEmpty()) {
                                 PickerSectionLabel(stringResource(Res.string.settings_model_label))
                                 models.forEach { model ->
                                     val isCurrent = model.id == current.modelId
+                                    val index = itemIndex
                                     ModelMenuItem(
                                         model = model,
                                         isCurrent = isCurrent,
@@ -227,7 +256,12 @@ internal fun ServiceSelector(
                                             expanded = false
                                             if (!isCurrent) onSelectModel(model.id)
                                         },
+                                        modifier = Modifier
+                                            .focusable()
+                                            .onFocusChanged { focusedIndex = if (focused.isFocused) index else focusedIndex }
+                                            .focusRequester(if (index == 0) popupFocusRequester else FocusRequester()),
                                     )
+                                    itemIndex++
                                 }
                                 HorizontalDivider(
                                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.12f),
@@ -255,17 +289,25 @@ internal fun ServiceSelector(
 
                             PickerSectionLabel(stringResource(Res.string.settings_tab_services))
                             services.forEach { entry ->
-                                val isCurrent = entry.instanceId == current.instanceId
-                                ServiceMenuItem(
-                                    entry = entry,
-                                    isCurrent = isCurrent,
-                                    onClick = {
-                                        expanded = false
-                                        if (!isCurrent) {
-                                            onSelectService(entry.instanceId)
-                                        }
-                                    },
-                                )
+                                key(entry.instanceId) {
+                                    val isCurrent = entry.instanceId == current.instanceId
+                                    val index = itemIndex
+                                    ServiceMenuItem(
+                                        entry = entry,
+                                        isCurrent = isCurrent,
+                                        onClick = {
+                                            expanded = false
+                                            if (!isCurrent) {
+                                                onSelectService(entry.instanceId)
+                                            }
+                                        },
+                                        modifier = Modifier
+                                            .focusable()
+                                            .onFocusChanged { focusedIndex = if (focused.isFocused) index else focusedIndex }
+                                            .focusRequester(if (index == 0 && models.isEmpty() && !isLoadingModels) popupFocusRequester else FocusRequester()),
+                                    )
+                                    itemIndex++
+                                }
                             }
                         }
                     }
@@ -296,6 +338,7 @@ private fun ModelMenuItem(
     model: SettingsModel,
     isCurrent: Boolean,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val isOled = MaterialTheme.colorScheme.isOledFlavor
     val rowBackground = if (isCurrent) {
@@ -310,7 +353,7 @@ private fun ModelMenuItem(
     }
     val displayName = model.displayName?.takeIf { it.isNotBlank() && it != model.id }
     Row(
-        modifier = Modifier
+        modifier = modifier
             .padding(horizontal = 4.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(rowBackground)
@@ -346,6 +389,7 @@ private fun ServiceMenuItem(
     entry: ServiceEntry,
     isCurrent: Boolean,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val isOled = MaterialTheme.colorScheme.isOledFlavor
     val rowBackground = if (isCurrent) {

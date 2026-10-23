@@ -385,7 +385,7 @@ internal fun BuildTerminalContent(
                                     focusedContainerColor = Color.Transparent,
                                     unfocusedContainerColor = Color.Transparent,
                                     disabledContainerColor = Color.Transparent,
-                                    focusedIndicatorColor = Color.Transparent,
+                                    focusedIndicatorColor = AnsiPalette[10], // Visible focus indicator
                                     unfocusedIndicatorColor = Color.Transparent,
                                     disabledIndicatorColor = Color.Transparent,
                                     cursorColor = AnsiPalette[10],
@@ -484,6 +484,7 @@ private fun cellSpanStyle(fgIndex: Int, bgIndex: Int, bold: Boolean, isCursor: B
         fontFamily = FontFamily.Monospace,
         fontSize = TerminalFontSize,
         letterSpacing = 0.sp,
+        fontFeatureSettings = "tnum",
     )
 }
 
@@ -617,6 +618,7 @@ private fun TerminalGrid(
             fontSize = TerminalFontSize,
             lineHeight = TerminalLineHeight,
             color = AnsiPalette[7],
+            fontFeatureSettings = "tnum",
         ),
         softWrap = false,
         maxLines = snapshot.rows.coerceAtLeast(1),

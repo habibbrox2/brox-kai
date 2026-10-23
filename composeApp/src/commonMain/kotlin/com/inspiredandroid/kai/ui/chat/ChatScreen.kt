@@ -243,12 +243,12 @@ private fun ChatModeScreen(
     // user lands on the chat they just opened. Tracking the previous id avoids
     // firing on the initial composition — important when returning from Settings,
     // where rememberSaveable has just restored isSandboxOpen.
-    var lastConversationId by remember { mutableStateOf(uiState.currentConversationId) }
+    var lastConversationId by remember { mutableStateOf<String?>(null) }
     LaunchedEffect(uiState.currentConversationId) {
-        if (lastConversationId != uiState.currentConversationId) {
+        if (lastConversationId != null && lastConversationId != uiState.currentConversationId) {
             if (isSandboxOpen) isSandboxOpen = false
-            lastConversationId = uiState.currentConversationId
         }
+        lastConversationId = uiState.currentConversationId
     }
 
     LaunchedEffect(uiState.snackbarMessage) {
@@ -326,8 +326,13 @@ private fun ChatModeScreen(
     BoxWithConstraints(Modifier.fillMaxSize()) {
         val expanded = chatWindowSizeClass(maxWidth) == ChatWindowSizeClass.Expanded
         val isPreview = LocalInspectionMode.current
-        val sandboxViewModel = if (isSandboxOpen && !isPreview) koinViewModel<SandboxViewModel>() else null
-        val sandboxState = if (isSandboxOpen) (sandboxViewModel?.state?.collectAsStateWithLifecycle()?.value ?: previewSandboxState ?: SandboxUiState()) else null
+        // Hoisted unconditional to satisfy Koin/Compose ViewModel scoping rules
+        val sandboxViewModel by remember { if (isPreview) null else koinViewModel<SandboxViewModel>() }
+        val sandboxState = if (isSandboxOpen && sandboxViewModel != null) {
+            sandboxViewModel.state.collectAsStateWithLifecycle().value
+        } else {
+            previewSandboxState ?: SandboxUiState()
+        }
 
         ModalNavigationDrawer(
             drawerState = drawerState,
@@ -426,7 +431,7 @@ private fun ChatModeScreen(
                             val addFile by rememberUpdatedState(uiState.actions.addFile)
                             val canAcceptDrop by rememberUpdatedState(uiState.supportedFileExtensions.isNotEmpty())
                             val shouldStartDragAndDrop = remember { { _: DragAndDropEvent -> canAcceptDrop } }
-                            val dropTarget = remember {
+                            val dropTarget = remember(canAcceptDrop, addFile) {
                                 object : DragAndDropTarget {
                                     override fun onEntered(event: DragAndDropEvent) {
                                         super.onEntered(event)

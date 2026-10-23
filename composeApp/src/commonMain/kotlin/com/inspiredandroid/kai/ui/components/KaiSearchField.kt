@@ -3,6 +3,9 @@ package com.inspiredandroid.kai.ui.components
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ImeAction
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.KeyboardType
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
@@ -26,6 +29,10 @@ fun KaiSearchField(
     placeholder: String,
     modifier: Modifier = Modifier,
     clearContentDescription: String? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(
+        keyboardType = KeyboardType.Text,
+        imeAction = ImeAction.Search,
+    ),
 ) {
     OutlinedTextField(
         value = query,
@@ -54,5 +61,6 @@ fun KaiSearchField(
             focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
             unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
         ),
+        keyboardOptions = keyboardOptions,
     )
 }

@@ -1,5 +1,6 @@
 package com.inspiredandroid.kai.ui.build
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,6 +23,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -40,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import com.inspiredandroid.kai.build.BuildAgent
 import com.inspiredandroid.kai.build.BuildAgents
@@ -48,7 +52,7 @@ import com.inspiredandroid.kai.build.KaiBuildState
 import com.inspiredandroid.kai.formatFileSize
 import com.inspiredandroid.kai.ui.components.KaiChip
 import com.inspiredandroid.kai.ui.handCursor
-import com.inspiredandroid.kai.ui.settings.SettingsCard
+import com.inspiredandroid.kai.ui.settings.SettingsShapes
 import kai.composeapp.generated.resources.Res
 import kai.composeapp.generated.resources.kai_build_new_project_title
 import kai.composeapp.generated.resources.kai_build_open_with
@@ -166,12 +170,17 @@ internal fun BuildProjectsContent(
         }
 
         items(state.projects, key = { it }) { project ->
-            SettingsCard(
+            val cardColors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+            )
+            val cardBorder = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+
+            Card(
                 modifier = Modifier.fillMaxWidth(),
-                // The row pads itself: the menu button brings its own touch target,
-                // and a card's full padding around that makes every project tall.
-                innerPadding = false,
                 onClick = { onOpenProject(project) },
+                colors = cardColors,
+                border = cardBorder,
+                shape = com.inspiredandroid.kai.ui.settings.SettingsShapes.card,
             ) {
                 Row(
                     modifier = Modifier
@@ -182,7 +191,7 @@ internal fun BuildProjectsContent(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Folder,
-                        contentDescription = null,
+                        contentDescription = "Project folder",
                         tint = MaterialTheme.colorScheme.primary,
                     )
                     Text(
@@ -453,15 +462,15 @@ private fun BuildSystemCard(
             Spacer(Modifier.height(12.dp))
             SystemInfoRow(
                 label = stringResource(Res.string.kai_build_system_disk_system),
-                value = formatFileSize(info.systemBytes),
+                value = formatFileSize(info.systemBytes, LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()),
             )
             SystemInfoRow(
                 label = stringResource(Res.string.kai_build_system_disk_projects),
-                value = formatFileSize(info.projectsBytes),
+                value = formatFileSize(info.projectsBytes, LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()),
             )
             SystemInfoRow(
                 label = stringResource(Res.string.kai_build_system_disk_free),
-                value = formatFileSize(info.freeBytes),
+                value = formatFileSize(info.freeBytes, LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()),
             )
         }
 
@@ -549,7 +558,7 @@ internal fun CreateProjectDialog(
                 value = name,
                 onValueChange = { name = it },
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text(stringResource(Res.string.kai_build_projects_new_placeholder)) },
+                label = { Text(stringResource(Res.string.kai_build_projects_new_placeholder)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(onDone = { create() }),

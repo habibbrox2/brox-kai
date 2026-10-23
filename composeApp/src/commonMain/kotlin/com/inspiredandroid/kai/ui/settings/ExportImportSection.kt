@@ -190,7 +190,7 @@ private fun ImportPreviewDialog(
     onDismiss: () -> Unit,
 ) {
     var replace by remember { mutableStateOf(true) }
-    var selectedSections by remember { mutableStateOf<Set<ImportSection>>(sectionDetails.keys) }
+    var selectedSections by remember(sectionDetails) { mutableStateOf<Set<ImportSection>>(sectionDetails.keys) }
     val sortedEntries = remember(sectionDetails) { sectionDetails.entries.sortedBy { it.key } }
 
     AlertDialog(
@@ -299,7 +299,7 @@ private fun ExportPreviewDialog(
     onConfirm: (Set<ImportSection>) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    var selectedSections by remember { mutableStateOf<Set<ImportSection>>(sectionDetails.keys) }
+    var selectedSections by remember(sectionDetails) { mutableStateOf<Set<ImportSection>>(sectionDetails.keys) }
     val sortedEntries = remember(sectionDetails) { sectionDetails.entries.sortedBy { it.key } }
 
     AlertDialog(

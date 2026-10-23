@@ -25,11 +25,14 @@ import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Tune
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PaddingValues
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -44,6 +47,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.platform.LocalConfiguration
 import com.inspiredandroid.kai.BackIcon
 import com.inspiredandroid.kai.KaiBuildController
 import com.inspiredandroid.kai.SandboxController
@@ -57,27 +61,23 @@ import com.inspiredandroid.kai.ui.handCursor
 import com.inspiredandroid.kai.ui.kaiAdaptiveCardBorder
 import com.inspiredandroid.kai.ui.kaiAdaptiveCardColors
 import com.inspiredandroid.kai.ui.settings.SettingsTab
+import java.util.Locale
 import kai.composeapp.generated.resources.Res
 import kai.composeapp.generated.resources.logo
-import kotlinx.datetime.format
-import kotlinx.datetime.format.DateTimeComponents
-import kotlinx.datetime.format.MonthNames
-import kotlinx.datetime.format.char
+import kotlinx.datetime.format.DateTimeFormatter
+import kotlinx.datetime.format.DateTimeFormatterComposer
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 
-private val dashboardDateFormat = DateTimeComponents.Format {
-    day()
-    char(' ')
-    monthName(MonthNames.ENGLISH_ABBREVIATED)
-    char(' ')
-    year()
-}
-
-private fun formatDashboardDate(epochMillis: Long): String = try {
-    kotlin.time.Instant.fromEpochMilliseconds(epochMillis).format(dashboardDateFormat)
-} catch (_: Exception) {
-    ""
+@Composable
+private fun formatDashboardDate(epochMillis: Long): String {
+    val locale = LocalConfiguration.current.localeList.firstOrNull() ?: Locale.getDefault()
+    return try {
+        kotlinx.datetime.Instant.fromEpochMilliseconds(epochMillis)
+            .format(DateTimeFormatter.ofPattern("d MMM yyyy", locale))
+    } catch (_: Exception) {
+        ""
+    }
 }
 
 @Composable
@@ -413,66 +413,132 @@ private fun DashboardActionCard(
     } else {
         kaiAdaptiveCardBorder()
     }
-    val content: @Composable androidx.compose.foundation.layout.ColumnScope.() -> Unit = {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(14.dp),
-            verticalAlignment = Alignment.CenterVertically,
+
+    val buttonColors = ButtonDefaults.buttonColors(
+        containerColor = if (action.isPrimary) {
+            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.2f)
+        } else {
+            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f)
+        },
+        contentColor = MaterialTheme.colorScheme.onSurface,
+        disabledContainerColor = if (action.isPrimary) {
+            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f)
+        } else {
+            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.2f)
+        },
+        disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+    )
+
+    val cardShape = RoundedCornerShape(16.dp)
+
+    if (action.isEnabled) {
+        Button(
+            onClick = action.onClick,
+            modifier = modifier
+                .handCursor()
+                .fillMaxHeight(),
+            colors = buttonColors,
+            shape = cardShape,
+            border = border,
+            contentPadding = PaddingValues(16.dp),
         ) {
-            Box(
-                modifier = Modifier
-                    .size(44.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(container),
-                contentAlignment = Alignment.Center,
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Icon(
-                    imageVector = action.icon,
-                    contentDescription = null,
-                    tint = iconTint,
-                    modifier = Modifier.size(24.dp),
-                )
-            }
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-            ) {
-                Text(
-                    text = action.title,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onBackground,
-                )
-                Text(
-                    text = action.subtitle,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                if (!action.isEnabled && action.disabledNote != null) {
-                    Text(
-                        text = action.disabledNote,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = OperationalStatusColors.needsSetup,
+                Box(
+                    modifier = Modifier
+                        .size(44.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(container),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        imageVector = action.icon,
+                        contentDescription = action.title,
+                        tint = iconTint,
+                        modifier = Modifier.size(24.dp),
                     )
+                }
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    Text(
+                        text = action.title,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    Text(
+                        text = action.subtitle,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    if (!action.isEnabled && action.disabledNote != null) {
+                        Text(
+                            text = action.disabledNote,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = OperationalStatusColors.needsSetup,
+                        )
+                    }
                 }
             }
         }
-    }
-    if (action.isEnabled) {
-        Card(
-            modifier = modifier.handCursor(),
-            onClick = action.onClick,
-            colors = kaiAdaptiveCardColors(),
-            border = border,
-            content = content,
-        )
     } else {
         Card(
-            modifier = modifier.alpha(0.6f),
+            modifier = modifier
+                .alpha(0.6f)
+                .fillMaxHeight(),
             colors = kaiAdaptiveCardColors(),
             border = border,
-            content = content,
-        )
+            shape = cardShape,
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(44.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(container),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        imageVector = action.icon,
+                        contentDescription = action.title,
+                        tint = iconTint,
+                        modifier = Modifier.size(24.dp),
+                    )
+                }
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    Text(
+                        text = action.title,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    Text(
+                        text = action.subtitle,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    if (action.disabledNote != null) {
+                        Text(
+                            text = action.disabledNote,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = OperationalStatusColors.needsSetup,
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -558,14 +624,24 @@ private fun ConversationRow(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Card(
-        modifier = modifier.fillMaxWidth().handCursor(),
+    val cardShape = RoundedCornerShape(12.dp)
+    val buttonColors = ButtonDefaults.buttonColors(
+        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+        contentColor = MaterialTheme.colorScheme.onSurface,
+    )
+
+    Button(
         onClick = onClick,
-        colors = kaiAdaptiveCardColors(),
+        modifier = modifier
+            .fillMaxWidth()
+            .handCursor(),
+        colors = buttonColors,
+        shape = cardShape,
         border = kaiAdaptiveCardBorder(),
+        contentPadding = PaddingValues(14.dp),
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(14.dp),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
@@ -596,20 +672,30 @@ private fun ProjectRow(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Card(
-        modifier = modifier.fillMaxWidth().handCursor(),
+    val cardShape = RoundedCornerShape(12.dp)
+    val buttonColors = ButtonDefaults.buttonColors(
+        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+        contentColor = MaterialTheme.colorScheme.onSurface,
+    )
+
+    Button(
         onClick = onClick,
-        colors = kaiAdaptiveCardColors(),
+        modifier = modifier
+            .fillMaxWidth()
+            .handCursor(),
+        colors = buttonColors,
+        shape = cardShape,
         border = kaiAdaptiveCardBorder(),
+        contentPadding = PaddingValues(14.dp),
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(14.dp),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Icon(
                 imageVector = Icons.Filled.Build,
-                contentDescription = null,
+                contentDescription = "Project",
                 tint = MaterialTheme.colorScheme.primary,
             )
             Text(

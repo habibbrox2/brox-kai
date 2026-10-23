@@ -48,9 +48,14 @@ private fun List<Attachment>.splitForMessage(): AttachmentSplit {
     val binaries = mutableListOf<Attachment>()
     for (att in this) {
         if (att.mimeType.isTextMimeType()) {
-            val decoded = Base64.decode(att.data).decodeToString()
-            if (att.fileName != null) prefix.append("--- ${att.fileName} ---\n")
-            prefix.append(decoded).append("\n\n")
+            try {
+                val decoded = Base64.decode(att.data).decodeToString()
+                if (att.fileName != null) prefix.append("--- ${att.fileName} ---\n")
+                prefix.append(decoded).append("\n\n")
+            } catch (_: IllegalArgumentException) {
+                // Corrupted base64 — treat as binary to avoid crashing the request
+                binaries.add(att)
+            }
         } else {
             binaries.add(att)
         }

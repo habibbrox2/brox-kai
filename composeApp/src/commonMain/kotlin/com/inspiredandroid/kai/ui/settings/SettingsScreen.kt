@@ -30,14 +30,18 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.gestures.OverscrollBehavior
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PaddingValues
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -47,7 +51,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -68,6 +71,8 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -184,6 +189,7 @@ fun SettingsScreenContent(
     val mcpServerRemovedMsg = stringResource(Res.string.snackbar_mcp_server_removed)
     val skillRemovedMsg = stringResource(Res.string.snackbar_skill_removed)
 
+    val pendingDeletionState = androidx.compose.runtime.rememberUpdatedState(uiState.pendingDeletion)
     LaunchedEffect(uiState.pendingDeletion) {
         val deletion = uiState.pendingDeletion ?: return@LaunchedEffect
         snackbarHostState.currentSnackbarData?.dismiss()
@@ -200,7 +206,9 @@ fun SettingsScreenContent(
             actionLabel = undoLabel,
             duration = SnackbarDuration.Short,
         )
-        if (result == SnackbarResult.ActionPerformed) {
+        // Only undo the deletion we actually showed; if a newer deletion is
+        // already pending, the snackbar action is stale and must be ignored.
+        if (result == SnackbarResult.ActionPerformed && pendingDeletionState.value == deletion) {
             actions.onUndoDelete()
         }
     }
@@ -354,7 +362,9 @@ private fun TopBar(onNavigateBack: () -> Unit) {
             verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
         ) {
             IconButton(
-                modifier = Modifier.handCursor(),
+                modifier = Modifier
+                    .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+                    .handCursor(),
                 onClick = onNavigateBack,
             ) {
                 Icon(
@@ -381,6 +391,10 @@ private fun SettingsTabSelector(
     var viewportWidth by remember { mutableStateOf(0) }
     val tabBounds = remember { mutableStateMapOf<SettingsTab, IntRange>() }
 
+    // Focus management for keyboard navigation
+    val tabFocusRequesters = remember { tabs.map { _ -> FocusRequester() } }
+    var focusedTabIndex by remember { mutableStateOf(tabs.indexOf(currentTab).coerceAtLeast(0)) }
+
     LaunchedEffect(currentTab, viewportWidth, tabBounds[currentTab]) {
         val bounds = tabBounds[currentTab] ?: return@LaunchedEffect
         if (viewportWidth == 0) return@LaunchedEffect
@@ -392,6 +406,11 @@ private fun SettingsTabSelector(
         scrollState.animateScrollTo(target.coerceIn(0, scrollState.maxValue))
     }
 
+    // Sync focused tab with selected tab
+    LaunchedEffect(currentTab) {
+        focusedTabIndex = tabs.indexOf(currentTab).coerceAtLeast(0)
+    }
+
     // Glassmorphic tab bar container
     val isOled = MaterialTheme.colorScheme.isOledFlavor
     val tabBarBg = if (isOled) {
@@ -401,7 +420,37 @@ private fun SettingsTabSelector(
     }
 
     Surface(
-        modifier = Modifier.widthIn(max = 900.dp).fillMaxWidth().padding(vertical = 8.dp),
+        modifier = Modifier
+            .widthIn(max = 900.dp)
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+            .onKeyEvent { event ->
+                when (event.key) {
+                    Key.DpadLeft, Key.Tab -> {
+                        if (event.key == Key.Tab && event.isShiftPressed) {
+                            focusedTabIndex = (focusedTabIndex - 1).coerceIn(0, tabs.size - 1)
+                            onSelectTab(tabs[focusedTabIndex])
+                            true
+                        } else if (event.key == Key.DpadLeft) {
+                            focusedTabIndex = (focusedTabIndex - 1).coerceIn(0, tabs.size - 1)
+                            onSelectTab(tabs[focusedTabIndex])
+                            true
+                        } else {
+                            false
+                        }
+                    }
+                    Key.DpadRight -> {
+                        focusedTabIndex = (focusedTabIndex + 1).coerceIn(0, tabs.size - 1)
+                        onSelectTab(tabs[focusedTabIndex])
+                        true
+                    }
+                    Key.Enter, Key.NumpadEnter -> {
+                        onSelectTab(tabs[focusedTabIndex])
+                        true
+                    }
+                    else -> false
+                }
+            },
         color = tabBarBg,
         shape = com.inspiredandroid.kai.ui.settings.SettingsShapes.pill,
         border = androidx.compose.foundation.BorderStroke(
@@ -413,33 +462,65 @@ private fun SettingsTabSelector(
             modifier = Modifier
                 .padding(4.dp)
                 .onSizeChanged { viewportWidth = it.width }
-                .horizontalScroll(scrollState),
+                .horizontalScroll(scrollState, overscrollBehavior = OverscrollBehavior()),
         ) {
-            tabs.forEach { tab ->
+            tabs.forEachIndexed { index, tab ->
                 val isSelected = currentTab == tab
+                val isFocused = focusedTabIndex == index
 
-                Surface(
+                val label = when (tab) {
+                    SettingsTab.General -> stringResource(Res.string.settings_tab_general)
+                    SettingsTab.Agent -> stringResource(Res.string.settings_tab_agent)
+                    SettingsTab.Services -> stringResource(Res.string.settings_tab_services)
+                    SettingsTab.Tools -> stringResource(Res.string.settings_tab_tools)
+                    SettingsTab.Integrations -> stringResource(Res.string.settings_tab_integrations)
+                    SettingsTab.Sandbox -> stringResource(Res.string.settings_tab_sandbox)
+                    SettingsTab.Data -> "Data Control"
+                    SettingsTab.Account -> "Account & Plan"
+                }
+
+                val buttonColors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                    containerColor = if (isSelected) {
+                        com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.15f)
+                    } else {
+                        Color.Transparent
+                    },
+                    contentColor = if (isSelected) {
+                        com.inspiredandroid.kai.ui.AccentPrimary
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
+                    disabledContainerColor = Color.Transparent,
+                    disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                )
+
+                val border = when {
+                    isSelected -> androidx.compose.foundation.BorderStroke(1.dp, com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.3f))
+                    isFocused -> androidx.compose.foundation.BorderStroke(1.dp, com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.5f))
+                    else -> null
+                }
+
+                Button(
+                    onClick = { onSelectTab(tab) },
                     modifier = Modifier
                         .onGloballyPositioned { coordinates ->
                             val start = coordinates.positionInParent().x.toInt()
                             tabBounds[tab] = start..(start + coordinates.size.width)
                         }
                         .handCursor()
-                        .clip(RoundedCornerShape(50))
-                        .clickable { onSelectTab(tab) }
                         .fillMaxHeight()
-                        .padding(vertical = 4.dp),
+                        .padding(vertical = 12.dp)
+                        .focusRequester(tabFocusRequesters[index])
+                        .onFocusChanged { focused ->
+                            if (focused.isFocused) {
+                                focusedTabIndex = index
+                            }
+                        }
+                        .semantics { role = androidx.compose.ui.semantics.Role.Tab; selected = isSelected },
+                    colors = buttonColors,
                     shape = RoundedCornerShape(50),
-                    color = if (isSelected) {
-                        com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.15f)
-                    } else {
-                        Color.Transparent
-                    },
-                    border = if (isSelected) {
-                        androidx.compose.foundation.BorderStroke(1.dp, com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.3f))
-                    } else {
-                        null
-                    },
+                    border = border,
+                    contentPadding = androidx.compose.material3.PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                 ) {
                     Text(
                         text = when (tab) {
@@ -496,40 +577,47 @@ internal fun BottomInfo() {
             color = MaterialTheme.colorScheme.onBackground,
         )
 
-        Icon(
+        IconButton(
+            onClick = { uriHandler.openUri("https://github.com/habibbrox2/brox-kai-2.0") },
             modifier = Modifier
                 .align(Alignment.CenterVertically)
-                .clip(CircleShape)
-                .size(24.dp)
-                .clickable(onClick = {
-                    uriHandler.openUri("https://github.com/habibbrox2/brox-kai-2.0")
-                })
-                .handCursor(),
-            painter = painterResource(Res.drawable.github_mark),
-            contentDescription = "GitHub repository",
-            tint = MaterialTheme.colorScheme.onBackground,
-        )
+                .handCursor()
+                .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp),
+        ) {
+            Icon(
+                painter = painterResource(Res.drawable.github_mark),
+                contentDescription = "GitHub repository",
+                tint = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.size(24.dp),
+            )
+        }
 
-        Text(
-            text = stringResource(Res.string.settings_documentation),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.primary,
+        TextButton(
+            onClick = { uriHandler.openUri("https://kai9000.com/docs/") },
             modifier = Modifier
                 .align(Alignment.CenterVertically)
-                .clickable { uriHandler.openUri("https://kai9000.com/docs/") }
                 .handCursor(),
-        )
+        ) {
+            Text(
+                text = stringResource(Res.string.settings_documentation),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary,
+            )
+        }
 
         var showLicenses by remember { mutableStateOf(false) }
-        Text(
-            text = stringResource(Res.string.settings_licenses),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.primary,
+        TextButton(
+            onClick = { showLicenses = true },
             modifier = Modifier
                 .align(Alignment.CenterVertically)
-                .clickable { showLicenses = true }
                 .handCursor(),
-        )
+        ) {
+            Text(
+                text = stringResource(Res.string.settings_licenses),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary,
+            )
+        }
         if (showLicenses) {
             LicensesDialog(onDismiss = { showLicenses = false })
         }
@@ -551,7 +639,7 @@ private fun LicensesDialog(onDismiss: () -> Unit) {
         text = {
             Text(
                 text = notices.orEmpty(),
-                modifier = Modifier.verticalScroll(rememberScrollState()),
+                modifier = Modifier.verticalScroll(rememberScrollState(), overscrollBehavior = OverscrollBehavior()),
                 style = MaterialTheme.typography.bodySmall,
                 fontFamily = FontFamily.Monospace,
             )

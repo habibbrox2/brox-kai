@@ -7,6 +7,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ImeAction
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.KeyboardType
+import androidx.compose.foundation.text.PasswordVisualTransformation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.CardColors
@@ -520,6 +525,8 @@ fun KaiOutlinedTextField(
     singleLine: Boolean = false,
     minLines: Int = 1,
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions(),
 ) {
     OutlinedTextField(
         value = value,
@@ -536,6 +543,8 @@ fun KaiOutlinedTextField(
         maxLines = maxLines,
         shape = RoundedCornerShape(12.dp),
         colors = outlineTextFieldColors(),
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
     )
 }
 
@@ -546,6 +555,9 @@ fun KaiClearableTextField(
     modifier: Modifier = Modifier,
     label: @Composable (() -> Unit)? = null,
     singleLine: Boolean = false,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions(),
+    visualTransformation: VisualTransformation = VisualTransformation.None,
 ) {
     var focused by remember { mutableStateOf(false) }
     KaiOutlinedTextField(
@@ -554,6 +566,9 @@ fun KaiClearableTextField(
         onValueChange = onValueChange,
         label = label,
         singleLine = singleLine,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
+        visualTransformation = visualTransformation,
         trailingIcon = {
             IconButton(
                 onClick = { onValueChange("") },

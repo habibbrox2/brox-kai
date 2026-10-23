@@ -31,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -179,7 +180,11 @@ private fun PackagesList(
         }
         return
     }
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
+    LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .semantics { liveRegion = LiveRegionMode.Polite },
+        ) {
         items(entries, key = { "${it.name}@${it.version}" }) { entry ->
             PackageRow(
                 entry = entry,

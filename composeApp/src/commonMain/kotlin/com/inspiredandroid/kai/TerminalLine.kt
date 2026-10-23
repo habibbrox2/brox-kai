@@ -8,22 +8,23 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed interface TerminalLine {
     val text: String
+    val id: Long
 
     fun withText(newText: String): TerminalLine = when (this) {
-        is Command -> Command(newText)
-        is Output -> Output(newText)
-        is Error -> Error(newText)
+        is Command -> Command(newText, id)
+        is Output -> Output(newText, id)
+        is Error -> Error(newText, id)
     }
 
     @Serializable
     @SerialName("command")
-    data class Command(override val text: String) : TerminalLine
+    data class Command(override val text: String, override val id: Long = System.nanoTime()) : TerminalLine
 
     @Serializable
     @SerialName("output")
-    data class Output(override val text: String) : TerminalLine
+    data class Output(override val text: String, override val id: Long = System.nanoTime()) : TerminalLine
 
     @Serializable
     @SerialName("error")
-    data class Error(override val text: String) : TerminalLine
+    data class Error(override val text: String, override val id: Long = System.nanoTime()) : TerminalLine
 }
