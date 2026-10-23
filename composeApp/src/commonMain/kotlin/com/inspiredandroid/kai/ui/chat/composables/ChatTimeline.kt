@@ -43,6 +43,7 @@ import com.inspiredandroid.kai.BackIcon
 import com.inspiredandroid.kai.getBackgroundDispatcher
 import com.inspiredandroid.kai.ui.chat.ChatUiState
 import com.inspiredandroid.kai.ui.chat.History
+import com.inspiredandroid.kai.ui.chat.activities.ActivityMapper
 import com.inspiredandroid.kai.ui.chat.lastRenderedAssistant
 import com.inspiredandroid.kai.ui.components.LogoAnimation
 import com.inspiredandroid.kai.ui.components.VerticalScrollbarForList
@@ -296,6 +297,22 @@ fun ChatTimeline(
 
                     History.Role.TOOL -> {
                         // Don't show completed tool results in UI
+                    }
+                }
+            }
+            // Show agent activity timeline for tool executions and agent actions
+            val hasAgentActivity = uiState.history.any {
+                it.role == History.Role.TOOL_EXECUTING ||
+                it.role == History.Role.TOOL ||
+                (it.role == History.Role.ASSISTANT && it.toolCalls?.isNotEmpty() == true)
+            }
+            if (hasAgentActivity) {
+                item(key = "agent-activity-timeline") {
+                    val activities = remember(uiState.history) {
+                        ActivityMapper.historyToActivities(uiState.history)
+                    }
+                    if (activities.isNotEmpty()) {
+                        AgentActivityTimeline(activities = activities)
                     }
                 }
             }
