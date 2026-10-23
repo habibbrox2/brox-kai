@@ -65,7 +65,7 @@
     <string name="settings_tab_tools">Tools</string>
     <string name="settings_tab_sandbox">Linux Sandbox</string>
     <string name="settings_tab_integrations">Integrations</string>
-    <string name="tools_count">%1$d Tools</string>
+    <string name="tools_count">%1$d\u00A0Tools</string>
     <string name="waiting_thinking">Thinking…</string>
     <string name="waiting_working">Working…</string>
     <string name="waiting_brewing">Brewing…</string>
@@ -143,7 +143,7 @@
     <string name="settings_notifications_manage_apps">Manage apps</string>
     <string name="settings_notifications_listener_bound">Listener active</string>
     <string name="settings_notifications_listener_disconnected">Listener inactive — check notification access</string>
-    <string name="settings_notifications_queued">%1$d notifications queued for next heartbeat</string>
+    <string name="settings_notifications_queued">%1$d\u00A0notifications queued for next heartbeat</string>
     <string name="settings_notifications_clear_queue">Clear queue</string>
     <string name="settings_dynamic_ui">Dynamic UI</string>
     <string name="settings_dynamic_ui_description">Allow the AI to create interactive UI elements like buttons, forms and cards inline in responses. Change applies to new conversations.</string>
@@ -365,12 +365,12 @@
     <string name="settings_sandbox_distro_debian_detail">Recommended · ~150\u00A0MB · shared with Kai Build</string>
     <string name="settings_sandbox_distro_debian_installed">Installed · shared with Kai Build</string>
     <string name="settings_sandbox_distro_alpine">Alpine Linux</string>
-    <string name="settings_sandbox_distro_alpine_detail">Smaller · ~4 MB · Kai Build installs its own Debian</string>
+    <string name="settings_sandbox_distro_alpine_detail">Smaller · ~4\u00A0MB · Kai Build installs its own Debian</string>
     <string name="settings_sandbox_distro_alpine_installed">Installed · Kai Build installs its own Debian</string>
     <string name="settings_sandbox_install">Install</string>
     <string name="settings_sandbox_install_packages">Install Basic Packages</string>
     <string name="settings_sandbox_migrate_title">Bring your files over from %1$s</string>
-    <string name="settings_sandbox_migrate_detail">%1$d files · %2$s in its home folder are not here yet. Copying keeps everything already here and leaves the other system untouched, so you can uninstall it afterwards.</string>
+    <string name="settings_sandbox_migrate_detail">%1$d\u00A0files · %2$s in its home folder are not here yet. Copying keeps everything already here and leaves the other system untouched, so you can uninstall it afterwards.</string>
     <string name="settings_sandbox_migrate_action">Copy Files</string>
     <string name="settings_sandbox_subtab_terminal">Terminal</string>
     <string name="settings_sandbox_subtab_files">Files</string>
@@ -391,7 +391,7 @@
     <string name="sandbox_packages_install_failed">Install failed: %1$s</string>
     <string name="sandbox_packages_uninstall_success">Uninstalled %1$s</string>
     <string name="sandbox_packages_uninstall_failed">Uninstall failed: %1$s</string>
-    <string name="sandbox_packages_upgrade_count">Upgraded %1$s packages</string>
+    <string name="sandbox_packages_upgrade_count">Upgraded %1$s\u00A0packages</string>
     <string name="sandbox_packages_up_to_date">All packages up to date</string>
     <string name="sandbox_packages_upgrade_failed">Upgrade failed: %1$s</string>
     <string name="sandbox_content_description">Open Linux sandbox</string>
@@ -486,8 +486,8 @@
     <string name="kai_build_projects_new_placeholder">New project name</string>
     <string name="kai_build_projects_create">Create</string>
     <string name="kai_build_projects_empty">No projects yet. Tap + to create one.</string>
-    <string name="kai_build_projects_session_open">1 session open</string>
-    <string name="kai_build_projects_sessions_open">%1$d sessions open</string>
+    <string name="kai_build_projects_session_open">1\u00A0session open</string>
+    <string name="kai_build_projects_sessions_open">%1$d\u00A0sessions open</string>
     <string name="kai_build_projects_add_agent">Add agent:</string>
     <string name="kai_build_new_project_title">New project</string>
     <string name="kai_build_new_project_content_description">New project</string>
@@ -497,7 +497,7 @@
     <string name="kai_build_session_new_content_description">New session</string>
     <string name="kai_build_session_close_content_description">Close session</string>
     <string name="kai_build_system_title">Debian system</string>
-    <string name="kai_build_system_packages">%1$d packages installed</string>
+    <string name="kai_build_system_packages">%1$d\u00A0packages installed</string>
     <string name="kai_build_system_disk_system">Linux system</string>
     <string name="kai_build_system_disk_projects">Projects</string>
     <string name="kai_build_system_disk_free">Free space</string>
