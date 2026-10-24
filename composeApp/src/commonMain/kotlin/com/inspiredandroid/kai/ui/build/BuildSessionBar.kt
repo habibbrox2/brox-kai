@@ -315,7 +315,7 @@ private fun TabPill(
     val border = when {
         selected -> com.inspiredandroid.kai.ui.KaiBorders.accent
         isFocused -> com.inspiredandroid.kai.ui.KaiBorders.focus
-        else -> com.inspiredandroid.kai.ui.KaiBorders.soft.copy(alpha = 0.5f)
+        else -> androidx.compose.foundation.BorderStroke(1.dp, com.inspiredandroid.kai.ui.BorderSubtle.copy(alpha = 0.5f))
     }
 
     Button(
