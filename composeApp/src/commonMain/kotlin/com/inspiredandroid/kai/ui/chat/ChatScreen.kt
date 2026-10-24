@@ -72,6 +72,7 @@ import androidx.compose.ui.draganddrop.DragAndDropEvent
 import androidx.compose.ui.draganddrop.DragAndDropTarget
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextRange
@@ -84,6 +85,7 @@ import com.inspiredandroid.kai.data.Service
 import com.inspiredandroid.kai.data.supportsAgenticFlows
 import com.inspiredandroid.kai.getBackgroundDispatcher
 import com.inspiredandroid.kai.onDragAndDropEventDropped
+import com.inspiredandroid.kai.ui.OledBlack
 import com.inspiredandroid.kai.ui.build.KaiBuildScreen
 import com.inspiredandroid.kai.ui.chat.composables.AppSidebar
 import com.inspiredandroid.kai.ui.chat.composables.BotMessage
@@ -462,7 +464,7 @@ private fun ChatModeScreen(
                                 if (uiState.history.isEmpty()) {
                                     val primaryIsOnDeviceLocal = primaryIsOnDevice
                                     EmptyState(
-                                        modifier = Modifier.fillMaxWidth().weight(1f).widthIn(max = 760.dp),
+                                        modifier = Modifier.fillMaxWidth().weight(1f).widthIn(max = 820.dp),
                                         isUsingSharedKey = uiState.showPrivacyInfo,
                                         onQuickStart = { prompt -> uiState.actions.ask(prompt) },
                                     )
@@ -553,13 +555,23 @@ private fun ChatModeScreen(
                         }
                     }
                 },
-                // Use OLED black background for pure dark theme
+                // Use OLED black background for pure dark theme with subtle neural minimal gradient
                 modifier = Modifier
                     .background(
-                        if (MaterialTheme.colorScheme.isOledFlavor) {
-                            com.inspiredandroid.kai.ui.OledBlack
+                        brush = if (MaterialTheme.colorScheme.isOledFlavor) {
+                            androidx.compose.ui.graphics.Brush.verticalGradient(
+                                colors = listOf(
+                                    com.inspiredandroid.kai.ui.OledBlack,
+                                    com.inspiredandroid.kai.ui.OledBlack,
+                                ),
+                            )
                         } else {
-                            MaterialTheme.colorScheme.background
+                            androidx.compose.ui.graphics.Brush.verticalGradient(
+                                colors = listOf(
+                                    MaterialTheme.colorScheme.background,
+                                    MaterialTheme.colorScheme.surfaceContainerLowest,
+                                ),
+                            )
                         },
                     )
                     .navigationBarsPadding()

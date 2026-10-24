@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -27,11 +28,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.inspiredandroid.kai.data.Attachment
 import com.inspiredandroid.kai.decodeToImageBitmap
+import com.inspiredandroid.kai.ui.AccentGradientEnd
+import com.inspiredandroid.kai.ui.AccentGradientStart
+import com.inspiredandroid.kai.ui.AccentPrimary
+import com.inspiredandroid.kai.ui.KaiShapes
 import com.inspiredandroid.kai.ui.chat.ChatSpacing
 import com.inspiredandroid.kai.ui.components.LocalShowFullScreenImage
 import com.inspiredandroid.kai.ui.handCursor
@@ -54,27 +60,35 @@ internal fun UserMessage(
     val isOled = MaterialTheme.colorScheme.isOledFlavor
 
     SelectionContainer {
-        Row(Modifier.padding(ChatSpacing.lg)) {
+        Row(
+            Modifier
+                .padding(horizontal = ChatSpacing.lg, vertical = ChatSpacing.md)
+                .fillMaxWidth(),
+        ) {
             Spacer(Modifier.weight(1f))
             Column(
                 modifier = Modifier
+                    .widthIn(max = 680.dp)
+                    .clip(com.inspiredandroid.kai.ui.KaiShapes.userBubble)
                     .background(
-                        if (isOled) {
-                            com.inspiredandroid.kai.ui.SurfaceRaised.copy(alpha = 0.9f)
-                        } else {
-                            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
-                        },
-                        RoundedCornerShape(16.dp),
+                        brush = androidx.compose.ui.graphics.Brush.linearGradient(
+                            colors = listOf(
+                                com.inspiredandroid.kai.ui.AccentGradientStart.copy(alpha = 0.95f),
+                                com.inspiredandroid.kai.ui.AccentGradientEnd.copy(alpha = 0.9f),
+                            ),
+                        ),
                     )
                     .border(
-                        if (isOled) {
-                            androidx.compose.foundation.BorderStroke(1.dp, com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.3f))
-                        } else {
-                            androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
-                        },
-                        RoundedCornerShape(16.dp),
+                        width = 1.dp,
+                        brush = androidx.compose.ui.graphics.Brush.linearGradient(
+                            colors = listOf(
+                                com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.6f),
+                                com.inspiredandroid.kai.ui.AccentGradientEnd.copy(alpha = 0.4f),
+                            ),
+                        ),
+                        shape = com.inspiredandroid.kai.ui.KaiShapes.userBubble,
                     )
-                    .padding(ChatSpacing.lg),
+                    .padding(horizontal = ChatSpacing.xl, vertical = ChatSpacing.lg),
                 horizontalAlignment = Alignment.End,
             ) {
                 val images = attachments.filter { it.mimeType.startsWith("image/") }
@@ -139,7 +153,8 @@ internal fun UserMessage(
                 if (message.isNotEmpty()) {
                     Text(
                         text = message,
-                        color = MaterialTheme.colorScheme.onBackground,
+                        color = com.inspiredandroid.kai.ui.OledBlack,
+                        style = MaterialTheme.typography.bodyLarge,
                     )
                 }
             }

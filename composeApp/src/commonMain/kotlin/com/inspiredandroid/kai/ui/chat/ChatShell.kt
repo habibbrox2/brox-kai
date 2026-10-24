@@ -40,7 +40,7 @@ fun ChatShell(
             when (sizeClass) {
                 ChatWindowSizeClass.Expanded -> Row(Modifier.weight(1f).fillMaxSize()) {
                     if (conversationRail != null) {
-                        Box(Modifier.width(260.dp).fillMaxHeight()) {
+                        Box(Modifier.width(280.dp).fillMaxHeight()) {
                             conversationRail()
                         }
                     }
@@ -50,7 +50,7 @@ fun ChatShell(
                         }
                     }
                     if (sidePanel != null) {
-                        Box(Modifier.width(320.dp).fillMaxHeight()) {
+                        Box(Modifier.width(340.dp).fillMaxHeight()) {
                             sidePanel()
                         }
                     }

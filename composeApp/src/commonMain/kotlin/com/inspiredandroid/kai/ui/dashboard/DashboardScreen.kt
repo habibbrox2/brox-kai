@@ -3,6 +3,7 @@ package com.inspiredandroid.kai.ui.dashboard
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -19,16 +20,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Chat
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -41,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -50,12 +53,28 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.inspiredandroid.kai.BackIcon
 import com.inspiredandroid.kai.KaiBuildController
 import com.inspiredandroid.kai.SandboxController
+import com.inspiredandroid.kai.ui.AccentGlow
+import com.inspiredandroid.kai.ui.AccentPrimary
+import com.inspiredandroid.kai.ui.BackgroundPrimary
+import com.inspiredandroid.kai.ui.BorderSoft
+import com.inspiredandroid.kai.ui.CardFill
+import com.inspiredandroid.kai.ui.KaiBorders
+import com.inspiredandroid.kai.ui.KaiElevation
+import com.inspiredandroid.kai.ui.KaiShapes
+import com.inspiredandroid.kai.ui.KaiTypography
+import com.inspiredandroid.kai.ui.SurfaceRaised
+import com.inspiredandroid.kai.ui.TextPrimary
+import com.inspiredandroid.kai.ui.TextSecondary
+import com.inspiredandroid.kai.ui.TextTertiary
 import com.inspiredandroid.kai.ui.chat.ChatUiState
 import com.inspiredandroid.kai.ui.chat.ConversationSummary
 import com.inspiredandroid.kai.ui.components.CollectionEmptyState
 import com.inspiredandroid.kai.ui.components.OperationalStatus
 import com.inspiredandroid.kai.ui.components.StatusBadge
 import com.inspiredandroid.kai.ui.components.rememberOperationalStatusColors
+import com.inspiredandroid.kai.ui.glassmorphicCard
+import com.inspiredandroid.kai.ui.glassmorphicCardBorder
+import com.inspiredandroid.kai.ui.glassmorphicCardColors
 import com.inspiredandroid.kai.ui.handCursor
 import com.inspiredandroid.kai.ui.kaiAdaptiveCardBorder
 import com.inspiredandroid.kai.ui.kaiAdaptiveCardColors
@@ -132,16 +151,18 @@ internal fun DashboardScreenContent(
     modifier: Modifier = Modifier,
 ) {
     BoxWithConstraints(
-        modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
+        modifier = modifier
+            .fillMaxSize()
+            .background(BackgroundPrimary),
     ) {
         val columns = dashboardColumnsFor(maxWidth)
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = if (columns == 1) 16.dp else 24.dp)
-                .padding(vertical = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
+                .padding(horizontal = if (columns == 1) 16.dp else 32.dp)
+                .padding(vertical = if (columns == 1) 16.dp else 32.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
             DashboardHeader(
                 navigationTabBar = navigationTabBar,
@@ -176,36 +197,40 @@ private fun DashboardHeader(
     val brand: @Composable () -> Unit = {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
         ) {
             if (onNavigateBack != null) {
                 IconButton(
                     onClick = onNavigateBack,
-                    modifier = Modifier.handCursor(),
+                    modifier = Modifier
+                        .handCursor()
+                        .size(44.dp),
                 ) {
                     Icon(
                         imageVector = BackIcon,
                         contentDescription = "Back to chat",
-                        tint = MaterialTheme.colorScheme.onBackground,
+                        tint = TextPrimary,
                     )
                 }
             }
             Image(
                 painter = painterResource(Res.drawable.logo),
                 contentDescription = null,
-                modifier = Modifier.size(40.dp).clip(RoundedCornerShape(10.dp)),
+                modifier = Modifier
+                    .size(44.dp)
+                    .clip(KaiShapes.sm),
             )
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(
                     text = "Brox Kai",
-                    style = MaterialTheme.typography.titleLarge,
+                    style = KaiTypography.headlineSmall,
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = TextPrimary,
                 )
                 Text(
                     text = "What are you building today?",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = KaiTypography.bodyMedium,
+                    color = TextTertiary,
                 )
             }
         }
@@ -216,7 +241,7 @@ private fun DashboardHeader(
         }
     } else {
         Box(
-            modifier = modifier.fillMaxWidth().defaultMinSize(minHeight = 64.dp),
+            modifier = modifier.fillMaxWidth().defaultMinSize(minHeight = 72.dp),
         ) {
             Row(modifier = Modifier.align(Alignment.CenterStart)) {
                 brand()
@@ -235,13 +260,18 @@ private fun ReadinessCard(
     modifier: Modifier = Modifier,
 ) {
     Card(
-        modifier = modifier.fillMaxWidth(),
-        colors = kaiAdaptiveCardColors(),
-        border = kaiAdaptiveCardBorder(),
+        modifier = modifier
+            .fillMaxWidth()
+            .glassmorphicCard(shape = KaiShapes.card),
+        colors = glassmorphicCardColors(),
+        border = glassmorphicCardBorder(),
+        shape = KaiShapes.card,
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             when (val service = state.service) {
                 null -> StatusBadge(
@@ -252,7 +282,7 @@ private fun ReadinessCard(
                 else -> Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     StatusBadge(
                         label = if (service.isSharedKey) "Shared free service" else "Ready",
@@ -264,8 +294,15 @@ private fun ReadinessCard(
                     )
                     if (service.isSharedKey) {
                         Spacer(modifier = Modifier.weight(1f))
-                        TextButton(onClick = { onOpenSettings(SettingsTab.Services) }) {
-                            Text("Set up a service")
+                        TextButton(
+                            onClick = { onOpenSettings(SettingsTab.Services) },
+                            modifier = Modifier.handCursor(),
+                        ) {
+                            Text(
+                                text = "Set up a service",
+                                style = KaiTypography.labelLarge,
+                                color = AccentPrimary,
+                            )
                         }
                     } else {
                         Text(
@@ -274,8 +311,8 @@ private fun ReadinessCard(
                             } else {
                                 "${service.serviceName} · ${service.modelId}"
                             },
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = KaiTypography.bodyMedium,
+                            color = TextSecondary,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.weight(1f),
@@ -284,17 +321,20 @@ private fun ReadinessCard(
                 }
             }
             if (state.facts.isNotEmpty()) {
-                HorizontalDivider(color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.12f))
+                HorizontalDivider(
+                    color = BorderSoft,
+                    thickness = 1.dp,
+                )
                 state.facts.forEach { fact ->
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
                         Text(
                             text = fact.label,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = KaiTypography.bodyMedium,
+                            color = TextSecondary,
                             modifier = Modifier.weight(1f),
                         )
                         StatusBadge(label = fact.value, status = fact.status)
@@ -365,12 +405,12 @@ private fun DashboardActionGrid(
     )
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         actions.chunked(columns).forEach { rowActions ->
             Row(
                 modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 rowActions.forEach { action ->
                     DashboardActionCard(
@@ -392,38 +432,23 @@ private fun DashboardActionCard(
     modifier: Modifier = Modifier,
 ) {
     val statusColors = rememberOperationalStatusColors()
-    val container = if (action.isPrimary) {
-        MaterialTheme.colorScheme.primary.copy(alpha = 0.14f)
+    val iconBg = if (action.isPrimary) {
+        AccentPrimary.copy(alpha = 0.16f)
     } else {
-        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f)
+        SurfaceRaised.copy(alpha = 0.8f)
     }
     val iconTint = if (action.isPrimary) {
-        MaterialTheme.colorScheme.primary
+        AccentPrimary
     } else {
-        MaterialTheme.colorScheme.onBackground
+        TextPrimary
     }
-    val border: BorderStroke? = if (action.isPrimary) {
-        BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.45f))
+    val border = if (action.isPrimary) {
+        BorderStroke(1.dp, AccentPrimary.copy(alpha = 0.5f))
     } else {
-        kaiAdaptiveCardBorder()
+        BorderStroke(1.dp, BorderSoft)
     }
 
-    val buttonColors = ButtonDefaults.buttonColors(
-        containerColor = if (action.isPrimary) {
-            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.2f)
-        } else {
-            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f)
-        },
-        contentColor = MaterialTheme.colorScheme.onSurface,
-        disabledContainerColor = if (action.isPrimary) {
-            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f)
-        } else {
-            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.2f)
-        },
-        disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-    )
-
-    val cardShape = RoundedCornerShape(16.dp)
+    val cardShape = KaiShapes.card
 
     if (action.isEnabled) {
         Button(
@@ -431,21 +456,30 @@ private fun DashboardActionCard(
             modifier = modifier
                 .handCursor()
                 .fillMaxHeight(),
-            colors = buttonColors,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = CardFill,
+                contentColor = TextPrimary,
+                disabledContainerColor = CardFill.copy(alpha = 0.5f),
+                disabledContentColor = TextPrimary.copy(alpha = 0.4f),
+            ),
             shape = cardShape,
             border = border,
-            contentPadding = PaddingValues(16.dp),
+            contentPadding = PaddingValues(20.dp),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(14.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Box(
                     modifier = Modifier
-                        .size(44.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(container),
+                        .size(48.dp)
+                        .clip(KaiShapes.sm)
+                        .background(iconBg)
+                        .border(
+                            BorderStroke(1.dp, if (action.isPrimary) AccentPrimary.copy(alpha = 0.4f) else BorderSoft),
+                            KaiShapes.sm,
+                        ),
                     contentAlignment = Alignment.Center,
                 ) {
                     Icon(
@@ -461,50 +495,53 @@ private fun DashboardActionCard(
                 ) {
                     Text(
                         text = action.title,
-                        style = MaterialTheme.typography.titleMedium,
+                        style = KaiTypography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onSurface,
+                        color = TextPrimary,
                     )
                     Text(
                         text = action.subtitle,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = KaiTypography.bodySmall,
+                        color = TextTertiary,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
                     )
-                    if (!action.isEnabled && action.disabledNote != null) {
-                        Text(
-                            text = action.disabledNote,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = statusColors.needsSetup,
-                        )
-                    }
                 }
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = null,
+                    tint = TextTertiary,
+                    modifier = Modifier.size(20.dp),
+                )
             }
         }
     } else {
         Card(
             modifier = modifier
-                .alpha(0.6f)
+                .alpha(0.5f)
                 .fillMaxHeight(),
-            colors = kaiAdaptiveCardColors(),
-            border = border,
+            colors = CardDefaults.cardColors(containerColor = CardFill),
+            border = BorderStroke(1.dp, BorderSoft),
             shape = cardShape,
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(14.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Box(
                     modifier = Modifier
-                        .size(44.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(container),
+                        .size(48.dp)
+                        .clip(KaiShapes.sm)
+                        .background(SurfaceRaised.copy(alpha = 0.6f)),
                     contentAlignment = Alignment.Center,
                 ) {
                     Icon(
                         imageVector = action.icon,
                         contentDescription = action.title,
-                        tint = iconTint,
+                        tint = TextTertiary,
                         modifier = Modifier.size(24.dp),
                     )
                 }
@@ -514,19 +551,21 @@ private fun DashboardActionCard(
                 ) {
                     Text(
                         text = action.title,
-                        style = MaterialTheme.typography.titleMedium,
+                        style = KaiTypography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onSurface,
+                        color = TextPrimary.copy(alpha = 0.7f),
                     )
                     Text(
                         text = action.subtitle,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = KaiTypography.bodySmall,
+                        color = TextTertiary.copy(alpha = 0.8f),
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
                     )
                     if (action.disabledNote != null) {
                         Text(
                             text = action.disabledNote,
-                            style = MaterialTheme.typography.labelSmall,
+                            style = KaiTypography.labelSmall,
                             color = statusColors.needsSetup,
                         )
                     }
@@ -549,31 +588,52 @@ private fun RecentWorkSection(
     val projects = state.recentProjects.take(4)
 
     if (conversations.isEmpty() && projects.isEmpty()) {
-        CollectionEmptyState(
-            message = "No saved work yet — conversations and build projects will show up here.",
-        )
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = CardFill),
+            border = BorderStroke(1.dp, BorderSoft),
+            shape = KaiShapes.card,
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                CollectionEmptyState(
+                    message = "No saved work yet — conversations and build projects will show up here.",
+                )
+            }
+        }
         return
     }
 
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
         if (conversations.isNotEmpty()) {
-            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
                         text = "Recent conversations",
-                        style = MaterialTheme.typography.titleMedium,
+                        style = KaiTypography.titleLarge,
                         fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onBackground,
+                        color = TextPrimary,
                         modifier = Modifier.weight(1f),
                     )
-                    TextButton(onClick = onViewAllConversations) {
-                        Text("View all")
+                    TextButton(
+                        onClick = onViewAllConversations,
+                        modifier = Modifier.handCursor(),
+                    ) {
+                        Text(
+                            text = "View all",
+                            style = KaiTypography.labelLarge,
+                            color = AccentPrimary,
+                        )
                     }
                 }
                 conversations.forEach { conversation ->
@@ -585,20 +645,27 @@ private fun RecentWorkSection(
             }
         }
         if (projects.isNotEmpty() && state.isBuildAvailable) {
-            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
                         text = "Recent projects",
-                        style = MaterialTheme.typography.titleMedium,
+                        style = KaiTypography.titleLarge,
                         fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onBackground,
+                        color = TextPrimary,
                         modifier = Modifier.weight(1f),
                     )
-                    TextButton(onClick = onViewAllProjects) {
-                        Text("View all")
+                    TextButton(
+                        onClick = onViewAllProjects,
+                        modifier = Modifier.handCursor(),
+                    ) {
+                        Text(
+                            text = "View all",
+                            style = KaiTypography.labelLarge,
+                            color = AccentPrimary,
+                        )
                     }
                 }
                 projects.forEach { project ->
@@ -618,44 +685,64 @@ private fun ConversationRow(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val cardShape = RoundedCornerShape(12.dp)
-    val buttonColors = ButtonDefaults.buttonColors(
-        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-        contentColor = MaterialTheme.colorScheme.onSurface,
-    )
+    val cardShape = KaiShapes.row
 
     Button(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
             .handCursor(),
-        colors = buttonColors,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = CardFill,
+            contentColor = TextPrimary,
+        ),
         shape = cardShape,
-        border = kaiAdaptiveCardBorder(),
-        contentPadding = PaddingValues(14.dp),
+        border = BorderStroke(1.dp, BorderSoft),
+        contentPadding = PaddingValues(horizontal = 18.dp, vertical = 16.dp),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
         ) {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(KaiShapes.sm)
+                    .background(AccentPrimary.copy(alpha = 0.14f))
+                    .border(BorderStroke(1.dp, AccentPrimary.copy(alpha = 0.4f)), KaiShapes.sm),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Chat,
+                    contentDescription = null,
+                    tint = AccentPrimary,
+                    modifier = Modifier.size(20.dp),
+                )
+            }
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(2.dp),
+                verticalArrangement = Arrangement.spacedBy(3.dp),
             ) {
                 Text(
                     text = conversation.title,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onBackground,
+                    style = KaiTypography.bodyLarge,
+                    color = TextPrimary,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
                 Text(
                     text = formatDashboardDate(conversation.updatedAt),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = KaiTypography.bodySmall,
+                    color = TextTertiary,
                 )
             }
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = null,
+                tint = TextTertiary,
+                modifier = Modifier.size(18.dp),
+            )
         }
     }
 }
@@ -666,39 +753,54 @@ private fun ProjectRow(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val cardShape = RoundedCornerShape(12.dp)
-    val buttonColors = ButtonDefaults.buttonColors(
-        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-        contentColor = MaterialTheme.colorScheme.onSurface,
-    )
+    val cardShape = KaiShapes.row
 
     Button(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
             .handCursor(),
-        colors = buttonColors,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = CardFill,
+            contentColor = TextPrimary,
+        ),
         shape = cardShape,
-        border = kaiAdaptiveCardBorder(),
-        contentPadding = PaddingValues(14.dp),
+        border = BorderStroke(1.dp, BorderSoft),
+        contentPadding = PaddingValues(horizontal = 18.dp, vertical = 16.dp),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
         ) {
-            Icon(
-                imageVector = Icons.Filled.Build,
-                contentDescription = "Project",
-                tint = MaterialTheme.colorScheme.primary,
-            )
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(KaiShapes.sm)
+                    .background(SurfaceRaised.copy(alpha = 0.8f))
+                    .border(BorderStroke(1.dp, BorderSoft), KaiShapes.sm),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Build,
+                    contentDescription = "Project",
+                    tint = TextPrimary,
+                    modifier = Modifier.size(20.dp),
+                )
+            }
             Text(
                 text = project,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onBackground,
+                style = KaiTypography.bodyLarge,
+                color = TextPrimary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f),
+            )
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = null,
+                tint = TextTertiary,
+                modifier = Modifier.size(18.dp),
             )
         }
     }

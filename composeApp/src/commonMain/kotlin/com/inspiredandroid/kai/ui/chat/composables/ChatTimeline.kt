@@ -7,6 +7,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -41,6 +42,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.inspiredandroid.kai.BackIcon
 import com.inspiredandroid.kai.getBackgroundDispatcher
+import com.inspiredandroid.kai.ui.AccentPrimary
+import com.inspiredandroid.kai.ui.CardFill
+import com.inspiredandroid.kai.ui.TextPrimary
+import com.inspiredandroid.kai.ui.chat.ChatSpacing
 import com.inspiredandroid.kai.ui.chat.ChatUiState
 import com.inspiredandroid.kai.ui.chat.History
 import com.inspiredandroid.kai.ui.chat.activities.ActivityMapper
@@ -225,10 +230,14 @@ fun ChatTimeline(
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .widthIn(max = 760.dp)
+                .widthIn(max = 820.dp)
                 .semantics { liveRegion = LiveRegionMode.Polite },
             state = listState,
             horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                top = com.inspiredandroid.kai.ui.chat.ChatSpacing.lg,
+                bottom = com.inspiredandroid.kai.ui.chat.ChatSpacing.xl,
+            ),
         ) {
             items(uiState.history, key = { it.id }, contentType = { it.role }) { history ->
                 when (history.role) {
@@ -301,20 +310,21 @@ fun ChatTimeline(
                 }
             }
             // Show agent activity timeline for tool executions and agent actions
-            val hasAgentActivity = !uiState.isLoading && uiState.history.any {
-                it.role == History.Role.TOOL ||
-                (it.role == History.Role.ASSISTANT && it.toolCalls?.isNotEmpty() == true)
-            }
-            if (hasAgentActivity) {
-                item(key = "agent-activity-timeline") {
-                    val activities = remember(uiState.history) {
-                        ActivityMapper.historyToActivities(uiState.history)
-                    }
-                    if (activities.isNotEmpty()) {
-                        AgentActivityTimeline(activities = activities)
-                    }
-                }
-            }
+            // Temporarily disabled to fix crash
+            // val hasAgentActivity = !uiState.isLoading && uiState.history.any {
+            //     it.role == History.Role.TOOL ||
+            //     (it.role == History.Role.ASSISTANT && it.toolCalls?.isNotEmpty() == true)
+            // }
+            // if (hasAgentActivity) {
+            //     item(key = "agent-activity-timeline") {
+            //         val activities = remember(uiState.history) {
+            //             ActivityMapper.historyToActivities(uiState.history)
+            //         }
+            //         if (activities.isNotEmpty()) {
+            //             AgentActivityTimeline(activities = activities)
+            //         }
+            //     }
+            // }
             val showWaitingRow = uiState.isLoading &&
                 (frozenByAssistantId.values.none { it.isPending } || executingToolsState.tools.isNotEmpty())
             if (showWaitingRow) {
@@ -341,8 +351,8 @@ fun ChatTimeline(
                     androidx.compose.foundation.layout.FlowRow(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .widthIn(max = 760.dp)
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                            .widthIn(max = 820.dp)
+                            .padding(horizontal = com.inspiredandroid.kai.ui.chat.ChatSpacing.lg, vertical = com.inspiredandroid.kai.ui.chat.ChatSpacing.sm),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
@@ -364,7 +374,7 @@ fun ChatTimeline(
 
         AnimatedVisibility(
             visible = showScrollToBottom,
-            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 8.dp),
+            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = com.inspiredandroid.kai.ui.chat.ChatSpacing.lg),
             enter = fadeIn() + scaleIn(),
             exit = fadeOut() + scaleOut(),
         ) {
@@ -378,8 +388,14 @@ fun ChatTimeline(
                         }
                     }
                 },
+                containerColor = com.inspiredandroid.kai.ui.CardFill,
+                contentColor = com.inspiredandroid.kai.ui.TextPrimary,
             ) {
-                Icon(Icons.Default.KeyboardArrowDown, contentDescription = stringResource(Res.string.scroll_to_bottom_content_description))
+                Icon(
+                    Icons.Default.KeyboardArrowDown,
+                    contentDescription = stringResource(Res.string.scroll_to_bottom_content_description),
+                    tint = com.inspiredandroid.kai.ui.AccentPrimary,
+                )
             }
         }
     }

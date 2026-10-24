@@ -44,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -65,6 +66,13 @@ import com.inspiredandroid.kai.data.ServiceEntry
 import com.inspiredandroid.kai.data.imageExtensions
 import com.inspiredandroid.kai.prefersReducedMotion
 import com.inspiredandroid.kai.skills.SkillManifest
+import com.inspiredandroid.kai.ui.AccentGradientEnd
+import com.inspiredandroid.kai.ui.AccentGradientStart
+import com.inspiredandroid.kai.ui.AccentPrimary
+import com.inspiredandroid.kai.ui.CardFill
+import com.inspiredandroid.kai.ui.KaiShapes
+import com.inspiredandroid.kai.ui.OledBlack
+import com.inspiredandroid.kai.ui.chat.ChatSpacing
 import com.inspiredandroid.kai.ui.gradientBrush
 import com.inspiredandroid.kai.ui.handCursor
 import com.inspiredandroid.kai.ui.isOledFlavor
@@ -155,16 +163,25 @@ internal fun TrailingIcon(
     Box(
         modifier = modifier
             .defaultMinSize(minHeight = 48.dp, minWidth = 48.dp)
-            .size(42.dp)
+            .size(44.dp)
             .clip(CircleShape)
-            .background(com.inspiredandroid.kai.ui.AccentPrimary, CircleShape)
+            .background(
+                brush = androidx.compose.ui.graphics.Brush.linearGradient(
+                    colors = listOf(
+                        com.inspiredandroid.kai.ui.AccentGradientStart,
+                        com.inspiredandroid.kai.ui.AccentGradientEnd,
+                    ),
+                ),
+                shape = CircleShape,
+            )
+            .border(1.dp, com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.6f), CircleShape)
             .handCursor()
             .clickable { onClick() },
         contentAlignment = Alignment.Center,
     ) {
         Icon(
             vectorResource(icon),
-            modifier = Modifier.size(32.dp).then(pulseModifier),
+            modifier = Modifier.size(28.dp).then(pulseModifier),
             contentDescription = contentDescription,
             tint = com.inspiredandroid.kai.ui.OledBlack,
         )
@@ -311,35 +328,36 @@ fun QuestionInput(
         // Upper bound for the composer field; the pill surface already caps total height.
         val maxComposerHeight = 240.dp
 
-        // Floating glassmorphic input pill
+        // Floating neural minimal input pill
         val isOled = MaterialTheme.colorScheme.isOledFlavor
         val inputPillBg = if (isOled) {
-            com.inspiredandroid.kai.ui.SurfaceRaised.copy(alpha = 0.9f)
+            com.inspiredandroid.kai.ui.CardFill
         } else {
-            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f)
+            MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.9f)
         }
         val inputBorder = if (isOled) {
             com.inspiredandroid.kai.ui.BorderSoft
         } else {
-            MaterialTheme.colorScheme.outlineVariant
+            MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f)
         }
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                .padding(horizontal = com.inspiredandroid.kai.ui.chat.ChatSpacing.lg, vertical = com.inspiredandroid.kai.ui.chat.ChatSpacing.md),
         ) {
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(max = 120.dp),
+                    .heightIn(max = 140.dp),
                 color = inputPillBg,
-                shape = RoundedCornerShape(28.dp),
+                shape = com.inspiredandroid.kai.ui.KaiShapes.composer,
                 border = BorderStroke(
-                    width = if (isOled) 1.dp else 2.dp,
+                    width = 1.dp,
                     color = inputBorder,
                 ),
-                shadowElevation = 8.dp,
+                shadowElevation = 12.dp,
+                tonalElevation = 4.dp,
             ) {
                 TextField(
                     value = textState,

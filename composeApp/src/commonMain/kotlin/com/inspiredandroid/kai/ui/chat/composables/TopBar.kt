@@ -3,6 +3,7 @@ package com.inspiredandroid.kai.ui.chat.composables
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -28,6 +29,9 @@ import androidx.compose.ui.unit.dp
 import com.inspiredandroid.kai.BackIcon
 import com.inspiredandroid.kai.data.ServiceEntry
 import com.inspiredandroid.kai.prefersReducedMotion
+import com.inspiredandroid.kai.ui.BorderSoft
+import com.inspiredandroid.kai.ui.CardFill
+import com.inspiredandroid.kai.ui.KaiShapes
 import com.inspiredandroid.kai.ui.chat.ChatActions
 import com.inspiredandroid.kai.ui.chat.ChatSpacing
 import com.inspiredandroid.kai.ui.handCursor
@@ -79,19 +83,19 @@ internal fun TopBar(
 ) {
     val isOled = MaterialTheme.colorScheme.isOledFlavor
     val topBarBg = if (isOled) {
-        com.inspiredandroid.kai.ui.SurfaceRaised.copy(alpha = 0.9f)
+        com.inspiredandroid.kai.ui.CardFill
     } else {
-        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+        MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.85f)
     }
     val topBarBorder = if (isOled) {
         androidx.compose.foundation.BorderStroke(1.dp, com.inspiredandroid.kai.ui.BorderSoft)
     } else {
-        null
+        androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
     }
-    val topBarShape = com.inspiredandroid.kai.ui.chat.ChatShapes.panel
+    val topBarShape = com.inspiredandroid.kai.ui.KaiShapes.panel
 
     Box(
-        modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = ChatSpacing.xxxl),
+        modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = ChatSpacing.xxxl + 4.dp),
     ) {
         Surface(
             modifier = Modifier
@@ -100,6 +104,8 @@ internal fun TopBar(
             color = topBarBg,
             shape = topBarShape,
             border = topBarBorder,
+            tonalElevation = 2.dp,
+            shadowElevation = 4.dp,
         ) {
             Row(
                 modifier = Modifier

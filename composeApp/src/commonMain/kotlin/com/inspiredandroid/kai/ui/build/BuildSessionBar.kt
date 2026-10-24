@@ -98,47 +98,54 @@ internal fun BuildSessionBar(
         }
     }
 
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 4.dp)
-            .onKeyEvent { event ->
-                when (event.key) {
-                    Key.DirectionLeft -> {
-                        focusedTabIndex = (focusedTabIndex - 1).coerceIn(0, tabCount - 1)
-                        if (focusedTabIndex < sessions.size) {
-                            onSelectSession(sessions[focusedTabIndex].id)
-                        } else {
-                            onSelectFiles()
-                        }
-                        true
-                    }
-                    Key.DirectionRight -> {
-                        focusedTabIndex = (focusedTabIndex + 1).coerceIn(0, tabCount - 1)
-                        if (focusedTabIndex < sessions.size) {
-                            onSelectSession(sessions[focusedTabIndex].id)
-                        } else {
-                            onSelectFiles()
-                        }
-                        true
-                    }
-                    Key.Enter, Key.NumPadEnter -> {
-                        if (focusedTabIndex < sessions.size) {
-                            onSelectSession(sessions[focusedTabIndex].id)
-                        } else {
-                            onSelectFiles()
-                        }
-                        true
-                    }
-                    else -> false
-                }
-            },
-        verticalAlignment = Alignment.CenterVertically,
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        color = com.inspiredandroid.kai.ui.BackgroundPrimary,
+        border = com.inspiredandroid.kai.ui.KaiBorders.soft,
+        shape = com.inspiredandroid.kai.ui.KaiShapes.card,
     ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = com.inspiredandroid.kai.ui.build.BuildSpacing.sm, vertical = com.inspiredandroid.kai.ui.build.BuildSpacing.xs)
+                .onKeyEvent { event ->
+                    when (event.key) {
+                        Key.DirectionLeft -> {
+                            focusedTabIndex = (focusedTabIndex - 1).coerceIn(0, tabCount - 1)
+                            if (focusedTabIndex < sessions.size) {
+                                onSelectSession(sessions[focusedTabIndex].id)
+                            } else {
+                                onSelectFiles()
+                            }
+                            true
+                        }
+                        Key.DirectionRight -> {
+                            focusedTabIndex = (focusedTabIndex + 1).coerceIn(0, tabCount - 1)
+                            if (focusedTabIndex < sessions.size) {
+                                onSelectSession(sessions[focusedTabIndex].id)
+                            } else {
+                                onSelectFiles()
+                            }
+                            true
+                        }
+                        Key.Enter, Key.NumPadEnter -> {
+                            if (focusedTabIndex < sessions.size) {
+                                onSelectSession(sessions[focusedTabIndex].id)
+                            } else {
+                                onSelectFiles()
+                            }
+                            true
+                        }
+                        else -> false
+                    }
+                },
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
         IconButton(onClick = onBack, modifier = Modifier.size(48.dp).handCursor()) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = stringResource(Res.string.kai_build_back_content_description),
+                tint = com.inspiredandroid.kai.ui.TextSecondary,
             )
         }
 
@@ -146,13 +153,13 @@ internal fun BuildSessionBar(
         // as a workspace, not a bare list of shells (Plan 3, Phase 3).
         Text(
             text = project,
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onSurface,
+            style = com.inspiredandroid.kai.ui.KaiTypography.titleSmall,
+            color = com.inspiredandroid.kai.ui.TextPrimary,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             // Cap the header so a long project name can't squeeze the session tabs
             // out of the strip on narrow windows (Plan 3, Phase 6).
-            modifier = Modifier.padding(end = 8.dp).widthIn(max = 180.dp),
+            modifier = Modifier.padding(end = com.inspiredandroid.kai.ui.build.BuildSpacing.sm).widthIn(max = 200.dp),
         )
 
         Row(
@@ -201,6 +208,7 @@ internal fun BuildSessionBar(
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = stringResource(Res.string.kai_build_session_new_content_description),
+                    tint = com.inspiredandroid.kai.ui.AccentPrimary,
                 )
             }
             DropdownMenu(expanded = showNewMenu, onDismissRequest = { showNewMenu = false }) {
@@ -223,6 +231,7 @@ internal fun BuildSessionBar(
                     )
                 }
             }
+            }
         }
     }
 }
@@ -242,9 +251,9 @@ private fun SessionTab(
     val label = if (numbered) "$base ${session.number}" else base
     val contentColor = when {
         // A finished shell keeps its output readable but reads as inactive.
-        !session.busy -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
-        selected -> MaterialTheme.colorScheme.primary
-        else -> MaterialTheme.colorScheme.onSurfaceVariant
+        !session.busy -> com.inspiredandroid.kai.ui.TextTertiary.copy(alpha = 0.7f)
+        selected -> com.inspiredandroid.kai.ui.AccentPrimary
+        else -> com.inspiredandroid.kai.ui.TextSecondary
     }
     TabPill(
         label = label,
@@ -289,24 +298,24 @@ private fun TabPill(
     isFocused: Boolean = false,
     onFocus: () -> Unit = {},
 ) {
-    val shape = RoundedCornerShape(50)
+    val shape = com.inspiredandroid.kai.ui.KaiShapes.pill
     // `selected` the parameter shadows the semantics property of the same name,
     // so capture it first and assign through `this.selected`.
     val isSelected = selected
 
     val buttonColors = ButtonDefaults.buttonColors(
         containerColor = when {
-            selected -> MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
-            isFocused -> MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+            selected -> com.inspiredandroid.kai.ui.AccentGlow
+            isFocused -> com.inspiredandroid.kai.ui.AccentGlow.copy(alpha = 0.5f)
             else -> Color.Transparent
         },
         contentColor = contentColor,
     )
 
     val border = when {
-        selected -> BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.3f))
-        isFocused -> BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.5f))
-        else -> null
+        selected -> com.inspiredandroid.kai.ui.KaiBorders.accent
+        isFocused -> com.inspiredandroid.kai.ui.KaiBorders.focus
+        else -> com.inspiredandroid.kai.ui.KaiBorders.soft.copy(alpha = 0.5f)
     }
 
     Button(
@@ -336,8 +345,8 @@ private fun TabPill(
         shape = shape,
         border = border,
         contentPadding = PaddingValues(
-            start = 12.dp,
-            end = if (selected && trailing != null) 2.dp else 12.dp,
+            start = 14.dp,
+            end = if (selected && trailing != null) 4.dp else 14.dp,
             top = 8.dp,
             bottom = 8.dp,
         ),
@@ -347,10 +356,11 @@ private fun TabPill(
         ) {
             Text(
                 text = label,
-                style = MaterialTheme.typography.labelMedium,
+                style = com.inspiredandroid.kai.ui.KaiTypography.labelMedium,
                 color = contentColor,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
+                fontWeight = if (isSelected) androidx.compose.ui.text.font.FontWeight.SemiBold else androidx.compose.ui.text.font.FontWeight.Medium,
             )
             if (selected && trailing != null) trailing()
         }

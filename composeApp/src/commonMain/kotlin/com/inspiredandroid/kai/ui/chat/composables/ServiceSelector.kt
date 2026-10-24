@@ -125,39 +125,39 @@ internal fun ServiceSelector(
                     .border(androidx.compose.foundation.BorderStroke(1.dp, pillBorder), RoundedCornerShape(50))
                     .clickable { expanded = true }
                     .handCursor()
-                    .padding(horizontal = 12.dp, vertical = 6.dp),
+                    .padding(horizontal = 8.dp, vertical = 4.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(
                     imageVector = vectorResource(current.icon),
                     contentDescription = null,
-                    modifier = Modifier.size(16.dp),
+                    modifier = Modifier.size(14.dp),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                Spacer(Modifier.width(8.dp))
+                Spacer(Modifier.width(6.dp))
                 Text(
                     text = current.serviceName,
-                    style = MaterialTheme.typography.labelMedium,
+                    style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.widthIn(max = 120.dp),
+                    modifier = Modifier.widthIn(max = 100.dp),
                 )
                 if (currentModelLabel.isNotBlank()) {
                     Text(
                         text = " · $currentModelLabel",
-                        style = MaterialTheme.typography.labelMedium,
+                        style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.widthIn(max = 160.dp),
+                        modifier = Modifier.widthIn(max = 120.dp),
                     )
                 }
-                Spacer(Modifier.width(4.dp))
+                Spacer(Modifier.width(2.dp))
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowDown,
                     contentDescription = current.serviceName,
-                    modifier = Modifier.size(18.dp),
+                    modifier = Modifier.size(16.dp),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
@@ -275,18 +275,18 @@ internal fun ServiceSelector(
                             } else if (isLoadingModels) {
                                 PickerSectionLabel(stringResource(Res.string.settings_model_label))
                                 Row(
-                                    modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 12.dp),
+                                    modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 8.dp),
                                     verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(6.dp),
                                 ) {
                                     CircularProgressIndicator(
-                                        modifier = Modifier.size(16.dp),
+                                        modifier = Modifier.size(14.dp),
                                         strokeWidth = 2.dp,
                                         color = MaterialTheme.colorScheme.primary,
                                     )
                                     Text(
                                         text = stringResource(Res.string.settings_model_loading),
-                                        style = MaterialTheme.typography.bodySmall,
+                                        style = MaterialTheme.typography.labelSmall,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     )
                                 }
@@ -329,9 +329,9 @@ internal fun ServiceSelector(
 private fun PickerSectionLabel(text: String) {
     Text(
         text = text,
-        style = MaterialTheme.typography.labelMedium,
+        style = MaterialTheme.typography.labelSmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
     )
 }
 
@@ -360,17 +360,17 @@ private fun ModelMenuItem(
     Row(
         modifier = modifier
             .padding(horizontal = 4.dp)
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(10.dp))
             .background(rowBackground)
             .clickable(onClick = onClick)
             .handCursor()
-            .padding(horizontal = 12.dp, vertical = 10.dp)
-            .widthIn(min = 200.dp),
+            .padding(horizontal = 10.dp, vertical = 6.dp)
+            .widthIn(min = 180.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = shortName,
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodySmall,
             color = textColor,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
@@ -404,31 +404,31 @@ private fun ServiceMenuItem(
     Row(
         modifier = Modifier
             .padding(horizontal = 4.dp)
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(10.dp))
             .background(rowBackground)
             .clickable(onClick = onClick)
             .handCursor()
-            .padding(horizontal = 12.dp, vertical = 10.dp)
-            .widthIn(min = 200.dp),
+            .padding(horizontal = 10.dp, vertical = 6.dp)
+            .widthIn(min = 180.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
             imageVector = vectorResource(entry.icon),
             contentDescription = null,
-            modifier = Modifier.size(18.dp),
+            modifier = Modifier.size(16.dp),
             tint = textColor,
         )
-        Spacer(Modifier.width(12.dp))
+        Spacer(Modifier.width(8.dp))
         Column {
             Text(
                 text = entry.serviceName,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodySmall,
                 color = textColor,
             )
             if (entry.modelId.isNotEmpty()) {
                 Text(
                     text = entry.modelId,
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.labelSmall,
                     color = subTextColor,
                 )
             }

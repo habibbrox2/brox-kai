@@ -41,8 +41,9 @@ fun BuildStatusPill(
         modifier = modifier.semantics {
             contentDescription = "Status: $label"
         },
-        shape = BuildShapes.pill,
-        color = color.copy(alpha = 0.14f),
+        shape = com.inspiredandroid.kai.ui.KaiShapes.pill,
+        color = color.copy(alpha = 0.16f),
+        border = androidx.compose.foundation.BorderStroke(1.dp, color.copy(alpha = 0.4f)),
     ) {
         Row(
             modifier = Modifier.padding(horizontal = BuildSpacing.sm, vertical = BuildSpacing.xs),
@@ -81,8 +82,9 @@ fun BuildProgressBlock(
     val color = colors.forKind(kind)
     Surface(
         modifier = modifier.fillMaxWidth(),
-        shape = BuildShapes.card,
-        color = color.copy(alpha = 0.08f),
+        shape = com.inspiredandroid.kai.ui.KaiShapes.card,
+        color = com.inspiredandroid.kai.ui.CardFill,
+        border = com.inspiredandroid.kai.ui.KaiBorders.soft,
     ) {
         Column(
             modifier = Modifier.padding(BuildSpacing.lg),

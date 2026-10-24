@@ -224,9 +224,10 @@ private fun PathBar(
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp),
-        shape = RoundedCornerShape(8.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant,
+            .padding(horizontal = com.inspiredandroid.kai.ui.build.BuildSpacing.sm),
+        shape = com.inspiredandroid.kai.ui.KaiShapes.input,
+        color = com.inspiredandroid.kai.ui.CardFill,
+        border = com.inspiredandroid.kai.ui.KaiBorders.soft,
     ) {
         Row(
             modifier = Modifier
@@ -242,22 +243,22 @@ private fun PathBar(
                     if (index > 0) Separator()
                     Text(
                         text = label,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.primary,
+                        style = com.inspiredandroid.kai.ui.KaiTypography.bodyMedium,
+                        color = com.inspiredandroid.kai.ui.AccentPrimary,
                         modifier = Modifier
-                            .clip(RoundedCornerShape(4.dp))
+                            .clip(com.inspiredandroid.kai.ui.KaiShapes.sm)
                             .clickable { onNavigateTo(target) }
                             .handCursor()
-                            .padding(horizontal = 8.dp, vertical = 6.dp),
+                            .padding(horizontal = 10.dp, vertical = 6.dp),
                     )
                 }
                 if (editorFileName != null) {
                     Separator()
                     Text(
                         text = editorFileName,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
+                        style = com.inspiredandroid.kai.ui.KaiTypography.bodyMedium,
+                        color = com.inspiredandroid.kai.ui.TextPrimary,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
                     )
                 }
             }
@@ -344,9 +345,9 @@ private fun FileList(
         return
     }
     LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(vertical = 8.dp),
+        modifier = Modifier.fillMaxSize().padding(horizontal = com.inspiredandroid.kai.ui.build.BuildSpacing.sm),
+        verticalArrangement = Arrangement.spacedBy(com.inspiredandroid.kai.ui.build.BuildSpacing.sm),
+        contentPadding = PaddingValues(vertical = com.inspiredandroid.kai.ui.build.BuildSpacing.sm),
     ) {
         items(state.entries, key = { it.path }) { entry ->
             FileRow(
@@ -372,10 +373,13 @@ private fun FileRow(
     onRename: () -> Unit,
     onDelete: () -> Unit,
 ) {
-    Card(
-        colors = kaiAdaptiveCardColors(),
-        border = kaiAdaptiveCardBorder(),
-        modifier = Modifier.fillMaxWidth(),
+    androidx.compose.material3.Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(com.inspiredandroid.kai.ui.KaiShapes.card),
+        color = com.inspiredandroid.kai.ui.CardFill,
+        border = com.inspiredandroid.kai.ui.KaiBorders.soft,
+        shape = com.inspiredandroid.kai.ui.KaiShapes.card,
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -392,22 +396,22 @@ private fun FileRow(
                 Icon(
                     imageVector = if (entry.isDirectory) Icons.Filled.Folder else Icons.AutoMirrored.Filled.InsertDriveFile,
                     contentDescription = if (entry.isDirectory) "Folder" else "File",
-                    tint = if (entry.isDirectory) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                    tint = if (entry.isDirectory) com.inspiredandroid.kai.ui.AccentPrimary else com.inspiredandroid.kai.ui.TextTertiary,
                 )
                 Spacer(Modifier.width(12.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = entry.name,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurface,
+                        style = com.inspiredandroid.kai.ui.KaiTypography.bodyLarge,
+                        color = com.inspiredandroid.kai.ui.TextPrimary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
                     if (!entry.isDirectory) {
                         Text(
                             text = formatFileSize(entry.sizeBytes),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = com.inspiredandroid.kai.ui.KaiTypography.bodySmall,
+                            color = com.inspiredandroid.kai.ui.TextTertiary,
                         )
                     }
                 }
@@ -566,12 +570,9 @@ private fun EditorBody(
                     onValueChange = onChange,
                     readOnly = editor.readOnly,
                     modifier = Modifier.fillMaxWidth().weight(1f),
-                    textStyle = TextStyle(fontFamily = FontFamily.Monospace),
-                    shape = RoundedCornerShape(8.dp),
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    ),
+                    textStyle = TextStyle(fontFamily = FontFamily.Monospace, color = com.inspiredandroid.kai.ui.TextPrimary),
+                    shape = com.inspiredandroid.kai.ui.KaiShapes.card,
+                    colors = com.inspiredandroid.kai.ui.outlineTextFieldColors(),
                 )
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(top = 4.dp),

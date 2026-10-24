@@ -101,17 +101,26 @@ internal fun SandboxTabsContent(
         ) {
             // Common workspace header (Plan 4, Phase 4): one identity and one
             // readiness statement shared by Terminal, Files, and Packages.
-            Row(
+            Surface(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
+                shape = com.inspiredandroid.kai.ui.KaiShapes.card,
+                color = com.inspiredandroid.kai.ui.CardFill,
+                border = com.inspiredandroid.kai.ui.KaiBorders.soft,
             ) {
-                Text(
-                    text = "Sandbox workspace",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.weight(1f).semantics { heading() },
-                )
-                StatusBadge(label = "Ready", status = OperationalStatus.Ready)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = com.inspiredandroid.kai.ui.build.BuildSpacing.md, vertical = com.inspiredandroid.kai.ui.build.BuildSpacing.sm),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = "Sandbox workspace",
+                        style = com.inspiredandroid.kai.ui.KaiTypography.titleMedium,
+                        color = com.inspiredandroid.kai.ui.TextPrimary,
+                        modifier = Modifier.weight(1f).semantics { heading() },
+                    )
+                    StatusBadge(label = "Ready", status = OperationalStatus.Ready)
+                }
             }
 
             SandboxSubTabSelector(currentTab = subTab, onSelectTab = onSelectTab)
@@ -124,10 +133,11 @@ internal fun SandboxTabsContent(
                         }
                         Surface(
                             modifier = Modifier.fillMaxWidth()
-                                .padding(bottom = 6.dp).weight(1f),
-                            shape = RoundedCornerShape(12.dp),
+                                .padding(bottom = com.inspiredandroid.kai.ui.build.BuildSpacing.xs)
+                                .weight(1f),
+                            shape = com.inspiredandroid.kai.ui.KaiShapes.card,
                             color = TerminalDarkBg,
-                            tonalElevation = 2.dp,
+                            border = com.inspiredandroid.kai.ui.KaiBorders.soft,
                         ) {
                             TerminalContent(
                                 sandboxController = sandboxController,
@@ -263,14 +273,14 @@ private fun SessionChipRow(viewModel: SandboxSessionViewModel) {
 
             val buttonColors = ButtonDefaults.buttonColors(
                 containerColor = if (isSelected) {
-                    MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+                    com.inspiredandroid.kai.ui.AccentGlow
                 } else {
-                    Color.Transparent
+                    com.inspiredandroid.kai.ui.CardFill
                 },
                 contentColor = if (isSelected) {
-                    MaterialTheme.colorScheme.primary
+                    com.inspiredandroid.kai.ui.AccentPrimary
                 } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
+                    com.inspiredandroid.kai.ui.TextSecondary
                 },
             )
 
@@ -283,12 +293,14 @@ private fun SessionChipRow(viewModel: SandboxSessionViewModel) {
                         selected = isSelected
                     },
                 colors = buttonColors,
-                shape = RoundedCornerShape(50),
-                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp),
+                shape = com.inspiredandroid.kai.ui.KaiShapes.pill,
+                border = if (isSelected) com.inspiredandroid.kai.ui.KaiBorders.accent else com.inspiredandroid.kai.ui.KaiBorders.soft,
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
             ) {
                 Text(
                     text = label,
-                    style = MaterialTheme.typography.labelMedium,
+                    style = com.inspiredandroid.kai.ui.KaiTypography.labelMedium,
+                    fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium,
                     maxLines = 1,
                 )
             }
@@ -350,21 +362,21 @@ private fun SandboxSubTabSelector(
 
             val buttonColors = ButtonDefaults.buttonColors(
                 containerColor = when {
-                    isSelected -> MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
-                    isFocused -> MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
-                    else -> Color.Transparent
+                    isSelected -> com.inspiredandroid.kai.ui.AccentGlow
+                    isFocused -> com.inspiredandroid.kai.ui.AccentGlow.copy(alpha = 0.5f)
+                    else -> com.inspiredandroid.kai.ui.CardFill
                 },
                 contentColor = if (isSelected) {
-                    MaterialTheme.colorScheme.primary
+                    com.inspiredandroid.kai.ui.AccentPrimary
                 } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
+                    com.inspiredandroid.kai.ui.TextSecondary
                 },
             )
 
             val border = when {
-                isSelected -> BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.3f))
-                isFocused -> BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.5f))
-                else -> null
+                isSelected -> com.inspiredandroid.kai.ui.KaiBorders.accent
+                isFocused -> com.inspiredandroid.kai.ui.KaiBorders.focus
+                else -> com.inspiredandroid.kai.ui.KaiBorders.soft
             }
 
             Button(
@@ -404,14 +416,14 @@ private fun SandboxSubTabSelector(
                         selected = isSelected
                     },
                 colors = buttonColors,
-                shape = RoundedCornerShape(50),
+                shape = com.inspiredandroid.kai.ui.KaiShapes.pill,
                 border = border,
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+                contentPadding = PaddingValues(horizontal = 18.dp, vertical = 10.dp),
             ) {
                 Text(
                     text = label,
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = if (isSelected) FontWeight.SemiBold else null,
+                    style = com.inspiredandroid.kai.ui.KaiTypography.labelLarge,
+                    fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium,
                     maxLines = 1,
                 )
             }

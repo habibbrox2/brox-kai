@@ -49,158 +49,233 @@ import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 // ═══════════════════════════════════════════════════════════════
-// BROX KAI 2.0 — FUTURISTIC MIDNIGHT GLASSMORPHISM DESIGN SYSTEM
+// BROX KAI 2.0 — 2026 NEURAL MINIMAL DESIGN SYSTEM
 // ═══════════════════════════════════════════════════════════════
 
 // ─── Core Brand Colors ───
-val broxNavy = Color(0xFF0B2B5B)
-val broxCyan = Color(0xFF00E5FF) // Updated to Neon Cyan #00E5FF
-val broxDeepNavy = Color(0xFF06152E)
-val broxCharcoal = Color(0xFF1A1F2B)
-val broxLightSurface = Color(0xFFF5F8FC)
-val broxMutedText = Color(0xFF718096)
+val broxNavy = Color(0xFF0B1026)
+val broxCyan = Color(0xFF22D3EE) // Modern cyan
+val broxDeepNavy = Color(0xFF050810)
+val broxCharcoal = Color(0xFF151B2B)
+val broxLightSurface = Color(0xFFF8FAFC)
+val broxMutedText = Color(0xFF64748B)
 
-// ─── Glassmorphism Design Tokens ───
+// ─── 2026 Design Tokens ───
 
-/** Ultra-deep OLED background — pure black #000000 */
-val OledBlack = Color.Black
+/** Ultra-deep background */
+val OledBlack = Color(0xFF000000)
 
-/** Raised surface for floating panels, dialogs, drawer menus */
-val SurfaceRaised = Color(0xFF0F172A)
+/** Primary background */
+val BackgroundPrimary = Color(0xFF000000)
 
-/** Semi-transparent card fill with backdrop blur: rgba(30, 41, 59, 0.4) */
-val CardFill = Color(0x661E293B)
+/** Elevated surfaces */
+val SurfaceElevated = Color(0xFF0A0F1C)
+val SurfaceRaised = Color(0xFF111827)
 
-/** Subtle 1px outline for cards and inputs: rgba(255, 255, 255, 0.08) */
-val BorderSoft = Color(0x14FFFFFF)
+/** Card surfaces with subtle transparency */
+val CardFill = Color(0x99111B2E)
+val CardSurface = Color(0xFF0F172A)
 
-/** High-visibility Neon Cyan for active toggles, primary actions, focus rings */
-val AccentPrimary = broxCyan
+/** Borders */
+val BorderSubtle = Color(0x1AFFFFFF)
+val BorderSoft = Color(0x26FFFFFF)
+val BorderStrong = Color(0x40FFFFFF)
 
-/** Soft glow halo under active buttons and glowing status badges */
-val AccentGlow = Color(0x4000E5FF)
+/** Primary accent - vibrant cyan/teal */
+val AccentPrimary = Color(0xFF22D3EE)
+val AccentPrimaryHover = Color(0xFF67E8F9)
+val AccentPrimaryActive = Color(0xFF06B6D4)
 
-/** Main body text, headers, and active tab labels */
-val TextPrimary = Color(0xFFF8FAFC)
+/** Accent gradient colors */
+val AccentGradientStart = Color(0xFF22D3EE)
+val AccentGradientEnd = Color(0xFF3B82F6)
 
-/** Subtitles, helper text, and secondary timestamps */
-val TextSecondary = Color(0xFF94A3B8)
+/** Glow effects */
+val AccentGlow = Color(0x3322D3EE)
+val AccentGlowStrong = Color(0x6622D3EE)
+val AccentGlowIntense = Color(0x9922D3EE)
 
-/** Destructive actions and critical status indicators */
-val DangerAlert = Color(0xFFFF4D4D)
+/** Text colors */
+val TextPrimary = Color(0xFFFFFFFF)
+val TextSecondary = Color(0xFFCBD5E1)
+val TextTertiary = Color(0xFF94A3B8)
+val TextMuted = Color(0xFF64748B)
 
-/** Success/connected state */
-val SuccessGreen = Color(0xFF4CAF50)
+/** Status colors */
+val DangerAlert = Color(0xFFEF4444)
+val SuccessGreen = Color(0xFF10B981)
+val WarningAmber = Color(0xFFF59E0B)
+val InfoBlue = Color(0xFF3B82F6)
 
-/** Warning/pending state */
-val WarningAmber = Color(0xFFFF9800)
-
-// ─── KaiTypography — Centralized type scale for Futuristic Midnight Glassmorphism ───
+// ─── KaiTypography — 2026 Modern Type Scale ───
 val KaiTypography = Typography(
     displayLarge = TextStyle(
         fontSize = 57.sp,
+        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+        letterSpacing = (-0.25).sp,
         brush = SolidColor(TextPrimary),
+        lineHeight = 64.sp,
     ),
     displayMedium = TextStyle(
         fontSize = 45.sp,
+        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+        letterSpacing = 0.sp,
         brush = SolidColor(TextPrimary),
+        lineHeight = 52.sp,
     ),
     displaySmall = TextStyle(
         fontSize = 36.sp,
+        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+        letterSpacing = 0.sp,
         brush = SolidColor(TextPrimary),
+        lineHeight = 44.sp,
     ),
     headlineLarge = TextStyle(
         fontSize = 32.sp,
+        fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+        letterSpacing = 0.sp,
         brush = SolidColor(TextPrimary),
+        lineHeight = 40.sp,
     ),
     headlineMedium = TextStyle(
         fontSize = 28.sp,
+        fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+        letterSpacing = 0.sp,
         brush = SolidColor(TextPrimary),
+        lineHeight = 36.sp,
     ),
     headlineSmall = TextStyle(
         fontSize = 24.sp,
+        fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+        letterSpacing = 0.sp,
         brush = SolidColor(TextPrimary),
+        lineHeight = 32.sp,
     ),
     titleLarge = TextStyle(
         fontSize = 22.sp,
+        fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+        letterSpacing = 0.sp,
         brush = SolidColor(TextPrimary),
+        lineHeight = 28.sp,
     ),
     titleMedium = TextStyle(
         fontSize = 16.sp,
+        fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+        letterSpacing = 0.15.sp,
         brush = SolidColor(TextPrimary),
+        lineHeight = 24.sp,
     ),
     titleSmall = TextStyle(
         fontSize = 14.sp,
-        brush = SolidColor(TextSecondary),
+        fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+        letterSpacing = 0.1.sp,
+        brush = SolidColor(TextPrimary),
+        lineHeight = 20.sp,
     ),
     bodyLarge = TextStyle(
         fontSize = 16.sp,
+        fontWeight = androidx.compose.ui.text.font.FontWeight.Normal,
+        letterSpacing = 0.5.sp,
         brush = SolidColor(TextPrimary),
+        lineHeight = 24.sp,
     ),
     bodyMedium = TextStyle(
         fontSize = 14.sp,
+        fontWeight = androidx.compose.ui.text.font.FontWeight.Normal,
+        letterSpacing = 0.25.sp,
         brush = SolidColor(TextPrimary),
+        lineHeight = 20.sp,
     ),
     bodySmall = TextStyle(
         fontSize = 12.sp,
+        fontWeight = androidx.compose.ui.text.font.FontWeight.Normal,
+        letterSpacing = 0.4.sp,
         brush = SolidColor(TextSecondary),
+        lineHeight = 16.sp,
     ),
     labelLarge = TextStyle(
         fontSize = 14.sp,
+        fontWeight = androidx.compose.ui.text.font.FontWeight.Medium,
+        letterSpacing = 0.1.sp,
         brush = SolidColor(TextPrimary),
+        lineHeight = 20.sp,
     ),
     labelMedium = TextStyle(
         fontSize = 12.sp,
+        fontWeight = androidx.compose.ui.text.font.FontWeight.Medium,
+        letterSpacing = 0.5.sp,
         brush = SolidColor(TextSecondary),
+        lineHeight = 16.sp,
     ),
     labelSmall = TextStyle(
         fontSize = 11.sp,
-        brush = SolidColor(TextSecondary),
+        fontWeight = androidx.compose.ui.text.font.FontWeight.Medium,
+        letterSpacing = 0.5.sp,
+        brush = SolidColor(TextTertiary),
+        lineHeight = 16.sp,
     ),
 )
 
-// ─── KaiShapes — Centralized shape definitions ───
+// ─── KaiShapes — 2026 Modern Shape System ───
 object KaiShapes {
-    /** Card / panel default radius */
-    val card = RoundedCornerShape(16.dp)
+    /** Extra small elements */
+    val xs = RoundedCornerShape(8.dp)
 
-    /** Section container radius */
-    val section = RoundedCornerShape(20.dp)
+    /** Small elements */
+    val sm = RoundedCornerShape(10.dp)
 
     /** Row / item container radius */
     val row = RoundedCornerShape(12.dp)
 
+    /** Input field radius */
+    val input = RoundedCornerShape(14.dp)
+
+    /** Card / panel default radius */
+    val card = RoundedCornerShape(16.dp)
+
+    /** Medium containers */
+    val md = RoundedCornerShape(18.dp)
+
+    /** Section container radius */
+    val section = RoundedCornerShape(20.dp)
+
+    /** Large panels */
+    val lg = RoundedCornerShape(24.dp)
+
+    /** Extra large panels/sheets */
+    val xl = RoundedCornerShape(28.dp)
+
     /** Pill / chip full radius */
     val pill = RoundedCornerShape(999.dp)
-
-    /** Input field radius */
-    val input = RoundedCornerShape(12.dp)
 
     /** Button radius */
     val button = RoundedCornerShape(999.dp)
 
-    /** User message bubble */
+    /** User message bubble - modern asymmetric */
     val userBubble = RoundedCornerShape(
-        topStart = 20.dp,
-        topEnd = 8.dp,
-        bottomStart = 20.dp,
-        bottomEnd = 20.dp,
+        topStart = 24.dp,
+        topEnd = 6.dp,
+        bottomStart = 24.dp,
+        bottomEnd = 24.dp,
     )
 
     /** Assistant message surface */
-    val assistantSurface = RoundedCornerShape(16.dp)
+    val assistantSurface = RoundedCornerShape(20.dp)
 
     /** Status card */
-    val statusCard = RoundedCornerShape(12.dp)
+    val statusCard = RoundedCornerShape(14.dp)
 
     /** Quick-start card */
-    val quickStartCard = RoundedCornerShape(16.dp)
+    val quickStartCard = RoundedCornerShape(18.dp)
 
     /** Composer container */
-    val composer = RoundedCornerShape(28.dp)
+    val composer = RoundedCornerShape(32.dp)
 
     /** Panel / sheet heading */
-    val panel = RoundedCornerShape(20.dp)
+    val panel = RoundedCornerShape(24.dp)
+
+    /** Modal/dialog */
+    val dialog = RoundedCornerShape(28.dp)
 }
 
 // ─── KaiBorders — Centralized stroke definitions ───
@@ -252,26 +327,33 @@ val gradientMagenta = broxDeepNavy
 // ─── Utility Modifiers ───
 fun Modifier.handCursor() = pointerHoverIcon(PointerIcon.Hand, overrideDescendants = true)
 
-/** Glassmorphic card surface with backdrop blur effect */
+/** 2026 Modern card surface */
 @Composable
-fun Modifier.glassmorphicSurface(
+fun Modifier.modernCardSurface(
     shape: Shape = KaiShapes.card,
     elevation: Boolean = true,
 ): Modifier = this
     .clip(shape)
     .background(CardFill, shape)
-    .border(KaiBorders.soft, shape)
+    .border(BorderStroke(1.dp, BorderSubtle), shape)
     .then(
         if (elevation) {
-            Modifier.border(KaiElevation.level1, shape)
+            Modifier.border(BorderStroke(1.dp, BorderSoft.copy(alpha = 0.5f)), shape)
         } else {
             Modifier
         },
     )
 
-/** Glassmorphic card with hover/focus glow */
+/** Glassmorphic card surface with backdrop blur effect (legacy) */
 @Composable
-fun Modifier.glassmorphicCard(
+fun Modifier.glassmorphicSurface(
+    shape: Shape = KaiShapes.card,
+    elevation: Boolean = true,
+): Modifier = modernCardSurface(shape, elevation)
+
+/** Modern card with hover/focus glow */
+@Composable
+fun Modifier.modernCard(
     shape: Shape = KaiShapes.card,
     isInteractive: Boolean = false,
     isFocused: Boolean = false,
@@ -280,18 +362,25 @@ fun Modifier.glassmorphicCard(
     .clip(shape)
     .background(CardFill, shape)
     .border(
-        if (isFocused || isHovered) KaiBorders.focus else KaiBorders.soft,
+        if (isFocused || isHovered) BorderStroke(1.dp, AccentPrimary.copy(alpha = 0.6f)) else BorderStroke(1.dp, BorderSubtle),
         shape,
     )
     .then(
         if (isInteractive && (isFocused || isHovered)) {
-            Modifier.border(KaiElevation.level3, shape)
-        } else if (isInteractive) {
-            Modifier.border(KaiElevation.level1, shape)
+            Modifier.border(BorderStroke(1.dp, AccentGlow), shape)
         } else {
             Modifier
         },
     )
+
+/** Glassmorphic card with hover/focus glow (legacy) */
+@Composable
+fun Modifier.glassmorphicCard(
+    shape: Shape = KaiShapes.card,
+    isInteractive: Boolean = false,
+    isFocused: Boolean = false,
+    isHovered: Boolean = false,
+): Modifier = modernCard(shape, isInteractive, isFocused, isHovered)
 
 /** Cyan glow modifier for active/primary elements.
  *  Cross-platform implementation using border + alpha overlay instead of RenderEffect.
@@ -339,65 +428,65 @@ val DarkColorScheme = darkColorScheme(
     surfaceContainerLowest = Color(0xFF121212),
 )
 
-/** Midnight theme — deep navy surfaces with cyan accent */
+/** Midnight theme — 2026 Neural Minimal */
 val MidnightColorScheme = darkColorScheme(
     primary = AccentPrimary,
     onPrimary = OledBlack,
-    primaryContainer = broxNavy,
+    primaryContainer = Color(0xFF164E63),
     onPrimaryContainer = TextPrimary,
-    secondary = broxDeepNavy,
+    secondary = SurfaceRaised,
     onSecondary = TextPrimary,
-    tertiary = broxCharcoal,
+    tertiary = SurfaceElevated,
     onTertiary = TextPrimary,
     error = DangerAlert,
-    onError = OledBlack,
-    errorContainer = DangerAlert.copy(alpha = 0.3f),
+    onError = Color.White,
+    errorContainer = DangerAlert.copy(alpha = 0.2f),
     onErrorContainer = TextPrimary,
-    background = broxDeepNavy,
+    background = Color(0xFF050810),
     onBackground = TextPrimary,
-    surface = Color(0xFF0E2A4D),
+    surface = SurfaceElevated,
     onSurface = TextPrimary,
-    surfaceVariant = Color(0xFF15355A),
+    surfaceVariant = SurfaceRaised,
     onSurfaceVariant = TextSecondary,
-    outline = BorderSoft,
-    outlineVariant = BorderSoft.copy(alpha = 0.5f),
-    inverseSurface = Color(0xFFE0E0E0),
+    outline = BorderSubtle,
+    outlineVariant = BorderSoft,
+    inverseSurface = Color(0xFFF8FAFC),
     inverseOnSurface = OledBlack,
-    inversePrimary = broxNavy,
-    surfaceContainerHighest = Color(0xFF15355A),
-    surfaceContainerHigh = Color(0xFF112D4D),
-    surfaceContainer = Color(0xFF0E2A4D),
-    surfaceContainerLow = Color(0xFF0A223A),
-    surfaceContainerLowest = broxDeepNavy,
+    inversePrimary = Color(0xFF0891B2),
+    surfaceContainerHighest = SurfaceRaised,
+    surfaceContainerHigh = SurfaceElevated,
+    surfaceContainer = Color(0xFF0A0F1C),
+    surfaceContainerLow = Color(0xFF070B16),
+    surfaceContainerLowest = Color(0xFF050810),
 )
 
-/** Pure OLED black theme — maximum contrast, power saving */
+/** Pure OLED black theme — 2026 Neural Minimal */
 val OledColorScheme = darkColorScheme(
     primary = AccentPrimary,
     onPrimary = OledBlack,
-    primaryContainer = broxNavy,
+    primaryContainer = Color(0xFF164E63),
     onPrimaryContainer = TextPrimary,
-    secondary = broxDeepNavy,
+    secondary = SurfaceRaised,
     onSecondary = TextPrimary,
-    tertiary = broxCharcoal,
+    tertiary = SurfaceElevated,
     onTertiary = TextPrimary,
     error = DangerAlert,
-    onError = OledBlack,
-    errorContainer = DangerAlert.copy(alpha = 0.3f),
+    onError = Color.White,
+    errorContainer = DangerAlert.copy(alpha = 0.2f),
     onErrorContainer = TextPrimary,
     background = OledBlack,
     onBackground = TextPrimary,
     surface = OledBlack,
     onSurface = TextPrimary,
-    surfaceVariant = Color(0xFF0F172A),
+    surfaceVariant = SurfaceElevated,
     onSurfaceVariant = TextSecondary,
-    outline = BorderSoft,
-    outlineVariant = BorderSoft.copy(alpha = 0.5f),
-    inverseSurface = Color(0xFFE0E0E0),
+    outline = BorderSubtle,
+    outlineVariant = BorderSoft,
+    inverseSurface = Color(0xFFF8FAFC),
     inverseOnSurface = OledBlack,
-    inversePrimary = broxNavy,
-    surfaceContainerHighest = Color(0xFF0F172A),
-    surfaceContainerHigh = Color(0xFF0A0E17),
+    inversePrimary = Color(0xFF0891B2),
+    surfaceContainerHighest = SurfaceRaised,
+    surfaceContainerHigh = SurfaceElevated,
     surfaceContainer = OledBlack,
     surfaceContainerLow = OledBlack,
     surfaceContainerLowest = OledBlack,
@@ -626,3 +715,82 @@ fun Theme(
         content()
     }
 }
+
+// Claude-inspired theme
+val ClaudeColorScheme = darkColorScheme(
+    primary = Color(0xFFD97757),
+    onPrimary = Color.White,
+    primaryContainer = Color(0xFF8B4513).copy(alpha = 0.3f),
+    onPrimaryContainer = Color(0xFFFFD4C4),
+    secondary = Color(0xFFF59E0B),
+    onSecondary = Color.Black,
+    background = Color(0xFF1A1A1A),
+    onBackground = Color(0xFFEDEDED),
+    surface = Color(0xFF2D2D2D),
+    onSurface = Color(0xFFEDEDED),
+    surfaceVariant = Color(0xFF3A3A3A),
+    onSurfaceVariant = Color(0xFFB3B3B3),
+    outline = Color(0xFF4A4A4A),
+)
+
+// ChatGPT-inspired theme
+val ChatGPTColorScheme = darkColorScheme(
+    primary = Color(0xFF10A37F),
+    onPrimary = Color.White,
+    primaryContainer = Color(0xFF0D8A6A).copy(alpha = 0.3f),
+    onPrimaryContainer = Color(0xFFB3F0E0),
+    secondary = Color(0xFF19C37D),
+    onSecondary = Color.White,
+    background = Color(0xFF212121),
+    onBackground = Color(0xFFECECEC),
+    surface = Color(0xFF2F2F2F),
+    onSurface = Color(0xFFECECEC),
+    surfaceVariant = Color(0xFF424242),
+    onSurfaceVariant = Color(0xFFABABAB),
+    outline = Color(0xFF565656),
+)
+
+// Grok-inspired theme
+val GrokColorScheme = darkColorScheme(
+    primary = Color(0xFF1DA1F2),
+    onPrimary = Color.White,
+    primaryContainer = Color(0xFF1DA1F2).copy(alpha = 0.3f),
+    onPrimaryContainer = Color(0xFFB3E0FF),
+    secondary = Color(0xFF4A9EFF),
+    onSecondary = Color.White,
+    background = Color(0xFF000000),
+    onBackground = Color(0xFFFFFFFF),
+    surface = Color(0xFF151515),
+    onSurface = Color(0xFFFFFFFF),
+    surfaceVariant = Color(0xFF2A2A2A),
+    onSurfaceVariant = Color(0xFFB0B0B0),
+    outline = Color(0xFF3A3A3A),
+)
+
+// Gemini-inspired theme
+val GeminiColorScheme = darkColorScheme(
+    primary = Color(0xFF4285F4),
+    onPrimary = Color.White,
+    primaryContainer = Color(0xFF4285F4).copy(alpha = 0.3f),
+    onPrimaryContainer = Color(0xFFD2E3FC),
+    secondary = Color(0xFF34A853),
+    onSecondary = Color.White,
+    background = Color(0xFF131314),
+    onBackground = Color(0xFFE8EAED),
+    surface = Color(0xFF1E1F20),
+    onSurface = Color(0xFFE8EAED),
+    surfaceVariant = Color(0xFF2D2E2F),
+    onSurfaceVariant = Color(0xFF9AA0A6),
+    outline = Color(0xFF3C4043),
+)
+
+/**
+ * Glassmorphism effect modifier for cards and surfaces
+ */
+fun Modifier.glassmorphicCard(
+    backgroundColor: Color = CardFill,
+    borderColor: Color = BorderSoft,
+    cornerRadius: androidx.compose.ui.unit.Dp = 16.dp,
+): Modifier = this
+    .clip(androidx.compose.foundation.shape.RoundedCornerShape(cornerRadius))
+    .background(backgroundColor)

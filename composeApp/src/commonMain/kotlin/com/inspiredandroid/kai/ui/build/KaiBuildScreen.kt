@@ -164,13 +164,14 @@ internal fun KaiBuildScreenContent(
     // content color, which is what keeps the bare icons legible in dark mode.
     Surface(
         modifier = modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background,
+        color = com.inspiredandroid.kai.ui.BackgroundPrimary,
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .statusBarsPadding()
-                .navigationBarsPadding(),
+                .navigationBarsPadding()
+                .padding(horizontal = com.inspiredandroid.kai.ui.build.BuildSpacing.sm),
         ) {
             if (project != null) {
                 val sessions = remember(state.build.sessions, project) {
@@ -320,24 +321,34 @@ private fun KaiBuildTopBar(
     onExit: () -> Unit,
     actions: @Composable RowScope.() -> Unit = {},
 ) {
-    Row(
+    androidx.compose.material3.Surface(
         modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
+        color = com.inspiredandroid.kai.ui.BackgroundPrimary,
+        shape = com.inspiredandroid.kai.ui.KaiShapes.card,
+        border = com.inspiredandroid.kai.ui.KaiBorders.soft,
     ) {
-        IconButton(onClick = onExit, modifier = Modifier.handCursor()) {
-            Icon(
-                imageVector = Icons.Default.Close,
-                contentDescription = stringResource(Res.string.kai_build_exit_content_description),
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = com.inspiredandroid.kai.ui.build.BuildSpacing.sm, vertical = com.inspiredandroid.kai.ui.build.BuildSpacing.xs),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            IconButton(onClick = onExit, modifier = Modifier.handCursor()) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = stringResource(Res.string.kai_build_exit_content_description),
+                    tint = com.inspiredandroid.kai.ui.TextSecondary,
+                )
+            }
+            Text(
+                text = title,
+                style = com.inspiredandroid.kai.ui.KaiTypography.titleMedium,
+                color = com.inspiredandroid.kai.ui.TextPrimary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f).padding(horizontal = com.inspiredandroid.kai.ui.build.BuildSpacing.sm),
             )
+            actions()
         }
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onBackground,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(1f).padding(end = 8.dp),
-        )
-        actions()
     }
 }

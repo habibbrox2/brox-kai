@@ -226,10 +226,10 @@ internal fun BuildTerminalContent(
     // only cost columns.
     Column(modifier = modifier.fillMaxSize().imePadding()) {
         Surface(
-            modifier = Modifier.fillMaxWidth().padding(bottom = 6.dp).weight(1f),
-            shape = RoundedCornerShape(12.dp),
-            color = bg,
-            tonalElevation = 2.dp,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = com.inspiredandroid.kai.ui.build.BuildSpacing.sm, vertical = com.inspiredandroid.kai.ui.build.BuildSpacing.xs).weight(1f),
+            shape = com.inspiredandroid.kai.ui.KaiShapes.card,
+            color = BuildSurfaces.terminal,
+            border = com.inspiredandroid.kai.ui.KaiBorders.soft,
         ) {
             Column {
                 Column(modifier = Modifier.weight(1f).fillMaxWidth()) {
@@ -303,7 +303,7 @@ internal fun BuildTerminalContent(
                     }
                 }
 
-                HorizontalDivider(color = Color.White.copy(alpha = 0.12f))
+                HorizontalDivider(color = com.inspiredandroid.kai.ui.BorderSoft)
 
                 TerminalKeyRow(
                     enabled = busy,
@@ -325,8 +325,8 @@ internal fun BuildTerminalContent(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color(0xFF1A1A1A))
-                            .padding(horizontal = 8.dp, vertical = 4.dp),
+                            .background(BuildSurfaces.terminalRaised)
+                            .padding(horizontal = com.inspiredandroid.kai.ui.build.BuildSpacing.sm, vertical = com.inspiredandroid.kai.ui.build.BuildSpacing.xs),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
@@ -438,8 +438,8 @@ private fun TerminalHyperlinkBar(urls: ImmutableList<String>) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFF141414))
-            .padding(horizontal = 10.dp, vertical = 8.dp),
+            .background(BuildSurfaces.terminalRaised)
+            .padding(horizontal = com.inspiredandroid.kai.ui.build.BuildSpacing.sm, vertical = com.inspiredandroid.kai.ui.build.BuildSpacing.xs),
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         urls.forEach { url ->

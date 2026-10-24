@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
@@ -40,6 +42,11 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.inspiredandroid.kai.getBackgroundDispatcher
+import com.inspiredandroid.kai.ui.AccentPrimary
+import com.inspiredandroid.kai.ui.BorderSoft
+import com.inspiredandroid.kai.ui.CardFill
+import com.inspiredandroid.kai.ui.KaiShapes
+import com.inspiredandroid.kai.ui.chat.ChatSpacing
 import com.inspiredandroid.kai.ui.dynamicui.FrozenSubmission
 import com.inspiredandroid.kai.ui.dynamicui.toSpeakableText
 import com.inspiredandroid.kai.ui.handCursor
@@ -95,30 +102,46 @@ internal fun BotMessage(
         onUiCallback ?: { _, _ -> }
     }
 
-    Box(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.fillMaxWidth()) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = com.inspiredandroid.kai.ui.chat.ChatSpacing.lg, vertical = com.inspiredandroid.kai.ui.chat.ChatSpacing.md),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .widthIn(max = 680.dp)
+                .clip(com.inspiredandroid.kai.ui.KaiShapes.assistantSurface)
+                .background(com.inspiredandroid.kai.ui.CardFill)
+                .border(
+                    width = 1.dp,
+                    color = com.inspiredandroid.kai.ui.BorderSoft,
+                    shape = com.inspiredandroid.kai.ui.KaiShapes.assistantSurface,
+                )
+                .padding(horizontal = com.inspiredandroid.kai.ui.chat.ChatSpacing.xl, vertical = com.inspiredandroid.kai.ui.chat.ChatSpacing.lg),
+        ) {
             val nonBlankSegments = remember(reasoningSegments) {
                 reasoningSegments.filter { it.isNotBlank() }.toImmutableList()
             }
             if (nonBlankSegments.isNotEmpty()) {
                 ReasoningBlockquote(
                     segments = nonBlankSegments,
-                    modifier = Modifier.fillMaxWidth()
-                        .padding(start = 16.dp, top = 12.dp, end = 16.dp),
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
             if (message.isNotEmpty()) {
                 // When reasoning is shown above, the Thinking row already provides
                 // the visual gap to the answer — drop the duplicated top inset.
-                val answerTopPadding = if (nonBlankSegments.isNotEmpty()) 6.dp else 16.dp
+                val answerTopPadding = if (nonBlankSegments.isNotEmpty()) com.inspiredandroid.kai.ui.chat.ChatSpacing.sm else com.inspiredandroid.kai.ui.chat.ChatSpacing.xs
                 SelectionContainer {
                     MarkdownContent(
                         document = document,
                         isInteractive = effectiveInteractive,
                         onUiCallback = kaiUiCallback,
                         frozen = effectiveFrozen,
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(start = 16.dp, top = answerTopPadding, end = 16.dp, bottom = 8.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = answerTopPadding),
                         onOpenInEditor = onOpenInEditor,
                     )
                 }
@@ -154,7 +177,7 @@ internal fun BotMessage(
     val componentScope = rememberCoroutineScope()
     val uriHandler = LocalUriHandler.current
     MessageActionRow(
-        modifier = Modifier.padding(horizontal = 8.dp),
+        modifier = Modifier.padding(horizontal = ChatSpacing.lg),
         onCopy = { copyToClipboard(message) },
         onSpeak = if (textToSpeech != null) {
             {
@@ -254,14 +277,15 @@ private fun ReasoningBlockquote(
                     Row(modifier = Modifier.height(IntrinsicSize.Min)) {
                         VerticalDivider(
                             thickness = 2.dp,
-                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                            color = com.inspiredandroid.kai.ui.AccentPrimary.copy(alpha = 0.6f),
                             modifier = Modifier.fillMaxHeight(),
                         )
-                        SelectionContainer(modifier = Modifier.padding(start = 10.dp)) {
+                        SelectionContainer(modifier = Modifier.padding(start = 12.dp)) {
                             Text(
                                 text = segment,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 style = MaterialTheme.typography.bodySmall,
+                                lineHeight = MaterialTheme.typography.bodySmall.lineHeight * 1.2f,
                             )
                         }
                     }
